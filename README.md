@@ -1,2 +1,2 @@
-period-tracker
+egg-timer
 ==============
