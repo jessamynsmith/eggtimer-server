@@ -1,0 +1,34 @@
+from tastypie.authentication import ApiKeyAuthentication
+from tastypie.authorization import DjangoAuthorization
+from tastypie import fields
+from tastypie.resources import ModelResource
+from egg_timer.apps.periods import models as period_models
+from egg_timer.apps.userprofiles import models as userprofile_models
+
+
+class BaseMeta(object):
+    authentication = ApiKeyAuthentication()
+    authorization = DjangoAuthorization()
+
+
+class UserProfileResource(ModelResource):
+
+    class Meta(BaseMeta):
+        queryset = userprofile_models.UserProfile.objects.all()
+        resource_name = 'userprofiles'
+
+    def get_object_list(self, request):
+        return super(UserProfileResource, self).get_object_list(request).filter(
+            user=request.user)
+
+
+class PeriodResource(ModelResource):
+    userprofile = fields.ForeignKey(UserProfileResource, 'userprofile')
+
+    class Meta(BaseMeta):
+        queryset = period_models.Period.objects.all()
+        resource_name = 'periods'
+
+    def get_object_list(self, request):
+        return super(PeriodResource, self).get_object_list(request).filter(
+            userprofile__user=request.user)
