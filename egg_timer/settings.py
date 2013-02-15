@@ -118,6 +118,8 @@ INSTALLED_APPS = (
     'egg_timer.apps.periods',
 )
 
+AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

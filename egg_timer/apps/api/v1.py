@@ -32,3 +32,8 @@ class PeriodResource(ModelResource):
     def get_object_list(self, request):
         return super(PeriodResource, self).get_object_list(request).filter(
             userprofile__user=request.user)
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        user_profile = bundle.request.user.get_profile()
+        return super(PeriodResource, self).obj_create(
+            bundle, request=request, userprofile=user_profile, **kwargs)
