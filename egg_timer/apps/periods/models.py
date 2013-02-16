@@ -57,7 +57,8 @@ def update_statistics(sender, instance, **kwargs):
 
     # Calculate average (if possible) and update statistics object
     if len(cycle_lengths) > 0:
-        stats.average_cycle_length = sum(cycle_lengths) / len(cycle_lengths)
+        avg = float(sum(cycle_lengths)) / len(cycle_lengths)
+        stats.average_cycle_length = int(round(avg))
     stats.save()
 
 signals.post_save.connect(update_statistics, sender=Period)
