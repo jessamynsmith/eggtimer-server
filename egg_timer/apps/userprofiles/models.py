@@ -14,5 +14,9 @@ class UserProfile(models.Model):
         return reverse('profile_detail', args=[self.pk])
 
     @property
+    def email(self):
+        return self.user.email
+
+    @property
     def full_name(self):
         return self.user.get_full_name()

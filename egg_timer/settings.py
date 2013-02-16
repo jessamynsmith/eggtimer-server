@@ -137,6 +137,13 @@ INSTALLED_APPS = (
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
 
+FROM_EMAIL = 'egg.timer.app'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = os.environ.get('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

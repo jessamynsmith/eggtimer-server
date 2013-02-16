@@ -27,7 +27,8 @@ class Period(models.Model):
 
 class Statistics(models.Model):
 
-    userprofile = models.OneToOneField(userprofile_models.UserProfile)
+    userprofile = models.OneToOneField(userprofile_models.UserProfile,
+                                       related_name='statistics')
     average_cycle_length = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
