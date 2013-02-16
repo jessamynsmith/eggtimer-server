@@ -20,11 +20,11 @@ class Command(BaseCommand):
             expected_in = user.statistics.average_cycle_length - days_since_last
             if expected_in < 0:
                 subject = "Period was expected %s days ago" % (abs(expected_in))
-                text_body = "You should have gotten your period %s days ago. Did you forget to add a period?"
+                text_body = "You should have gotten your period %s days ago. Did you forget to add a period?" % (abs(expected_in))
                 send_email(user, subject, text_body, None)
             elif expected_in < 4:
                 subject = "Period expected in %s days" % expected_in
-                text_body = "You should be getting your period in %s days."
+                text_body = "You should be getting your period in %s days." % expected_in
                 send_email(user, subject, text_body, None)
 
 
