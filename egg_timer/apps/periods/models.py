@@ -28,15 +28,13 @@ class Period(models.Model):
 
 class Statistics(models.Model):
 
-    E_NOT_ENOUGH_CYCLES = 'Not enough cycles to calculate'
-
     userprofile = models.OneToOneField(userprofile_models.UserProfile,
                                        related_name='statistics')
     average_cycle_length = models.IntegerField(null=True, blank=True)
 
     @property
     def current_cycle_length(self):
-        current_cycle = self.E_NOT_ENOUGH_CYCLES
+        current_cycle = -1
         if self.userprofile.periods.count() > 0:
             last_cycle = self.userprofile.periods.order_by('-start_date')[0]
             current_cycle = (datetime.date.today() - last_cycle.start_date).days
@@ -44,17 +42,17 @@ class Statistics(models.Model):
 
     @property
     def next_period_date(self):
-        date = self.E_NOT_ENOUGH_CYCLES
-        if type(self.current_cycle_length) == int:
+        next_date = datetime.date(year=datetime.MINYEAR, month=1, day=1)
+        if self.average_cycle_length:
             last_period = self.userprofile.periods.order_by('-start_date')[0]
-            date = last_period.start_date + datetime.timedelta(
+            next_date = last_period.start_date + datetime.timedelta(
                 days=self.average_cycle_length)
-        return date
+        return next_date
 
     def __unicode__(self):
         average = self.average_cycle_length
         if not average:
-            average = self.E_NOT_ENOUGH_CYCLES
+            average = 'Not enough cycles to calculate'
         return "%s (avg: %s)" % (self.userprofile.full_name, average)
 
     def get_absolute_url(self):
@@ -80,6 +78,8 @@ def update_statistics(sender, instance, **kwargs):
     if len(cycle_lengths) > 0:
         avg = float(sum(cycle_lengths)) / len(cycle_lengths)
         stats.average_cycle_length = int(round(avg))
+    else:
+        stats.average_cycle_length = None
     stats.save()
 
 signals.post_save.connect(update_statistics, sender=Period)
