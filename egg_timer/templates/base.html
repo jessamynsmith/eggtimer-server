@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+	<link rel="stylesheet" href="{{ STATIC_URL }}base.css" type="text/css" media="screen" />
+
+	<title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+<h1>egg timer</h1>
+<p class="small">Keep track of your cycles</p>
+
+{% block content %}{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+</body>
+</html>

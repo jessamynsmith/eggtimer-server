@@ -1,0 +1,14 @@
+body {
+    font-family: sans-serif;
+    font-size: 14pt;
+    margin: 30px;
+}
+
+h1 {
+    font-size: 26pt;
+    font-weight: bold;
+}
+
+.small {
+    font-size: 10pt;
+}
