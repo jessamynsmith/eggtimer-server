@@ -1,0 +1,7 @@
+-r common.txt
+boto==2.8.0
+dj-database-url==0.2.1
+django-s3-folder-storage==0.1
+django-storages==1.1.6
+django-sslify==0.2
+gunicorn==0.17.2
