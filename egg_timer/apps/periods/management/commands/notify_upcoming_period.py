@@ -47,7 +47,6 @@ class Command(BaseCommand):
                 template_name = 'expected_in'
             if subject:
                 plaintext = get_template('email/%s.txt' % template_name)
-                print plaintext.render(context)
                 send_email(user, subject, plaintext.render(context), None)
 
 
