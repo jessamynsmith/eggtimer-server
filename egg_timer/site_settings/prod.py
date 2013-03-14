@@ -36,4 +36,4 @@ INSTALLED_APPS.extend([
     'storages',
 ])
 
-ALLOWED_HOSTS = ['herokuapp.com']
+ALLOWED_HOSTS = ['eggtimer.herokuapp.com']
