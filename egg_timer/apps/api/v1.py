@@ -13,6 +13,7 @@ class BaseMeta(object):
 
 class StatisticsResource(ModelResource):
     current_cycle_length = fields.IntegerField('current_cycle_length')
+    next_period_date = fields.DateField('next_period_date')
 
     class Meta(BaseMeta):
         queryset = period_models.Statistics.objects.all()

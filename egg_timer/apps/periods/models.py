@@ -38,9 +38,18 @@ class Statistics(models.Model):
     def current_cycle_length(self):
         current_cycle = self.E_NOT_ENOUGH_CYCLES
         if self.userprofile.periods.count() > 0:
+            last_cycle = self.userprofile.periods.order_by('-start_date')[0]
+            current_cycle = (datetime.date.today() - last_cycle.start_date).days
+        return current_cycle
+
+    @property
+    def next_period_date(self):
+        date = self.E_NOT_ENOUGH_CYCLES
+        if type(self.current_cycle_length) == int:
             last_period = self.userprofile.periods.order_by('-start_date')[0]
-            current_cycle = datetime.date.today() - last_period.start_date
-        return current_cycle.days
+            date = last_period.start_date + datetime.timedelta(
+                days=self.average_cycle_length)
+        return date
 
     def __unicode__(self):
         average = self.average_cycle_length
