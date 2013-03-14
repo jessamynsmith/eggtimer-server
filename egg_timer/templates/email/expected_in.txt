@@ -1,0 +1,5 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+You should be getting your period in {{ expected_in }} {{ day }}, on {{ expected_date}}.
+{% endblock %}

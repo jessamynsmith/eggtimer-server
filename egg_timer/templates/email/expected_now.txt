@@ -1,0 +1,5 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+You should be getting your period today!
+{% endblock %}

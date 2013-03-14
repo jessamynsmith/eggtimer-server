@@ -1,0 +1,6 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+You should have gotten your period {{ expected_in }} {{ day }} ago, on {{ expected_date}}.
+Did you forget to add your last period?
+{% endblock %}
