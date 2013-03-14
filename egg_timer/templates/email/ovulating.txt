@@ -1,0 +1,5 @@
+{% extends "email/base.txt" %}
+
+{% block content %}
+You are probably ovulating today!
+{% endblock %}

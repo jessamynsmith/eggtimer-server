@@ -45,6 +45,9 @@ class Command(BaseCommand):
             elif expected_in < 4:
                 subject = "Period expected in %s %s" % (expected_in, day)
                 template_name = 'expected_in'
+            elif expected_in == 14:
+                subject = "Ovulation today!"
+                template_name = 'ovulating'
             if subject:
                 plaintext = get_template('email/%s.txt' % template_name)
                 send_email(user, subject, plaintext.render(context), None)
