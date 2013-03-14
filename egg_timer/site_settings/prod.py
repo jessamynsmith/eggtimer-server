@@ -34,4 +34,7 @@ STATIC_URL = '//s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
 INSTALLED_APPS.extend([
     's3_folder_storage',
     'storages',
-    ])
+])
+
+# Force SSL in production
+MIDDLEWARE_CLASSES = ('sslify.middleware.SSLifyMiddleware',) + MIDDLEWARE_CLASSES
