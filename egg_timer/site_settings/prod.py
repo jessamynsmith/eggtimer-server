@@ -35,6 +35,3 @@ INSTALLED_APPS.extend([
     's3_folder_storage',
     'storages',
 ])
-
-# Force SSL in production
-MIDDLEWARE_CLASSES = ('sslify.middleware.SSLifyMiddleware',) + MIDDLEWARE_CLASSES
