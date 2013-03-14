@@ -35,3 +35,5 @@ INSTALLED_APPS.extend([
     's3_folder_storage',
     'storages',
 ])
+
+ALLOWED_HOSTS = ['herokuapp.com']
