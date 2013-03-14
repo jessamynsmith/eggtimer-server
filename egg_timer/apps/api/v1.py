@@ -11,7 +11,19 @@ class BaseMeta(object):
     authorization = DjangoAuthorization()
 
 
+class StatisticsResource(ModelResource):
+
+    class Meta(BaseMeta):
+        queryset = period_models.Statistics.objects.all()
+        resource_name = 'statistics'
+
+    def get_object_list(self, request):
+        return super(StatisticsResource, self).get_object_list(request).filter(
+            userprofile__user=request.user)
+
+
 class UserProfileResource(ModelResource):
+    statistics = fields.ForeignKey(StatisticsResource, 'statistics', full=True)
 
     class Meta(BaseMeta):
         queryset = userprofile_models.UserProfile.objects.all()
