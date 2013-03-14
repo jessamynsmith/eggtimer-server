@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals
 from egg_timer.apps.userprofiles import models as userprofile_models
+import datetime
 
 
 class Period(models.Model):
@@ -27,14 +28,24 @@ class Period(models.Model):
 
 class Statistics(models.Model):
 
+    E_NOT_ENOUGH_CYCLES = 'Not enough cycles to calculate'
+
     userprofile = models.OneToOneField(userprofile_models.UserProfile,
                                        related_name='statistics')
     average_cycle_length = models.IntegerField(null=True, blank=True)
 
+    @property
+    def current_cycle_length(self):
+        current_cycle = self.E_NOT_ENOUGH_CYCLES
+        if self.userprofile.periods.count() > 0:
+            last_period = self.userprofile.periods.order_by('-start_date')[0]
+            current_cycle = datetime.date.today() - last_period.start_date
+        return current_cycle.days
+
     def __unicode__(self):
         average = self.average_cycle_length
         if not average:
-            average = 'Not enough cycles to calculate'
+            average = self.E_NOT_ENOUGH_CYCLES
         return "%s (avg: %s)" % (self.userprofile.full_name, average)
 
     def get_absolute_url(self):

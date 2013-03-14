@@ -12,6 +12,7 @@ class BaseMeta(object):
 
 
 class StatisticsResource(ModelResource):
+    current_cycle_length = fields.IntegerField('current_cycle_length')
 
     class Meta(BaseMeta):
         queryset = period_models.Statistics.objects.all()
