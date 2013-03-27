@@ -1,6 +1,7 @@
 Django==1.5
 South==0.7.6
 django-jquery==1.9.1
+django-registration==0.8
 django-tastypie==0.9.14
 mimeparse==0.1.3
 psycopg2==2.4.6
