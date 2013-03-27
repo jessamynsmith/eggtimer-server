@@ -105,6 +105,7 @@ INSTALLED_APPS = [
     'egg_timer.apps.userprofiles',
     'egg_timer.apps.api',
     'egg_timer.apps.periods',
+    'egg_timer.apps.utils',
 ]
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
