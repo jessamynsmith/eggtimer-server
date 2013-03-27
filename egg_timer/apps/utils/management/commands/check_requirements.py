@@ -49,16 +49,25 @@ class Command(BaseCommand):
 
         freeze_dict = self._convert_to_dict(freeze_results)
         req_dict = self._convert_to_dict(req_list)
+        errors = 0
 
         for freeze_key in freeze_dict:
             if check_prod and freeze_key == 'distribute':
                 # heroku adds distribute, so ignore it in the prod list
                 continue
             if freeze_key not in req_dict.keys():
+                errors += 1
                 print "Item is missing from requirements files: %s==%s" % (freeze_key, freeze_dict[freeze_key])
             elif freeze_dict[freeze_key] != req_dict[freeze_key]:
+                errors += 1
                 print "Mismatched versions for '%s'. Installed: %s, required: %s" % (freeze_key, freeze_dict[freeze_key], req_dict[freeze_key])
 
         for req_key in req_dict:
             if req_key not in freeze_dict.keys():
+                errors += 1
                 print "Required item is not installed: %s==%s" % (req_key, req_dict[req_key])
+
+        if errors > 0:
+            print "Total errors: %d" % errors
+        else:
+            print "Congratulations, your requirements files match your installed packages!"
