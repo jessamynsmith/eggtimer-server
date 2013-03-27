@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Periods for {{ user.get_profile.full_name }}{% endblock %}
+
+{% block head %}
+	<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}fullcalendar/fullcalendar.css' />
+    <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.js'></script>
+    <script type='text/javascript' src='{{ STATIC_URL }}fullcalendar/fullcalendar.js'></script>
+
+	<script type='text/javascript'>
+		$(document).ready(function() {
+            $('#calendar').fullCalendar({
+                // put your options and callbacks here
+            })
+
+        });
+	</script>
+{% endblock %}
+
+{% block content %}
+	<h1>Periods for {{ user.get_profile.full_name }}</h1>
+
+    <div id='calendar'></div>
+{% endblock %}

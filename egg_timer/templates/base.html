@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     {% load staticfiles %}
-	<link rel="stylesheet" href="{{ STATIC_URL }}base.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" type="text/css" media="screen" />
 
 	<title>{% block title %}{% endblock %}</title>
+
+    {% block head %}{% endblock %}
 </head>
 <body>
 

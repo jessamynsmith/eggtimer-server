@@ -19,7 +19,7 @@ DATABASES = {
 MEDIA_ROOT = ''
 MEDIA_URL = ''
 
-STATIC_ROOT = '/tmp'
+STATIC_ROOT = '/tmp/static'
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
