@@ -15,20 +15,6 @@ class Command(BaseCommand):
             req_list = req_list[1:]
         return req_list
 
-    def _convert_to_dict(self, values_list):
-        values_dict = {}
-        for value in values_list:
-            if value.strip() == '':
-                continue
-            value_tuple = value.split('==')
-            if len(value_tuple) > 1:
-                dict_value = value_tuple[1]
-            else:
-                dict_value = ''
-                print "Library '%s' does not have a version specified. Consider pinning it to a specific version." % value_tuple[0]
-            values_dict[value_tuple[0]] = dict_value
-        return values_dict
-
     def handle(self, *args, **options):
         check_prod = False
         if len(args) == 1:
@@ -47,18 +33,13 @@ class Command(BaseCommand):
         else:
             req_list.extend(self._get_file_contents('dev'))
 
-        freeze_dict = self._convert_to_dict(freeze_results)
-        req_dict = self._convert_to_dict(req_list)
+        sorted(freeze_results)
+        sorted(req_list)
 
-        for freeze_key in freeze_dict:
-            if check_prod and freeze_key == 'distribute':
-                # heroku adds distribute, so ignore it in the prod list
-                continue
-            if freeze_key not in req_dict.keys():
-                print "Item is missing from requirements files: %s==%s" % (freeze_key, freeze_dict[freeze_key])
-            elif freeze_dict[freeze_key] != req_dict[freeze_key]:
-                print "Mismatched versions for '%s'. Installed: %s, required: %s" % (freeze_key, freeze_dict[freeze_key], req_dict[freeze_key])
+        for freeze_item in freeze_results:
+            if freeze_item not in req_list:
+                print "Item is missing from requirements files: %s" % freeze_item
 
-        for req_key in req_dict:
-            if req_key not in freeze_dict.keys():
-                print "Required item is not installed: %s==%s" % (req_key, req_dict[req_key])
+        for req_item in req_list:
+            if req_item not in freeze_results:
+                print "Required item is not installed: %s" % req_item
