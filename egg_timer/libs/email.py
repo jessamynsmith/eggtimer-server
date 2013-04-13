@@ -1,14 +1,23 @@
-import sendgrid
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
 
 from egg_timer import settings
 
 
 def send_email(recipient, subject, text_body, html_body):
-    connection = sendgrid.Sendgrid(settings.EMAIL_HOST_USER,
-                                   settings.EMAIL_HOST_PASSWORD, secure=True)
+    smtp = smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT)
+    smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
-    message = sendgrid.Message(settings.FROM_EMAIL, subject, text_body,
-                            html_body)
-    message.add_to(recipient.email, recipient.full_name)
+    msg = MIMEMultipart(text_body)
+    msg['Subject'] = subject
+    msg['From'] = settings.FROM_EMAIL
+    msg['To'] = recipient
 
-    connection.smtp.send(message)
+    part1 = MIMEText(text_body, 'plain')
+    part2 = MIMEText(html_body, 'html')
+    msg.attach(part1)
+    msg.attach(part2)
+
+    smtp.sendmail(settings.FROM_EMAIL, recipient, msg.as_string())
+    smtp.quit()
