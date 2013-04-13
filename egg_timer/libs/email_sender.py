@@ -6,7 +6,8 @@ from egg_timer import settings
 
 
 def send_email(recipient, subject, text_body, html_body):
-    smtp = smtplib.SMTP_SSL(settings.EMAIL_HOST, settings.EMAIL_PORT)
+    smtp = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+    smtp.starttls()
     smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
     msg = MIMEMultipart(text_body)
