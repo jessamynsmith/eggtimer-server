@@ -4,7 +4,7 @@ from django.template.loader import get_template
 from django.template import Context
 
 from egg_timer.apps.userprofiles import models as userprofile_models
-from egg_timer.libs.email import send_email
+from egg_timer.libs.email_sender import send_email
 
 
 class Command(BaseCommand):
