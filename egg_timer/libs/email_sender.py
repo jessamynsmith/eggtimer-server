@@ -13,7 +13,7 @@ def send_email(recipient, subject, text_body, html_body):
     msg = MIMEMultipart(text_body)
     msg['Subject'] = subject
     msg['From'] = settings.FROM_EMAIL
-    msg['To'] = recipient
+    msg['To'] = [recipient]
 
     part1 = MIMEText(text_body, 'plain')
     part2 = MIMEText(html_body, 'html')
