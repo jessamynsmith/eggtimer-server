@@ -13,12 +13,12 @@ def send_email(recipient, subject, text_body, html_body):
     msg = MIMEMultipart(text_body)
     msg['Subject'] = subject
     msg['From'] = settings.FROM_EMAIL
-    msg['To'] = [recipient]
+    msg['To'] = recipient
 
     part1 = MIMEText(text_body, 'plain')
     part2 = MIMEText(html_body, 'html')
     msg.attach(part1)
     msg.attach(part2)
 
-    smtp.sendmail(settings.FROM_EMAIL, [recipient], msg.as_string())
+    smtp.sendmail(settings.FROM_EMAIL, [recipient.email], msg.as_string())
     smtp.quit()
