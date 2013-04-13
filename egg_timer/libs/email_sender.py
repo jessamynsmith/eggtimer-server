@@ -20,5 +20,5 @@ def send_email(recipient, subject, text_body, html_body):
     msg.attach(part1)
     msg.attach(part2)
 
-    smtp.sendmail(settings.FROM_EMAIL, recipient, msg.as_string())
+    smtp.sendmail(settings.FROM_EMAIL, [recipient], msg.as_string())
     smtp.quit()
