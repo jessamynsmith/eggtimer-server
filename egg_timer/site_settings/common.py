@@ -110,7 +110,8 @@ INSTALLED_APPS = [
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
 
-DEFAULT_FROM_EMAIL = 'The EggTimer <egg.timer.app@gmail.com>'
+from email.utils import formataddr
+DEFAULT_FROM_EMAIL = formataddr(ADMINS[0])
 EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
 EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
 EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
