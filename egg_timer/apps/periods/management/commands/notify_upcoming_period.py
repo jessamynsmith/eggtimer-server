@@ -1,4 +1,5 @@
 import datetime
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 from django.template import Context
@@ -33,6 +34,7 @@ class Command(BaseCommand):
                 'expected_in': expected_abs,
                 'day': day,
                 'expected_date': formatted_date,
+                'site_name': settings.ADMINS[0][0]
             })
 
             subject = ''

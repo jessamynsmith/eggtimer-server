@@ -1,4 +1,4 @@
 Hello {{ full_name }},
 {% block content %}{% endblock %}
 Cheers!
-The egg timer
+{{ admin_name }}
