@@ -110,11 +110,11 @@ INSTALLED_APPS = [
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
 
-FROM_EMAIL = 'egg.timer.app@gmail.com'
+DEFAULT_FROM_EMAIL = 'The EggTimer <egg.timer.app@gmail.com>'
 EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
+EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
 EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
 EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
-EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
 EMAIL_USE_TLS = True
 
 ACCOUNT_ACTIVATION_DAYS = 30

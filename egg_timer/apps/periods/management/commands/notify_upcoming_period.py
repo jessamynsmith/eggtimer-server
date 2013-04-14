@@ -4,7 +4,7 @@ from django.template.loader import get_template
 from django.template import Context
 
 from egg_timer.apps.userprofiles import models as userprofile_models
-from egg_timer.libs.email_sender import send_email
+from egg_timer.libs import email_sender
 
 
 class Command(BaseCommand):
@@ -50,6 +50,6 @@ class Command(BaseCommand):
                 template_name = 'ovulating'
             if subject:
                 plaintext = get_template('email/%s.txt' % template_name)
-                send_email(user, subject, plaintext.render(context), None)
+                email_sender.send(user, subject, plaintext.render(context), None)
 
 
