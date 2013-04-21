@@ -51,6 +51,7 @@ def frequencies(request):
     ax.set_title('Cycle Length Frequency')
     ax.set_xlim(in_order[0] - 1.5, in_order[-1] + 1.5)
     ax.set_ylim(0, y_range)
+    ax.yaxis.grid(True)
 
     canvas = FigureCanvas(fig)
     response = HttpResponse(content_type='image/png')
