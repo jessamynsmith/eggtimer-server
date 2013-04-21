@@ -44,6 +44,7 @@ def frequencies(request):
 
     y_step = int(math.ceil(y_range / 10.0))
     y_ticks = [x[0] for x in grouped(range(y_range), y_step)]
+    y_ticks.append(y_ticks[-1] + y_step)
     pyplot.yticks(y_ticks)
 
     ax.set_xlabel('Cycle Length')
