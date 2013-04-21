@@ -16,7 +16,7 @@ DATABASES = {
         }
 }
 
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/tmp/media'
 MEDIA_URL = ''
 
 STATIC_ROOT = '/tmp/static'

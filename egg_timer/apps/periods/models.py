@@ -5,12 +5,18 @@ from egg_timer.apps.userprofiles import models as userprofile_models
 import datetime
 
 
+def _today():
+    # Create helper method to allow mocking during tests
+    return datetime.date.today()
+
+
 class Period(models.Model):
 
     userprofile = models.ForeignKey(userprofile_models.UserProfile,
                                     related_name='periods')
     start_date = models.DateField()
     start_time = models.TimeField(null=True, blank=True)
+    length = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = (("userprofile", "start_date"),)
@@ -19,7 +25,7 @@ class Period(models.Model):
         start_time = ''
         if self.start_time:
             start_time = ' %s' % self.start_time
-        return "%s (%s%s)" % (self.userprofile.full_name, self.start_date,
+        return u"%s (%s%s)" % (self.userprofile.full_name, self.start_date,
                               start_time)
 
     def get_absolute_url(self):
@@ -37,7 +43,7 @@ class Statistics(models.Model):
         current_cycle = -1
         if self.userprofile.periods.count() > 0:
             last_cycle = self.userprofile.periods.order_by('-start_date')[0]
-            current_cycle = (datetime.date.today() - last_cycle.start_date).days
+            current_cycle = (_today() - last_cycle.start_date).days
         return current_cycle
 
     @property
@@ -53,10 +59,35 @@ class Statistics(models.Model):
         average = self.average_cycle_length
         if not average:
             average = 'Not enough cycles to calculate'
-        return "%s (avg: %s)" % (self.userprofile.full_name, average)
+        return u"%s (avg: %s)" % (self.userprofile.full_name, average)
 
     def get_absolute_url(self):
         return reverse('statistics_detail', args=[self.pk])
+
+
+def update_length(sender, instance, **kwargs):
+    previous_periods = instance.userprofile.periods.filter(
+        start_date__lt=instance.start_date).order_by('-start_date')
+    try:
+        previous_period = previous_periods[0]
+        delta = instance.start_date - previous_period.start_date
+        previous_period.length = delta.days
+        signals.pre_save.disconnect(update_length, sender=Period)
+        previous_period.save()
+        signals.pre_save.connect(update_length, sender=Period)
+    except IndexError:
+        # If no previous period, nothing to set
+        pass
+
+    try:
+        next_periods = instance.userprofile.periods.filter(
+            start_date__gt=instance.start_date).order_by('start_date')
+        next_period = next_periods[0]
+        delta = next_period.start_date - instance.start_date
+        instance.length = delta.days
+    except IndexError:
+        # If no next period, nothing to set
+        pass
 
 
 def update_statistics(sender, instance, **kwargs):
@@ -67,12 +98,7 @@ def update_statistics(sender, instance, **kwargs):
     else:
         stats = Statistics(userprofile=instance.userprofile)
 
-    # Find cycle lengths
-    periods = instance.userprofile.periods.order_by('start_date')
-    cycle_lengths = []
-    for i in range(1, len(periods)):
-        cycle_delta = periods[i].start_date - periods[i-1].start_date
-        cycle_lengths.append(cycle_delta.days)
+    cycle_lengths = [x for x in instance.userprofile.periods.values_list('length', flat=True) if x is not None]
 
     # Calculate average (if possible) and update statistics object
     if len(cycle_lengths) > 0:
@@ -82,5 +108,6 @@ def update_statistics(sender, instance, **kwargs):
         stats.average_cycle_length = None
     stats.save()
 
+signals.pre_save.connect(update_length, sender=Period)
 signals.post_save.connect(update_statistics, sender=Period)
 signals.post_delete.connect(update_statistics, sender=Period)

@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 from django.template import Context
 
+from egg_timer.apps.periods import models as period_models
 from egg_timer.apps.userprofiles import models as userprofile_models
 from egg_timer.libs import email_sender
 
@@ -21,7 +22,7 @@ class Command(BaseCommand):
             expected_in = (user.statistics.average_cycle_length
                            - user.statistics.current_cycle_length)
             expected_abs = abs(expected_in)
-            expected_date = datetime.date.today() + datetime.timedelta(
+            expected_date = period_models._today() + datetime.timedelta(
                 days=expected_in)
             formatted_date = expected_date.strftime('%B %d, %Y')
             if expected_abs == 1:

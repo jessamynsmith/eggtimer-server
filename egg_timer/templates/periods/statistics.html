@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics for {{ user.get_profile.full_name }}{% endblock %}
+
+{% block content %}
+	<h1>Period Statistics for {{ user.get_profile.full_name }}</h1>
+
+    <h5>Cycle Length Frequency</h5>
+    <img src="{% url 'frequencies' %}" height="40%"/>
+{% endblock %}

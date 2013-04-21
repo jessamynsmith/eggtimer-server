@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from tastypie.api import Api
 from egg_timer.apps.api import v1 as api
+from egg_timer.apps.periods import views as period_views
 
 admin.autodiscover()
 
@@ -21,4 +22,6 @@ urlpatterns = patterns('',
     url(r'^api/', include(v1_api.urls)),
 
     url(r'^calendar/', login_required(TemplateView.as_view(template_name='periods/calendar.html'))),
+    url(r'^statistics/', period_views.statistics, name='statistics'),
+    url(r'^frequencies.png$', period_views.frequencies, name='frequencies'),
 )
