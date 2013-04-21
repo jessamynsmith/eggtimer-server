@@ -31,7 +31,7 @@ def frequencies(request):
     # the histogram of the data
     n, bins, patches = ax.hist(in_order, bins=len(distinct))
     y_range = n.max(0) + 1
-    pyplot.xticks(range(in_order[0], in_order[-1] + 1))
+    pyplot.xticks(range(in_order[0], in_order[-1]))
     pyplot.yticks([y for y in range(y_range)])
 
     ax.set_xlabel('Cycle Length')
