@@ -23,8 +23,12 @@ h1 {
     fill: #fff;
 }
 
-.axis path, .axis line {
+.axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
 }

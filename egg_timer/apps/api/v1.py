@@ -1,13 +1,13 @@
-from tastypie.authentication import ApiKeyAuthentication
+from tastypie.authentication import ApiKeyAuthentication, MultiAuthentication, SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie import fields
-from tastypie.resources import ModelResource
+from tastypie.resources import ModelResource, ALL
 from egg_timer.apps.periods import models as period_models
 from egg_timer.apps.userprofiles import models as userprofile_models
 
 
 class BaseMeta(object):
-    authentication = ApiKeyAuthentication()
+    authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
     authorization = DjangoAuthorization()
 
 
@@ -42,6 +42,10 @@ class PeriodResource(ModelResource):
 
     class Meta(BaseMeta):
         queryset = period_models.Period.objects.all()
+        ordering = ['start_date']
+        filtering = {
+            'length': ALL,
+        }
         resource_name = 'periods'
 
     def get_object_list(self, request):
