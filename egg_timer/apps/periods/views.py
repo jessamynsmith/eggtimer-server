@@ -1,4 +1,5 @@
 from itertools import izip
+import json
 import math
 
 from django.contrib.auth.decorators import login_required
@@ -17,7 +18,7 @@ def statistics(request):
     periods = period_models.Period.objects.filter(
         userprofile__user=request.user, length__isnull=False).order_by('length')
     cycle_lengths = periods.values_list('length', flat=True)
-    data = {'cycle_lengths': cycle_lengths}
+    data = {'cycle_lengths': json.dumps(list(cycle_lengths))}
     if len(cycle_lengths) > 0:
         shortest = cycle_lengths[0]
         longest = cycle_lengths[len(cycle_lengths) - 1]

@@ -46,7 +46,7 @@
 
         var data = d3.layout.histogram()
                 .bins({{ bins }})
-                ({{ cycle_lengths }});
+                ({{ cycle_lengths|safe }});
 
         var xScale = d3.scale.ordinal()
                 .domain(data.map(function (d) {
