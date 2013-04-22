@@ -85,14 +85,41 @@ def update_length(sender, instance, **kwargs):
         # If no previous period, nothing to set
         pass
 
+    next_periods = instance.userprofile.periods.filter(
+        start_date__gt=instance.start_date).order_by('start_date')
     try:
-        next_periods = instance.userprofile.periods.filter(
-            start_date__gt=instance.start_date).order_by('start_date')
         next_period = next_periods[0]
         delta = next_period.start_date - instance.start_date
         instance.length = delta.days
     except IndexError:
         # If no next period, nothing to set
+        pass
+
+
+def update_length_delete(sender, instance, **kwargs):
+    next_periods = instance.userprofile.periods.filter(
+        start_date__gt=instance.start_date).order_by('start_date')
+    start_date = None
+    try:
+        start_date = next_periods[0].start_date
+    except IndexError:
+        # If no next period, nothing to set
+        pass
+
+    previous_periods = instance.userprofile.periods.filter(
+        start_date__lt=instance.start_date).order_by('-start_date')
+    try:
+        previous_period = previous_periods[0]
+        if start_date:
+            delta = start_date - previous_period.start_date
+            previous_period.length = delta.days
+        else:
+            previous_period.length = None
+        signals.pre_save.disconnect(update_length, sender=Period)
+        previous_period.save()
+        signals.pre_save.connect(update_length, sender=Period)
+    except IndexError:
+        # If no previous period, nothing to set
         pass
 
 
@@ -114,5 +141,6 @@ def update_statistics(sender, instance, **kwargs):
 signals.post_save.connect(create_statistics, sender=userprofile_models.UserProfile)
 
 signals.pre_save.connect(update_length, sender=Period)
+signals.pre_delete.connect(update_length_delete, sender=Period)
 signals.post_save.connect(update_statistics, sender=Period)
 signals.post_delete.connect(update_statistics, sender=Period)
