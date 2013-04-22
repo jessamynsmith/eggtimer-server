@@ -38,6 +38,7 @@ class UserProfileResource(ModelResource):
 
 class PeriodResource(ModelResource):
     userprofile = fields.ForeignKey(UserProfileResource, 'userprofile')
+    start_date = fields.DateField('start_date')
 
     class Meta(BaseMeta):
         queryset = period_models.Period.objects.all()
