@@ -12,3 +12,19 @@ h1 {
 .small {
     font-size: 10pt;
 }
+
+/* d3 graph formatting */
+.bar rect {
+    fill: steelblue;
+    shape-rendering: crispEdges;
+}
+
+.bar text {
+    fill: #fff;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}

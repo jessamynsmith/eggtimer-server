@@ -5,32 +5,10 @@
 {% block head %}
     <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.js'></script>
     <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.min.js'></script>
-    <style>
-
-        body {
-            font: 10px sans-serif;
-        }
-
-        .bar rect {
-            fill: steelblue;
-            shape-rendering: crispEdges;
-        }
-
-        .bar text {
-            fill: #fff;
-        }
-
-        .axis path, .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-        }
-
-    </style>
 {% endblock %}
 
 {% block content %}
-	<h1>Period Statistics for {{ user.get_profile.full_name }}</h1>
+    <h1>Period Statistics for {{ user.get_profile.full_name }}</h1>
 
     <h3>Cycle Length Frequency</h3>
 
@@ -41,7 +19,7 @@
 
         var width = $(window).width() - 20;
         var height = $(window).height() - 40;
-        var padding = {top: 15, right: 15, bottom: 25, left: 30};
+        var padding = {top: 15, right: 15, bottom: 50, left: 30};
 
         var data = d3.layout.histogram()
                 .bins({{ bins }})
@@ -101,10 +79,21 @@
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + (height - padding.bottom) + ")")
                 .call(xAxis);
-        svg.append("g")
-                .attr("class", "y axis")
-                .attr("transform", "translate(" + padding.left + ",0)")
-                .call(yAxis);
+
+        svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "middle")
+                .attr("x", width / 2)
+                .attr("y", height - 4)
+                .text("Period Length (days)");
+
+        svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "center")
+                .attr("x", - height / 2)
+                .attr("y", 18)
+                .attr("transform", "rotate(-90)")
+                .text("Number of Periods");
 
     </script>
 {% endblock %}
