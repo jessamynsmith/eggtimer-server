@@ -14,7 +14,16 @@ from egg_timer.apps.periods import models as period_models
 
 @login_required
 def statistics(request):
-    return render_to_response('periods/statistics.html', {},
+    periods = period_models.Period.objects.filter(
+        userprofile__user=request.user, length__isnull=False).order_by('length')
+    cycle_lengths = periods.values_list('length', flat=True)
+    data = {'cycle_lengths': cycle_lengths}
+    if len(cycle_lengths) > 0:
+        shortest = cycle_lengths[0]
+        longest = cycle_lengths[len(cycle_lengths) - 1]
+        data['bins'] = range(shortest, longest + 2) # +1 for inclusive, +1 for last bin
+
+    return render_to_response('periods/statistics.html', data,
         context_instance=RequestContext(request))
 
 
