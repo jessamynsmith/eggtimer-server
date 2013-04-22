@@ -4,7 +4,7 @@ from django.test import TestCase
 from mock import patch
 
 from egg_timer.apps.periods import models as period_models
-from egg_timer.apps.userprofiles import models as profile_models
+from egg_timer.apps.userprofiles import models as userprofile_models
 
 
 class TestModels(TestCase):
@@ -14,7 +14,7 @@ class TestModels(TestCase):
             password='bogus', email='jessamyn@example.com',
             first_name='Jessamyn')
         user.save()
-        self.userprofile = profile_models.UserProfile.objects.create(user=user)
+        self.userprofile = userprofile_models.UserProfile.objects.create(user=user)
         self.userprofile.save()
 
     def _create_period(self, start_date, save=True):
@@ -34,16 +34,16 @@ class TestModels(TestCase):
         self.assertEqual(u'Jessamyn (2013-04-15 01:02:03)', '%s' % period)
 
     def test_statistics_unicode_no_average(self):
-        stats = period_models.Statistics.objects.create(userprofile=self.userprofile)
+        stats = period_models.Statistics.objects.filter(userprofile=self.userprofile)[0]
         self.assertEqual(u'Jessamyn (avg: Not enough cycles to calculate)', '%s' % stats)
 
     def test_statistics_unicode_with_average(self):
-        stats = period_models.Statistics.objects.create(userprofile=self.userprofile,
-            average_cycle_length=21)
+        stats = period_models.Statistics.objects.filter(userprofile=self.userprofile)[0]
+        stats.average_cycle_length = 21
         self.assertEqual(u'Jessamyn (avg: 21)', '%s' % stats)
 
     def test_statistics_current_cycle_length_no_periods(self):
-        stats = period_models.Statistics.objects.create(userprofile=self.userprofile)
+        stats = period_models.Statistics.objects.filter(userprofile=self.userprofile)[0]
         self.assertEqual(-1, stats.current_cycle_length)
 
     def test_update_length_none_existing(self):

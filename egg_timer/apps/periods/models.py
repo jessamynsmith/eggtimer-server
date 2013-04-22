@@ -65,6 +65,12 @@ class Statistics(models.Model):
         return reverse('statistics_detail', args=[self.pk])
 
 
+def create_statistics(sender, instance, **kwargs):
+    if not hasattr(instance, 'statistics'):
+        stats = Statistics(userprofile=instance)
+        stats.save()
+
+
 def update_length(sender, instance, **kwargs):
     previous_periods = instance.userprofile.periods.filter(
         start_date__lt=instance.start_date).order_by('-start_date')
@@ -91,12 +97,8 @@ def update_length(sender, instance, **kwargs):
 
 
 def update_statistics(sender, instance, **kwargs):
-    # Get or create statistics object
     stats_list = Statistics.objects.filter(userprofile=instance.userprofile)
-    if len(stats_list) > 0:
-        stats = stats_list[0]
-    else:
-        stats = Statistics(userprofile=instance.userprofile)
+    stats = stats_list[0]
 
     cycle_lengths = [x for x in instance.userprofile.periods.values_list('length', flat=True) if x is not None]
 
@@ -107,6 +109,9 @@ def update_statistics(sender, instance, **kwargs):
     else:
         stats.average_cycle_length = None
     stats.save()
+
+
+signals.post_save.connect(create_statistics, sender=userprofile_models.UserProfile)
 
 signals.pre_save.connect(update_length, sender=Period)
 signals.post_save.connect(update_statistics, sender=Period)
