@@ -149,7 +149,8 @@
             var xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom")
-                    .tickSize(6, 0);
+                    .tickSize(6, 0)
+                    .ticks(24);
 
             svg.append("g")
                     .attr("class", "x axis")
