@@ -23,5 +23,4 @@ urlpatterns = patterns('',
 
     url(r'^calendar/', login_required(TemplateView.as_view(template_name='periods/calendar.html'))),
     url(r'^statistics/', period_views.statistics, name='statistics'),
-    url(r'^frequencies.png$', period_views.frequencies, name='frequencies'),
 )

@@ -33,7 +33,6 @@
 	<h1>Period Statistics for {{ user.get_profile.full_name }}</h1>
 
     <h3>Cycle Length Frequency</h3>
-    <img src="{% url 'frequencies' %}" height="40%"/>
 
     <script>
 
@@ -97,11 +96,6 @@
                 .scale(xScale)
                 .orient("bottom")
                 .tickSize(6, 0);
-
-        var yAxis = d3.svg.axis()
-                .scale(yScale)
-                .orient("left")
-                .ticks(ymax);
 
         svg.append("g")
                 .attr("class", "x axis")
