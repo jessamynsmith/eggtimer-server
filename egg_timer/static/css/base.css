@@ -24,14 +24,10 @@ h1 {
     font-size: 10pt;
 }
 
-.axis line {
+.axis path, .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
-}
-
-.x.axis path {
-  display: none;
 }
 
 .tick text {
