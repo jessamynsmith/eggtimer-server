@@ -21,6 +21,7 @@ h1 {
 
 .bar text {
     fill: #fff;
+    font-size: 10pt;
 }
 
 .axis line {
@@ -31,4 +32,8 @@ h1 {
 
 .x.axis path {
   display: none;
+}
+
+.tick text {
+    font-size: 10pt;
 }

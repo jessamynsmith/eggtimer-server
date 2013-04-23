@@ -4,7 +4,7 @@
 
 {% block head %}
     <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.js'></script>
-    <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.min.js'></script>
+    <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.js'></script>
 {% endblock %}
 
 {% block content %}
@@ -59,7 +59,7 @@
                 });
 
         bar.append("text")
-                .attr("dy", "1.25em")
+                .attr("dy", ".75em")
                 .attr("y", 6)
                 .attr("x", function (d) {
                     return xScale.rangeBand() * (d.dx - data[0].dx + 0.5);
@@ -106,23 +106,23 @@
 
         var width = $(window).width() - 20;
         var height = $(window).height() - 40;
-        var padding = {top: 15, right: 15, bottom: 50, left: 30};
+        var padding = {top: 15, right: 15, bottom: 75, left: 65};
 
         d3.json("{{ periods_url }}", function (json) {
             var data = json.objects;
+            data.reverse();
 
             var xScale = d3.scale.ordinal()
                     .domain(data.map(function (d) {
                         return d.start_date;
                     }))
-                    .rangeRoundBands([0, width - padding.left - padding.right], .1);
+                    .rangeRoundBands([padding.left, width - padding.left - padding.right], .1);
 
-            var ymax = d3.max(data, function (d) {
-                return d.length;
-            });
             var yScale = d3.scale.linear()
-                    .domain([0, ymax])
-                    .rangeRound([height - padding.bottom, padding.top]);
+                    .domain([0, d3.max(data, function (d) {
+                        return d.length;
+                    })])
+                    .range([height - padding.bottom, padding.top]);
 
 
             var svg = d3.select("body")
@@ -131,32 +131,46 @@
                     .attr("height", height)
 
             var bar = svg.selectAll(".bar")
-                .data(data)
-                .enter().append("g")
-                .attr("class", "bar")
-                .attr("transform", function (d) {
-                    return "translate(" + xScale(d.start_date) + ", " + yScale(d.length) + ")"
-                });
+                    .data(data)
+                    .enter().append("g")
+                    .attr("class", "bar")
+                    .attr("transform", function (d) {
+                        return "translate(" + xScale(d.start_date) + ", " + yScale(d.length) + ")"
+                    });
 
             bar.append("rect")
-                .attr("data-placement", "top")
-                .attr("width", xScale.rangeBand())
-                .attr("height", function (d) {
-                    return height - yScale(d.length) - padding.bottom;
-                });
+                    .attr("data-placement", "top")
+                    .attr("width", xScale.rangeBand())
+                    .attr("height", function (d) {
+                        return height - yScale(d.length) - padding.bottom;
+                    });
 
-
+            var step = Math.round(data.length / 12);
+            var tickValues = [];
+            var i = 0;
+            data.forEach(function (d) {
+                if (i % step == 0) {
+                    tickValues.push(d.start_date);
+                }
+                i++;
+            });
             var xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom")
                     .tickSize(6, 0)
-                    .ticks(24);
+                    .tickValues(tickValues);
 
             svg.append("g")
                     .attr("class", "x axis")
                     .attr("transform", "translate(0," + (height - padding.bottom) + ")")
-                    .call(xAxis);
-
+                    .call(xAxis)
+                    .selectAll("text")
+                    .style("text-anchor", "end")
+                    .attr("dx", "-1em")
+                    .attr("dy", "0.6em")
+                    .attr("transform", function (d) {
+                        return "rotate(-30)"
+                    });
 
             svg.append("text")
                     .attr("class", "x label")
@@ -165,25 +179,26 @@
                     .attr("y", height - 4)
                     .text("Start Date");
 
+
+            var yAxis = d3.svg.axis()
+                    .scale(yScale)
+                    .orient("left")
+                    .ticks(5);
+
+            svg.append("g")
+                    .attr("class", "y axis")
+                    .attr("transform", "translate(" + padding.left + ",0)")
+                    .call(yAxis);
+
             svg.append("text")
                     .attr("class", "y label")
                     .attr("text-anchor", "center")
-                    .attr("x", -height / 2)
+                    .attr("x", (-height - padding.bottom) / 2)
                     .attr("y", 18)
                     .attr("transform", "rotate(-90)")
                     .text("Period Length (days)");
 
-
-            var yAxis = d3.svg.axis()
-                    .scale(yScale)
-                    .orient("left");
-
-            svg.append("g")
-                    .attr("class", "y axis")
-                    .call(yAxis);
-
-
-            });
+        });
 
     </script>
 {% endblock %}
