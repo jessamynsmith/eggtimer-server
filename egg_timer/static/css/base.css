@@ -15,7 +15,7 @@ h1 {
 
 /* d3 graph formatting */
 .bar rect {
-    fill: steelblue;
+    fill: #0f76ed;
     shape-rendering: crispEdges;
 }
 
