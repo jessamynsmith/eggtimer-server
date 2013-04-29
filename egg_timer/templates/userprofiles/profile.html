@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Account Information for {{ user.get_profile.full_name }}{% endblock %}
+
+{% block content %}
+	<h1>Account Information for {{ user.get_profile.full_name }}</h1>
+
+    <p>
+    API key: {{ user.api_key.key }}
+    </p>
+
+    <p>
+    To add a period (start_time is optional):<br/>
+        curl -v -k -X POST -H "Content-Type: application/json" --data '{"start_date": "YYYY-MM-DD", "start_time": "HH:MM:SS"}' "{{ periods_url }}"
+
+    <br/>
+    <br/>
+    To list periods:<br/>
+    curl -v -k -X GET -H "Content-Type: application/json" "{{ periods_url }}" | python -m json.tool
+    </p>
+
+{% endblock %}

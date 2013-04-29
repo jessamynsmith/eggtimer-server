@@ -6,6 +6,7 @@ from tastypie.api import Api
 
 from egg_timer.apps.api import v1 as api
 from egg_timer.apps.periods import views as period_views
+from egg_timer.apps.userprofiles import views as userprofile_views
 
 admin.autodiscover()
 
@@ -14,10 +15,12 @@ v1_api.register(api.PeriodResource())
 v1_api.register(api.StatisticsResource())
 v1_api.register(api.UserProfileResource())
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    url(r'^accounts/profile/', userprofile_views.profile, name='user_profile'),
     (r'^accounts/', include('registration.backends.default.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
