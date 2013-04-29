@@ -14,7 +14,11 @@
 <span class="small">Keep track of your cycles</span>
 
 {% if not user.is_anonymous %}
-    <span class="small right"><a href="{% url auth_logout %}">Log out</a></span>
+    <span class="small right">
+        <a href="{% url calendar %}">Calendar</a> |
+        <a href="{% url statistics %}">Statistics</a> |
+        <a href="{% url auth_logout %}">Log out</a>
+    </span>
 {% endif %}
 
 <p>

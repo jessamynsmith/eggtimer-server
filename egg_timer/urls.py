@@ -22,6 +22,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
 
-    url(r'^calendar/', login_required(TemplateView.as_view(template_name='periods/calendar.html'))),
+    url(r'^calendar/', login_required(TemplateView.as_view(template_name='periods/calendar.html')), name='calendar'),
     url(r'^statistics/', period_views.statistics, name='statistics'),
 )
