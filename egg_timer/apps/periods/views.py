@@ -18,7 +18,7 @@ def statistics(request):
     if len(cycle_lengths) > 0:
         shortest = cycle_lengths[0]
         longest = cycle_lengths[len(cycle_lengths) - 1]
-        data['bins'] = range(shortest, longest + 2) # +1 for inclusive, +1 for last bin
+        data['bins'] = range(shortest, longest + 2)  # +1 for inclusive, +1 for last bin
 
     url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     data['periods_url'] = url + '?' + urlencode({'order_by': '-start_date', 'limit': '0', 'length__isnull': False})

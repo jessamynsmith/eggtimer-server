@@ -10,6 +10,8 @@
 {% block content %}
     <h1>Period Statistics for {{ user.get_profile.full_name }}</h1>
 
+    {% if bins %}
+
     <h3>Cycle Length Frequency</h3>
 
     <script>
@@ -201,4 +203,10 @@
         });
 
     </script>
+
+    {% else %}
+
+        Not enough cycle information has been entered to calculate statistics. :(
+
+    {% endif %}
 {% endblock %}
