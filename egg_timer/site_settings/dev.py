@@ -2,6 +2,8 @@ from egg_timer.site_settings.common import *
 
 import os
 
+HOME_DIR = os.path.expanduser("~")
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -22,6 +24,9 @@ MEDIA_URL = ''
 STATIC_ROOT = '/tmp/static'
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '%s/Development/Django/egg_timer/emails' % HOME_DIR
 
 INSTALLED_APPS.extend([
     'django_nose',
