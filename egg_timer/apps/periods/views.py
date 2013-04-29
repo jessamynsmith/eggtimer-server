@@ -10,6 +10,16 @@ from egg_timer.apps.periods import models as period_models
 
 
 @login_required
+def calendar(request):
+    periods_url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
+    data = {
+        'periods_url': periods_url
+    }
+
+    return render_to_response('periods/calendar.html', data,
+        context_instance=RequestContext(request))
+
+@login_required
 def statistics(request):
     periods = period_models.Period.objects.filter(
         userprofile__user=request.user, length__isnull=False).order_by('length')

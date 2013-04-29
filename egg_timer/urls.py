@@ -20,11 +20,11 @@ urlpatterns = patterns(
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    url(r'^accounts/profile/', userprofile_views.profile, name='user_profile'),
+    url(r'^accounts/profile/$', userprofile_views.profile, name='user_profile'),
     (r'^accounts/', include('registration.backends.default.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
 
-    url(r'^calendar/', login_required(TemplateView.as_view(template_name='periods/calendar.html')), name='calendar'),
-    url(r'^statistics/', period_views.statistics, name='statistics'),
+    url(r'^calendar/$', period_views.calendar, name='calendar'),
+    url(r'^statistics/$', period_views.statistics, name='statistics'),
 )

@@ -10,9 +10,12 @@
 	<script type='text/javascript'>
 		$(document).ready(function() {
             $('#calendar').fullCalendar({
-                // put your options and callbacks here
+                dayClick: function() {
+                    var day = arguments[0];
+                    var start_date = day.getFullYear() + '-' + day.getMonth() + '-' + day.getDate();
+                    console.log(start_date);
+                }
             })
-
         });
 	</script>
 {% endblock %}
