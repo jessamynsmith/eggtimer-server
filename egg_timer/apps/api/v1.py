@@ -45,6 +45,7 @@ class PeriodResource(ModelResource):
         ordering = ['start_date']
         filtering = {
             'length': ALL,
+            'start_date': ALL,
         }
         resource_name = 'periods'
 
