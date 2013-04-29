@@ -109,6 +109,7 @@ INSTALLED_APPS = [
 ]
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
+LOGIN_REDIRECT_URL = '/calendar/'
 
 from email.utils import formataddr
 DEFAULT_FROM_EMAIL = formataddr(ADMINS[0])
@@ -118,7 +119,7 @@ EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
 EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 EMAIL_USE_TLS = True
 
-ACCOUNT_ACTIVATION_DAYS = 30
+ACCOUNT_ACTIVATION_DAYS = 14
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

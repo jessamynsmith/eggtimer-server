@@ -13,6 +13,10 @@ h1 {
     font-size: 10pt;
 }
 
+.right {
+    float: right;
+}
+
 /* d3 graph formatting */
 .bar rect {
     fill: #0f76ed;

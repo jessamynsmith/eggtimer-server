@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 from django.views.generic import TemplateView
 from tastypie.api import Api
+
 from egg_timer.apps.api import v1 as api
 from egg_timer.apps.periods import views as period_views
 
@@ -17,7 +18,7 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    (r'^accounts/', include('registration.backends.default.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
 
