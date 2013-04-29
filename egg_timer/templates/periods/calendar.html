@@ -33,11 +33,16 @@
                 },
                 dayClick: function() {
                     var start_date = arguments[0].toJSON().split('T')[0];
+                    var data = {'start_date': start_date};
+                    var now = new Date();
+                    if (arguments[0].getDate() == now.getDate()) {
+                        data['start_time'] = now.toLocaleTimeString();
+                    }
                     $.ajax({
                         url: '{{ periods_url }}',
                         contentType: 'application/json',
                         type: 'POST',
-                        data: JSON.stringify({'start_date': start_date}),
+                        data: JSON.stringify(data),
                         // The ``X-CSRFToken`` evidently can't be set in the
                         // ``headers`` option, so force it here.
                         // This method requires jQuery 1.5+.
@@ -66,7 +71,7 @@
                             jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
                         },
                         success: function(data, textStatus, jqXHR) {
-                            console.log("Period " + period_id + "deleted.");
+                            console.log("Period " + period_id + " deleted.");
                             $('#calendar').fullCalendar( 'refetchEvents' );
                         }
                     });
