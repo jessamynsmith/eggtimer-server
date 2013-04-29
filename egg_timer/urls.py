@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, include, url
-from django.contrib.auth.decorators import login_required
 from django.contrib import admin
-from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
 from tastypie.api import Api
 
 from egg_timer.apps.api import v1 as api
@@ -20,6 +19,7 @@ urlpatterns = patterns(
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    (r'^$', lambda x: HttpResponseRedirect('/calendar/')),
     url(r'^accounts/profile/$', userprofile_views.profile, name='user_profile'),
     (r'^accounts/', include('registration.backends.default.urls')),
     url(r'^admin/', include(admin.site.urls)),
