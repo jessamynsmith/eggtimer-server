@@ -27,9 +27,12 @@ def create_userprofile(sender, instance, **kwargs):
         UserProfile.objects.get(user_id=instance.id)
     except UserProfile.DoesNotExist:
         UserProfile(user=instance).save()
-        group = auth_models.Group.objects.get(name='users')
-        group.user_set.add(instance)
-        group.save()
+        try:
+            group = auth_models.Group.objects.get(name='users')
+            group.user_set.add(instance)
+            group.save()
+        except auth_models.Group.DoesNotExist:
+            pass
 
 
 models.signals.post_save.connect(create_userprofile, sender=auth_models.User)

@@ -47,13 +47,14 @@ class Statistics(models.Model):
         return current_cycle
 
     @property
-    def next_period_date(self):
-        next_date = datetime.date(year=datetime.MINYEAR, month=1, day=1)
+    def next_periods(self):
+        next_dates = []
         if self.average_cycle_length:
             last_period = self.userprofile.periods.order_by('-start_date')[0]
-            next_date = last_period.start_date + datetime.timedelta(
-                days=self.average_cycle_length)
-        return next_date
+            for i in range(1, 4):
+                next_dates.append(last_period.start_date + datetime.timedelta(
+                    days=i*self.average_cycle_length))
+        return next_dates
 
     def __unicode__(self):
         average = self.average_cycle_length
