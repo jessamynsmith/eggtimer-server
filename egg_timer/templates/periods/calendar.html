@@ -21,10 +21,15 @@
                         success: function(doc) {
                             var events = [];
                             $(doc.objects).each(function() {
+                                var color = 'blue';
+                                if ($(this).attr('future')) {
+                                    color = 'purple';
+                                }
                                 events.push({
                                     title: 'period',
                                     start: $(this).attr('start_date'),
-                                    period_id: $(this).attr('id')
+                                    period_id: $(this).attr('id'),
+                                    color: color
                                 });
                             });
                             callback(events);

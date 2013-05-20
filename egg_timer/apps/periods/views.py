@@ -11,9 +11,9 @@ from egg_timer.apps.periods import models as period_models
 
 @login_required
 def calendar(request):
-    periods_url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
+    url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     data = {
-        'periods_url': periods_url
+        'periods_url': url + '?' + urlencode({'include_future': True})
     }
 
     return render_to_response('periods/calendar.html', data,
