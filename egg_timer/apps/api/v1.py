@@ -11,6 +11,8 @@ from egg_timer.apps.userprofiles import models as userprofile_models
 class BaseMeta(object):
     authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
     authorization = DjangoAuthorization()
+    list_allowed_methods = ('get', 'post')
+    detail_allowed_methods = ('get', 'post', 'put', 'delete')
 
 
 class StatisticsResource(ModelResource):

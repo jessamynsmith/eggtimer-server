@@ -13,7 +13,7 @@ from egg_timer.apps.periods import models as period_models
 def calendar(request):
     url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     data = {
-        'periods_url': url + '?' + urlencode({'include_future': True})
+        'periods_url': url,
     }
 
     return render_to_response('periods/calendar.html', data,

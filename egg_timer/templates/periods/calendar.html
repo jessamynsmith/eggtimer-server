@@ -12,7 +12,7 @@
             $('#calendar').fullCalendar({
                 events: function(start, end, callback) {
                     $.ajax({
-                        url: '{{ periods_url }}',
+                        url: '{{ periods_url }}?include_future=1',
                         dataType: 'json',
                         data: {
                             start_date__gte: start.toJSON().split('T')[0],
