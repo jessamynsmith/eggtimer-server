@@ -55,6 +55,8 @@ class PeriodResource(ModelResource):
 
     def create_response(self, request, data, response_class=HttpResponse,
             **response_kwargs):
+        # Should calculated data be in a separate resource?
+        # FullCalendar is easier with one api call...
         if request.GET.get('include_future'):
             statistics = period_models.Statistics.objects.filter(
                 userprofile__user=request.user)[0]
