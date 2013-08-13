@@ -59,8 +59,12 @@ class PeriodResource(ModelResource):
             statistics = period_models.Statistics.objects.filter(
                 userprofile__user=request.user)[0]
             for expected_date in statistics.next_periods:
-                period = {'start_date': expected_date, 'future': True}
+                period = {'start_date': expected_date, 'type': 'projected_period'}
                 data['objects'].append(Bundle(data=period))
+            for expected_date in statistics.next_ovulations:
+                ovulation = {'start_date': expected_date, 'type': 'projected_ovulation'}
+                data['objects'].append(Bundle(data=ovulation))
+
         return super(PeriodResource, self).create_response(request, data,
             response_class, **response_kwargs)
 

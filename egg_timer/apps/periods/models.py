@@ -37,7 +37,9 @@ class Statistics(models.Model):
     userprofile = models.OneToOneField(userprofile_models.UserProfile,
                                        related_name='statistics')
     average_cycle_length = models.IntegerField(null=True, blank=True)
+    luteal_phase_length = 14  # Estimated days from ovulation to menstruation
 
+    # Todo could cache these calculations, via getattr?
     @property
     def current_cycle_length(self):
         current_cycle = -1
@@ -54,6 +56,16 @@ class Statistics(models.Model):
             for i in range(1, 4):
                 next_dates.append(last_period.start_date + datetime.timedelta(
                     days=i*self.average_cycle_length))
+        return next_dates
+
+    @property
+    def next_ovulations(self):
+        next_dates = []
+        if self.average_cycle_length:
+            last_period = self.userprofile.periods.order_by('-start_date')[0]
+            for i in range(1, 4):
+                next_dates.append(last_period.start_date + datetime.timedelta(
+                    days=i*self.average_cycle_length - self.luteal_phase_length))
         return next_dates
 
     def __unicode__(self):

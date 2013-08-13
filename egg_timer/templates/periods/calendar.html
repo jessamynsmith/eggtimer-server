@@ -4,7 +4,7 @@
 
 {% block head %}
 	<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}fullcalendar/fullcalendar.css' />
-    <script type='text/javascript' src='{{ STATIC_URL }}js/jquery.js'></script>
+    <script type='text/javascript' src='{{ STATIC_URL }}js/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='{{ STATIC_URL }}fullcalendar/fullcalendar.js'></script>
 
 	<script type='text/javascript'>
@@ -21,12 +21,17 @@
                         success: function(doc) {
                             var events = [];
                             $(doc.objects).each(function() {
-                                var color = 'blue';
-                                if ($(this).attr('future')) {
+                                var color = '#0f76ed';
+                                var title = 'period';
+                                if ($(this).attr('type') == 'projected_period') {
+                                    color = 'darkred';
+                                    title = 'projected period';
+                                } else if ($(this).attr('type') == 'projected_ovulation') {
                                     color = 'purple';
+                                    title = 'projected ovulation';
                                 }
                                 events.push({
-                                    title: 'period',
+                                    title: title,
                                     start: $(this).attr('start_date'),
                                     period_id: $(this).attr('id'),
                                     color: color
