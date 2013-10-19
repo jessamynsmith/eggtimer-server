@@ -138,6 +138,10 @@ def update_length_delete(sender, instance, **kwargs):
 
 def update_statistics(sender, instance, **kwargs):
     stats_list = Statistics.objects.filter(userprofile=instance.userprofile)
+    if not stats_list:
+        # There may not be statistics, for example when deleting a user
+        return
+
     stats = stats_list[0]
 
     cycle_lengths = [x for x in instance.userprofile.periods.values_list('length', flat=True) if x is not None]
