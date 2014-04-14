@@ -102,6 +102,7 @@ INSTALLED_APPS = [
     'south',
     'registration',
     'tastypie',
+    'bootstrapform',
     'egg_timer.apps.userprofiles',
     'egg_timer.apps.api',
     'egg_timer.apps.periods',

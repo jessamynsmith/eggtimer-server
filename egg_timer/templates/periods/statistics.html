@@ -8,11 +8,11 @@
 {% endblock %}
 
 {% block content %}
-    <h1>Period Statistics for {{ user.get_profile.full_name }}</h1>
+    <h3>Statistics for {{ user.get_profile.full_name }}</h3>
 
     {% if bins %}
 
-    <h3>Cycle Length Frequency</h3>
+    <h4>Cycle Length Frequency</h4>
 
     <script>
 
@@ -99,7 +99,7 @@
 
     </script>
 
-    <h3>Cycle Length History</h3>
+    <h4>Cycle Length History</h4>
 
     <script>
 
@@ -108,7 +108,7 @@
 
         var width = $(window).width() - 20;
         var height = Math.round($(window).height() * 0.80);
-        var padding = {top: 15, right: 15, bottom: 75, left: 65};
+        var padding = {top: 10, right: 10, bottom: 75, left: 65};
 
         d3.json("{{ periods_url }}", function (json) {
             var data = json.objects;
@@ -171,7 +171,7 @@
                     .attr("dx", "-1em")
                     .attr("dy", "0.6em")
                     .attr("transform", function (d) {
-                        return "rotate(-30)"
+                        return "rotate(-35)"
                     });
 
             svg.append("text")

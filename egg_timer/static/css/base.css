@@ -1,20 +1,26 @@
 body {
-    font-family: sans-serif;
-    font-size: 14pt;
-    margin: 30px;
+    margin: 10px;
 }
 
 h1 {
-    font-size: 26pt;
+    font-size: 24pt;
     font-weight: bold;
 }
 
+.logo {
+    margin-bottom: 0px;
+}
+
 .small {
-    font-size: 10pt;
+    font-size: 12pt;
 }
 
 .right {
     float: right;
+}
+
+.spacing_top {
+    margin-top: 10px;
 }
 
 /* d3 graph formatting */
