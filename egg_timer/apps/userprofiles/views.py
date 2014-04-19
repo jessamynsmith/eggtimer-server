@@ -52,7 +52,7 @@ def qigong_cycles(request):
 
     birth_date_string = request.GET.get('birth_date')
     if birth_date_string:
-        birth_date = datetime.datetime.strptime(birth_date_string, "%Y/%m/%d")
+        birth_date = datetime.datetime.strptime(birth_date_string, "%Y-%m-%d")
 
     if request.user and request.user != auth_models.AnonymousUser():
         userprofile = request.user.get_profile()
