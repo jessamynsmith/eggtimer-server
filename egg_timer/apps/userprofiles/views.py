@@ -1,7 +1,9 @@
+import datetime
 from urllib import urlencode
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import models as auth_models
 from django.contrib.sites import models as site_models
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
@@ -21,3 +23,66 @@ def profile(request):
     }
 
     return render_to_response('userprofiles/profile.html', data, context_instance=RequestContext(request))
+
+
+def _get_level(cycle_length, day):
+    half_cycle = cycle_length / 2.0
+    half_day = day
+    if day > half_cycle:
+        half_day = cycle_length - day
+
+    percentage = round(100 * half_day / half_cycle, 2)
+
+    return "%.0f%%" % percentage
+
+
+def _get_phase(cycle_length, day):
+    phase = 'waxing'
+    if day > cycle_length / 2.0:
+        phase = 'waning'
+    return phase
+
+
+def qigong_cycles(request):
+    physical_cycle_length = 23
+    emotional_cycle_length = 28
+    intellectual_cycle_length = 33
+    data = {}
+    birth_date = None
+
+    birth_date_string = request.GET.get('birth_date')
+    if birth_date_string:
+        birth_date = datetime.datetime.strptime(birth_date_string, "%Y/%m/%d")
+
+    if request.user and request.user != auth_models.AnonymousUser():
+        userprofile = request.user.get_profile()
+
+        if userprofile.birth_date:
+            birth_date = userprofile.birth_date
+
+    if birth_date:
+        data['birth_date'] = birth_date
+        days_elapsed = (datetime.date.today() - birth_date.date()).days
+        physical_day = days_elapsed % physical_cycle_length
+        emotional_day = days_elapsed % emotional_cycle_length
+        intellectual_day = days_elapsed % intellectual_cycle_length
+        data['cycles'] = {
+            'physical': {
+                'day': physical_day,
+                'level': _get_level(physical_cycle_length, physical_day),
+                'phase': _get_phase(physical_cycle_length, physical_day),
+            },
+            'emotional': {
+                'day': emotional_day,
+                'level': _get_level(emotional_cycle_length, emotional_day),
+                'phase': _get_phase(emotional_cycle_length, emotional_day),
+            },
+            'intellectual': {
+                'day': intellectual_day,
+                'level': _get_level(intellectual_cycle_length, intellectual_day),
+                'phase': _get_phase(intellectual_cycle_length, intellectual_day),
+            }
+        }
+
+    return render_to_response('userprofiles/qigong_cycles.html', data,
+                              context_instance=RequestContext(request))

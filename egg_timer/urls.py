@@ -27,4 +27,6 @@ urlpatterns = patterns(
 
     url(r'^calendar/$', period_views.calendar, name='calendar'),
     url(r'^statistics/$', period_views.statistics, name='statistics'),
+
+    url(r'^qigong/cycles/$', userprofile_views.qigong_cycles, name='qigong_cycles'),
 )
