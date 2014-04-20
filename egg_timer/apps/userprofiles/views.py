@@ -48,9 +48,23 @@ def _format_date(date):
 
 
 def qigong_cycles(request):
-    physical_cycle_length = 23
-    emotional_cycle_length = 28
-    intellectual_cycle_length = 33
+    cycles = {
+        'physical': {
+            'length': 23,
+            'waning': 'decreasing endurance, increasing tendency to fatigue',
+            'waxing': 'increasing physical strength and endurance',
+        },
+        'emotional': {
+            'length': 28,
+            'waning': 'increasing pessimism, moodiness, irritability',
+            'waxing': 'increasing optimism, cheerfulness, cooperativeness',
+        },
+        'intellectual': {
+            'length': 33,
+            'waning': 'time to review old material, not learn new concepts',
+            'waxing': 'time to learn new material, pursing creative and intellectual activities',
+        },
+    }
     data = {}
     birth_date = None
 
@@ -69,38 +83,27 @@ def qigong_cycles(request):
 
     if birth_date:
         data['birth_date'] = str(birth_date.date())
+        data['cycles'] = {}
         today = datetime.date.today()
         days_elapsed = (today - birth_date.date()).days
-        physical_day = days_elapsed % physical_cycle_length
-        emotional_day = days_elapsed % emotional_cycle_length
-        intellectual_day = days_elapsed % intellectual_cycle_length
-        data['cycles'] = {
-            'physical': {
-                'day': physical_day,
-                'level': "%.0f" % _get_level(physical_cycle_length, days_elapsed),
-                'phase': _get_phase(physical_cycle_length, physical_day),
-            },
-            'emotional': {
-                'day': emotional_day,
-                'level': "%.0f" % _get_level(emotional_cycle_length, days_elapsed),
-                'phase': _get_phase(emotional_cycle_length, emotional_day),
-            },
-            'intellectual': {
-                'day': intellectual_day,
-                'level': "%.0f" % _get_level(intellectual_cycle_length, days_elapsed),
-                'phase': _get_phase(intellectual_cycle_length, intellectual_day),
+        for cycle_type in cycles:
+            cycle_length = cycles[cycle_type]['length']
+            current_day = days_elapsed % cycle_length
+            description = cycles[cycle_type][_get_phase(cycle_length, current_day)]
+            data['cycles'][cycle_type] = {
+                'day': current_day,
+                'level': "%.0f" % _get_level(cycle_length, days_elapsed),
+                'phase': description,
+                'data': []
             }
-        }
 
         start = today - datetime.timedelta(days=7)
         start_days = (start - birth_date.date()).days
         data['start'] = _format_date(start)
         data['today'] = _format_date(today)
+        data['today_with_year'] = str(today)
 
         tick_values = []
-        physical = []
-        emotional = []
-        intellectual = []
         for i in range(0, 43):
             current_date = _format_date(start + datetime.timedelta(days=i/2.0))
             # Hack to deal with half day cycle midpoints
@@ -109,13 +112,13 @@ def qigong_cycles(request):
             else:
                 tick_values.append(current_date)
             current_days = start_days + (i/2.0)
-            physical.append([current_date, _get_level(physical_cycle_length, current_days)])
-            emotional.append([current_date, _get_level(emotional_cycle_length, current_days)])
-            intellectual.append([current_date, _get_level(intellectual_cycle_length, current_days)])
+            for cycle_type in cycles:
+                cycle_length = cycles[cycle_type]['length']
+                level = _get_level(cycle_length, current_days)
+                data['cycles'][cycle_type]['data'].append([current_date, level])
         data['tick_values'] = json.dumps(tick_values)
-        data['physical'] = json.dumps(physical)
-        data['emotional'] = json.dumps(emotional)
-        data['intellectual'] = json.dumps(intellectual)
+        for cycle_type in cycles:
+            data['cycles'][cycle_type]['data'] = json.dumps(data['cycles'][cycle_type]['data'])
 
     return render_to_response('userprofiles/qigong_cycles.html', data,
                               context_instance=RequestContext(request))

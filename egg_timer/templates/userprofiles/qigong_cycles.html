@@ -68,7 +68,7 @@
 
         <table class="table-condensed">
             <tr><th>Birth date:</th><td>{{ birth_date }}</td></tr>
-            <tr><th>Today:</th><td>{{ today }}</td></tr>
+            <tr><th>Today:</th><td>{{ today_with_year }}</td></tr>
         </table>
         <br/>
 
@@ -88,9 +88,9 @@
         var padding = {top: 15, right: 15, bottom: 70, left: 60};
 
         var tickValues = {{ tick_values|safe }};
-        var physical_data = {{ physical|safe }};
-        var emotional_data = {{ emotional|safe }};
-        var intellectual_data = {{ intellectual|safe }};
+        var physical_data = {{ cycles.physical.data|safe }};
+        var emotional_data = {{ cycles.emotional.data|safe }};
+        var intellectual_data = {{ cycles.intellectual.data|safe }};
 
         var xScale = d3.scale.ordinal()
                 .domain(physical_data.map(function (d) {
