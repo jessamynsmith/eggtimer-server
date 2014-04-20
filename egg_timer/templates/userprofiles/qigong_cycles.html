@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Qigong Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}{% endblock %}
+{% block title %}Medical Qigong Energetic Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}{% endblock %}
 
 {% block head %}
     <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.js'></script>
@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block content %}
-    <h3>Medical Qigong Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}</h3>
+    <h3>Medical Qigong Energetic Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}</h3>
 
     {% if not birth_date %}
         <p>Enter your birth date to calculate your current cycle status!</p>
@@ -252,4 +252,6 @@
     </script>
 
     {% endif %}
+
+    <p>This information is based on the description in "Chinese Medical Qigong Therapy, Volume 1", by Professor Jerry Alan Johnson, Ph.D., D.T.C.M, D.M.Q. (China)</p>
 {% endblock %}

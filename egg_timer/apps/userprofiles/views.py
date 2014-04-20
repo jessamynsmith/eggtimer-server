@@ -68,6 +68,9 @@ def qigong_cycles(request):
     data = {}
     birth_date = None
 
+    # TODO deal with birth time and time zones
+    # TODO add vertical lines at peaks
+    # TODO add labels on vertical (and horizontal?) lines
     birth_date_string = request.GET.get('birth_date')
     if birth_date_string:
         try:
