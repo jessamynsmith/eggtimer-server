@@ -15,6 +15,10 @@ h1 {
     font-size: 12pt;
 }
 
+p.error_message {
+    color: red;
+}
+
 .right {
     float: right;
 }

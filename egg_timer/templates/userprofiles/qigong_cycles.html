@@ -5,20 +5,61 @@
 {% block head %}
     <script type='text/javascript' src='{{ STATIC_URL }}js/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.js'></script>
+
+    <style>
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+        }
+
+        .line {
+            fill: none;
+            stroke: black;
+            stroke-width: 2px;
+        }
+
+        .physical {
+            fill: none;
+            stroke: red;
+            color: red;
+            stroke-width: 2px;
+        }
+
+        .emotional {
+            fill: none;
+            color: blue;
+            stroke: blue;
+            stroke-width: 2px;
+        }
+
+        .intellectual {
+            fill: none;
+            color: purple;
+            stroke: purple;
+            stroke-width: 2px;
+        }
+
+</style>
+
 {% endblock %}
 
 {% block content %}
-    <h3>Qigong Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}</h3>
+    <h3>Medical Qigong Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}</h3>
 
     {% if not birth_date %}
-
-        Enter your birth date to calculate where you are in your qigong cycles!
+        <p>Enter your birth date to calculate your current cycle status!</p>
 
         <form>
             <div class="form-group">
                 <label class="control-label" for="id_birth_date">Birth Date</label>
-                <div class=" ">
-                    <input id="id_birth_date" type="date" class="date form-control" name="birth_date" placeholder="YYYY-MM-DD">
+                {% if error %}
+                    <p class="error_message">{{ error }}</p>
+                {% endif %}
+                <div>
+                    <input id="id_birth_date" type="text" class="form-control" name="birth_date" placeholder="YYYY-MM-DD">
                 </div>
             </div>
             <button type="submit" class="btn btn-default spacing_top">Calculate</button>
@@ -26,108 +67,204 @@
 
     {% else %}
 
-        <div><span class="control-label">Birth date: </span><span>{{ birth_date.date }}</span></div>
-        <br>
+        <table class="table-condensed">
+            <tr><th>Birth date:</th><td>{{ birth_date }}</td></tr>
+            <tr><th>Today:</th><td>{{ today }}</td></tr>
+        </table>
+        <br/>
 
         <table class="table table-bordered">
             <tr><th>Type</th><th>Day</th><th>Phase</th><th>Level</th></tr>
-            <tr><td>Physical</td><td>{{ cycles.physical.day }}</td><td>{{ cycles.physical.phase }}</td><td>{{ cycles.physical.level }}</td></tr>
-            <tr><td>Emotional</td><td>{{ cycles.emotional.day }}</td><td>{{ cycles.emotional.phase }}</td><td>{{ cycles.emotional.level }}</td></tr>
-            <tr><td>Intellectual</td><td>{{ cycles.intellectual.day }}</td><td>{{ cycles.intellectual.phase }}</td><td>{{ cycles.intellectual.level }}</td></tr>
+            <tr><td class="physical">Physical</td><td>{{ cycles.physical.day }}</td><td>{{ cycles.physical.phase }}</td><td>{{ cycles.physical.level }} %</td></tr>
+            <tr><td class="emotional">Emotional</td><td>{{ cycles.emotional.day }}</td><td>{{ cycles.emotional.phase }}</td><td>{{ cycles.emotional.level }} %</td></tr>
+            <tr><td class="intellectual">Intellectual</td><td>{{ cycles.intellectual.day }}</td><td>{{ cycles.intellectual.phase }}</td><td>{{ cycles.intellectual.level }} %</td></tr>
         </table>
 
-    {% endif %}
-
-    {% if bins %}
-
-    <h4>Cycle Length Frequency</h4>
+        <br/>
 
     <script>
 
-        // A formatter for counts.
-        var formatCount = d3.format(",.0f");
-
-        var width = $(window).width() - 20;
-        var height = Math.round($(window).height() * 0.80);
+        var width = $(window).width() - 100;
+        var height = 300;
         var padding = {top: 15, right: 15, bottom: 50, left: 30};
 
-        var data = d3.layout.histogram()
-                .bins({{ bins }})
-                ({{ cycle_lengths|safe }});
+        var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-        var xScale = d3.scale.ordinal()
-                .domain(data.map(function (d) {
-                    return d.x;
-                }))
-                .rangeRoundBands([0, width - padding.left - padding.right], .1);
+        var x = d3.time.scale()
+                .range([0, width]);
 
-        var ymax = d3.max(data, function (d) {
-            return d.y;
-        });
-        var yScale = d3.scale.linear()
-                .domain([0, ymax])
-                .rangeRound([height - padding.bottom, padding.top]);
+        var y = d3.scale.linear()
+                .range([height, 0]);
 
-        var svg = d3.select("body")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-
-        var bar = svg.selectAll(".bar")
-                .data(data)
-                .enter().append("g")
-                .attr("class", "bar")
-                .attr("transform", function (d) {
-                    return "translate(" + xScale(d.x) + ", " + yScale(d.y) + ")"
-                });
-
-        bar.append("rect")
-                .attr("data-placement", "top")
-                .attr("width", xScale.rangeBand())
-                .attr("height", function (d) {
-                    return height - yScale(d.y) - padding.bottom;
-                });
-
-        bar.append("text")
-                .attr("dy", ".75em")
-                .attr("y", 6)
-                .attr("x", function (d) {
-                    return xScale.rangeBand() * (d.dx - data[0].dx + 0.5);
-                })
-                .attr("text-anchor", "middle")
-                .text(function (d) {
-                    return formatCount(d.y);
-                });
-
-        // Axis
         var xAxis = d3.svg.axis()
-                .scale(xScale)
+                .scale(x)
                 .orient("bottom")
-                .tickSize(6, 0);
+                .ticks(21);
+
+        var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+        var line = d3.svg.line()
+                .x(function (d) {
+                    return x(d[0]);
+                })
+                .y(function (d) {
+                    return y(d[1]);
+                });
+
+        var color = d3.scale.category10();
+
+        var svg = d3.select("body").append("svg")
+                .attr("width", width + padding.left + padding.right)
+                .attr("height", height + padding.top + padding.bottom)
+                .append("g")
+                .attr("transform", "translate(" + padding.left + "," + padding.top + ")");
+        console.log("Creating data");
+
+
+        var physical_data = {{ physical|safe }};
+        var emotional_data = {{ emotional|safe }};
+        var intellectual_data = {{ intellectual|safe }};
+
+        physical_data.forEach(function (d) {
+            d[0] = parseDate(d[0]);
+            d[1] = +d[1];
+        });
+
+        emotional_data.forEach(function (d) {
+            d[0] = parseDate(d[0]);
+            d[1] = +d[1];
+        });
+
+        intellectual_data.forEach(function (d) {
+            d[0] = parseDate(d[0]);
+            d[1] = +d[1];
+        });
+
+        x.domain(d3.extent(physical_data, function (d) {
+            return d[0];
+        }));
+        y.domain([0, 100]);
+
+        svg.append("path")
+                .datum(physical_data)
+                .attr("class", "physical")
+                .attr("d", line);
+
+        svg.append("path")
+                .datum(emotional_data)
+                .attr("class", "emotional")
+                .attr("d", line);
+
+        svg.append("path")
+                .datum(intellectual_data)
+                .attr("class", "intellectual")
+                .attr("d", line);
 
         svg.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + (height - padding.bottom) + ")")
-                .call(xAxis);
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-1em")
+                .attr("dy", "0.6em")
+                .attr("transform", function (d) {
+                    return "rotate(-35)"
+                });
 
-        svg.append("text")
-                .attr("class", "x label")
-                .attr("text-anchor", "middle")
-                .attr("x", width / 2)
-                .attr("y", height - 4)
-                .text("Cycle Length (days)");
-
-        svg.append("text")
-                .attr("class", "y label")
-                .attr("text-anchor", "center")
-                .attr("x", -height / 2)
-                .attr("y", 18)
+        svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
                 .attr("transform", "rotate(-90)")
-                .text("Number of Cycles");
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Level (%)");
+
+        var today = svg.selectAll('path.median.x')
+                .data([
+                    [
+                        ["{{ today }}", 0],
+                        ["{{ today }}", 100]
+                    ]
+                ])
+                .enter()
+                .append('svg:path')
+                .attr('class', 'line')
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("d", d3.svg.line()
+                        .x(function (d, i) {
+                            return x(parseDate(d[0]));
+                        })
+                        .y(function (d, i) {
+                            return y(d[1]);
+                        })
+                );
+
+        var physical = svg.selectAll('path.median.y')
+                .data([
+                    [
+                        ["{{ start }}", {{ cycles.physical.level }}],
+                        ["{{ today }}", {{ cycles.physical.level }}]
+                    ]
+                ])
+                .enter()
+                .append('svg:path')
+                .attr('class', 'physical')
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("d", d3.svg.line()
+                        .x(function (d, i) {
+                            return x(parseDate(d[0]));
+                        })
+                        .y(function (d, i) {
+                            return y(d[1]);
+                        })
+                );
+
+        var emotional = svg.selectAll('path.median.y')
+                .data([
+                    [
+                        ["{{ start }}", {{ cycles.emotional.level }}],
+                        ["{{ today }}", {{ cycles.emotional.level }}]
+                    ]
+                ])
+                .enter()
+                .append('svg:path')
+                .attr('class', 'emotional')
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("d", d3.svg.line()
+                        .x(function (d, i) {
+                            return x(parseDate(d[0]));
+                        })
+                        .y(function (d, i) {
+                            return y(d[1]);
+                        })
+                );
+
+        var intellectual = svg.selectAll('path.median.y')
+                .data([
+                    [
+                        ["{{ start }}", {{ cycles.intellectual.level }}],
+                        ["{{ today }}", {{ cycles.intellectual.level }}]
+                    ]
+                ])
+                .enter()
+                .append('svg:path')
+                .attr('class', 'intellectual')
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("d", d3.svg.line()
+                        .x(function (d, i) {
+                            return x(parseDate(d[0]));
+                        })
+                        .y(function (d, i) {
+                            return y(d[1]);
+                        })
+                );
 
     </script>
-
-    {% else %}
 
     {% endif %}
 {% endblock %}
