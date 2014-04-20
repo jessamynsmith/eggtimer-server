@@ -62,7 +62,7 @@ def qigong_cycles(request):
         'intellectual': {
             'length': 33,
             'waning': 'time to review old material, not learn new concepts',
-            'waxing': 'time to learn new material, pursing creative and intellectual activities',
+            'waxing': 'time to learn new material and pursue creative and intellectual activities',
         },
     }
     data = {}
