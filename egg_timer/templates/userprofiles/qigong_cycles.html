@@ -88,14 +88,15 @@
         var height = 300;
         var padding = {top: 15, right: 15, bottom: 70, left: 60};
 
-        var days = {{ days|safe }};
         var tickValues = {{ tick_values|safe }};
         var physical_data = {{ physical|safe }};
         var emotional_data = {{ emotional|safe }};
         var intellectual_data = {{ intellectual|safe }};
 
         var xScale = d3.scale.ordinal()
-                .domain(days)
+                .domain(physical_data.map(function (d) {
+                    return d[0];
+                }))
                 .rangePoints([0, width]);
 
         var yScale = d3.scale.linear()
