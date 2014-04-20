@@ -3,7 +3,6 @@
 {% block title %}Qigong Cycles{% if user.get_profile %} for {{ user.get_profile.full_name }}{% endif %}{% endblock %}
 
 {% block head %}
-    <script type='text/javascript' src='{{ STATIC_URL }}js/jquery/jquery-1.10.2.min.js'></script>
     <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.js'></script>
 
     <style>
@@ -59,7 +58,7 @@
                     <p class="error_message">{{ error }}</p>
                 {% endif %}
                 <div>
-                    <input id="id_birth_date" type="text" class="form-control" name="birth_date" placeholder="YYYY-MM-DD">
+                    <input id="id_birth_date" type="text" class="form-control" name="birth_date" value="{{ birth_date }}" placeholder="YYYY-MM-DD">
                 </div>
             </div>
             <button type="submit" class="btn btn-default spacing_top">Calculate</button>
