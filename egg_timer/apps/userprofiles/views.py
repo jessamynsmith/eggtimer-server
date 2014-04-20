@@ -94,15 +94,18 @@ def qigong_cycles(request):
         data['start'] = str(start)
         data['today'] = str(today)
 
+        days = []
         physical = []
         emotional = []
         intellectual = []
         for i in range(0, 22):
             current_date = str(start + datetime.timedelta(days=i))
             current_days = start_days + i
+            days.append(current_date)
             physical.append([current_date, _get_level(physical_cycle_length, current_days)])
             emotional.append([current_date, _get_level(emotional_cycle_length, current_days)])
             intellectual.append([current_date, _get_level(intellectual_cycle_length, current_days)])
+        data['days'] = json.dumps(days)
         data['physical'] = json.dumps(physical)
         data['emotional'] = json.dumps(emotional)
         data['intellectual'] = json.dumps(intellectual)

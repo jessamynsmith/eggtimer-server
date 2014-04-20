@@ -75,31 +75,35 @@
 
         <table class="table table-bordered">
             <tr><th>Type</th><th>Day</th><th>Phase</th><th>Level</th></tr>
-            <tr><td class="physical">Physical</td><td>{{ cycles.physical.day }}</td><td>{{ cycles.physical.phase }}</td><td>{{ cycles.physical.level }} %</td></tr>
-            <tr><td class="emotional">Emotional</td><td>{{ cycles.emotional.day }}</td><td>{{ cycles.emotional.phase }}</td><td>{{ cycles.emotional.level }} %</td></tr>
-            <tr><td class="intellectual">Intellectual</td><td>{{ cycles.intellectual.day }}</td><td>{{ cycles.intellectual.phase }}</td><td>{{ cycles.intellectual.level }} %</td></tr>
+            <tr><td class="physical">Physical</td><td>{{ cycles.physical.day }}</td><td>{{ cycles.physical.phase }}</td><td>{{ cycles.physical.level }}%</td></tr>
+            <tr><td class="emotional">Emotional</td><td>{{ cycles.emotional.day }}</td><td>{{ cycles.emotional.phase }}</td><td>{{ cycles.emotional.level }}%</td></tr>
+            <tr><td class="intellectual">Intellectual</td><td>{{ cycles.intellectual.day }}</td><td>{{ cycles.intellectual.phase }}</td><td>{{ cycles.intellectual.level }}%</td></tr>
         </table>
 
         <br/>
 
     <script>
 
-        var width = $(window).width() - 100;
+        var width = $(window).width() - 120;
         var height = 300;
-        var padding = {top: 15, right: 15, bottom: 50, left: 30};
+        var padding = {top: 15, right: 15, bottom: 70, left: 70};
 
-        var parseDate = d3.time.format("%Y-%m-%d").parse;
+        var days = {{ days|safe }};
+        var physical_data = {{ physical|safe }};
+        var emotional_data = {{ emotional|safe }};
+        var intellectual_data = {{ intellectual|safe }};
 
-        var xScale = d3.time.scale()
-                .range([0, width]);
+        var xScale = d3.scale.ordinal()
+                .domain(days)
+                .rangePoints([0, width]);
 
         var yScale = d3.scale.linear()
-                .range([height, 0]);
+                .range([height, 0])
+                .domain([0, 100]);
 
         var xAxis = d3.svg.axis()
                 .scale(xScale)
-                .orient("bottom")
-                .ticks(21);
+                .orient("bottom");
 
         var yAxis = d3.svg.axis()
                 .scale(yScale)
@@ -113,36 +117,11 @@
                     return yScale(d[1]);
                 });
 
-        var color = d3.scale.category10();
-
         var svg = d3.select("body").append("svg")
                 .attr("width", width + padding.left + padding.right)
                 .attr("height", height + padding.top + padding.bottom)
                 .append("g")
                 .attr("transform", "translate(" + padding.left + "," + padding.top + ")");
-        console.log("Creating data");
-
-
-        var physical_data = {{ physical|safe }};
-        var emotional_data = {{ emotional|safe }};
-        var intellectual_data = {{ intellectual|safe }};
-
-        physical_data.forEach(function (d) {
-            d[0] = parseDate(d[0]);
-        });
-
-        emotional_data.forEach(function (d) {
-            d[0] = parseDate(d[0]);
-        });
-
-        intellectual_data.forEach(function (d) {
-            d[0] = parseDate(d[0]);
-        });
-
-        xScale.domain(d3.extent(physical_data, function (d) {
-            return d[0];
-        }));
-        yScale.domain([0, 100]);
 
         svg.append("path")
                 .datum(physical_data)
@@ -173,13 +152,7 @@
 
         svg.append("g")
                 .attr("class", "y axis")
-                .call(yAxis)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", ".71em")
-                .style("text-anchor", "end")
-                .text("Level (%)");
+                .call(yAxis);
 
         var today = svg.selectAll('path.median.x')
                 .data([
@@ -194,7 +167,7 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return xScale(parseDate(d[0]));
+                            return xScale(d[0]);
                         })
                         .y(function (d, i) {
                             return yScale(d[1]);
@@ -214,7 +187,7 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return xScale(parseDate(d[0]));
+                            return xScale(d[0]);
                         })
                         .y(function (d, i) {
                             return yScale(d[1]);
@@ -234,7 +207,7 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return xScale(parseDate(d[0]));
+                            return xScale(d[0]);
                         })
                         .y(function (d, i) {
                             return yScale(d[1]);
@@ -254,7 +227,7 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return xScale(parseDate(d[0]));
+                            return xScale(d[0]);
                         })
                         .y(function (d, i) {
                             return yScale(d[1]);
