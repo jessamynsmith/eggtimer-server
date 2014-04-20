@@ -43,6 +43,10 @@ def _get_phase(cycle_length, day):
     return phase
 
 
+def _format_date(date):
+    return date.strftime("%a %b %d")
+
+
 def qigong_cycles(request):
     physical_cycle_length = 23
     emotional_cycle_length = 28
@@ -91,15 +95,15 @@ def qigong_cycles(request):
         # How to deal with half day peaks?
         start = today - datetime.timedelta(days=7)
         start_days = (start - birth_date.date()).days
-        data['start'] = str(start)
-        data['today'] = str(today)
+        data['start'] = _format_date(start)
+        data['today'] = _format_date(today)
 
         days = []
         physical = []
         emotional = []
         intellectual = []
         for i in range(0, 22):
-            current_date = str(start + datetime.timedelta(days=i))
+            current_date = _format_date(start + datetime.timedelta(days=i))
             current_days = start_days + i
             days.append(current_date)
             physical.append([current_date, _get_level(physical_cycle_length, current_days)])
