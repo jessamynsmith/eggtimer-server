@@ -90,27 +90,27 @@
 
         var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-        var x = d3.time.scale()
+        var xScale = d3.time.scale()
                 .range([0, width]);
 
-        var y = d3.scale.linear()
+        var yScale = d3.scale.linear()
                 .range([height, 0]);
 
         var xAxis = d3.svg.axis()
-                .scale(x)
+                .scale(xScale)
                 .orient("bottom")
                 .ticks(21);
 
         var yAxis = d3.svg.axis()
-                .scale(y)
+                .scale(yScale)
                 .orient("left");
 
         var line = d3.svg.line()
                 .x(function (d) {
-                    return x(d[0]);
+                    return xScale(d[0]);
                 })
                 .y(function (d) {
-                    return y(d[1]);
+                    return yScale(d[1]);
                 });
 
         var color = d3.scale.category10();
@@ -129,23 +129,20 @@
 
         physical_data.forEach(function (d) {
             d[0] = parseDate(d[0]);
-            d[1] = +d[1];
         });
 
         emotional_data.forEach(function (d) {
             d[0] = parseDate(d[0]);
-            d[1] = +d[1];
         });
 
         intellectual_data.forEach(function (d) {
             d[0] = parseDate(d[0]);
-            d[1] = +d[1];
         });
 
-        x.domain(d3.extent(physical_data, function (d) {
+        xScale.domain(d3.extent(physical_data, function (d) {
             return d[0];
         }));
-        y.domain([0, 100]);
+        yScale.domain([0, 100]);
 
         svg.append("path")
                 .datum(physical_data)
@@ -197,10 +194,10 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return x(parseDate(d[0]));
+                            return xScale(parseDate(d[0]));
                         })
                         .y(function (d, i) {
-                            return y(d[1]);
+                            return yScale(d[1]);
                         })
                 );
 
@@ -217,10 +214,10 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return x(parseDate(d[0]));
+                            return xScale(parseDate(d[0]));
                         })
                         .y(function (d, i) {
-                            return y(d[1]);
+                            return yScale(d[1]);
                         })
                 );
 
@@ -237,10 +234,10 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return x(parseDate(d[0]));
+                            return xScale(parseDate(d[0]));
                         })
                         .y(function (d, i) {
-                            return y(d[1]);
+                            return yScale(d[1]);
                         })
                 );
 
@@ -257,10 +254,10 @@
                 .style("stroke-dasharray", ("3, 3"))
                 .attr("d", d3.svg.line()
                         .x(function (d, i) {
-                            return x(parseDate(d[0]));
+                            return xScale(parseDate(d[0]));
                         })
                         .y(function (d, i) {
-                            return y(d[1]);
+                            return yScale(d[1]);
                         })
                 );
 

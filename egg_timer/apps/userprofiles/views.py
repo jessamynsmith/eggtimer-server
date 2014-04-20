@@ -33,9 +33,7 @@ def _get_level(cycle_length, days):
     if day > half_cycle:
         half_day = cycle_length - day
 
-    percentage = round(100 * half_day / half_cycle, 2)
-
-    return "%.0f" % percentage
+    return round(100 * half_day / half_cycle, 2)
 
 
 def _get_phase(cycle_length, day):
@@ -75,17 +73,17 @@ def qigong_cycles(request):
         data['cycles'] = {
             'physical': {
                 'day': physical_day,
-                'level': _get_level(physical_cycle_length, days_elapsed),
+                'level': "%.0f" % _get_level(physical_cycle_length, days_elapsed),
                 'phase': _get_phase(physical_cycle_length, physical_day),
             },
             'emotional': {
                 'day': emotional_day,
-                'level': _get_level(emotional_cycle_length, days_elapsed),
+                'level': "%.0f" % _get_level(emotional_cycle_length, days_elapsed),
                 'phase': _get_phase(emotional_cycle_length, emotional_day),
             },
             'intellectual': {
                 'day': intellectual_day,
-                'level': _get_level(intellectual_cycle_length, days_elapsed),
+                'level': "%.0f" % _get_level(intellectual_cycle_length, days_elapsed),
                 'phase': _get_phase(intellectual_cycle_length, intellectual_day),
             }
         }
