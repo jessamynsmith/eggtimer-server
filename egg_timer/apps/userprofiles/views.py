@@ -92,24 +92,30 @@ def qigong_cycles(request):
             }
         }
 
-        # How to deal with half day peaks?
         start = today - datetime.timedelta(days=7)
         start_days = (start - birth_date.date()).days
         data['start'] = _format_date(start)
         data['today'] = _format_date(today)
 
         days = []
+        tick_values = []
         physical = []
         emotional = []
         intellectual = []
-        for i in range(0, 22):
-            current_date = _format_date(start + datetime.timedelta(days=i))
-            current_days = start_days + i
+        for i in range(0, 44):
+            current_date = _format_date(start + datetime.timedelta(days=i/2.0))
+            # Hack to deal with half day cycle midpoints
+            if i % 2 == 1:
+                current_date = "%s-0.5" % current_date
+            else:
+                tick_values.append(current_date)
+            current_days = start_days + (i/2.0)
             days.append(current_date)
             physical.append([current_date, _get_level(physical_cycle_length, current_days)])
             emotional.append([current_date, _get_level(emotional_cycle_length, current_days)])
             intellectual.append([current_date, _get_level(intellectual_cycle_length, current_days)])
         data['days'] = json.dumps(days)
+        data['tick_values'] = json.dumps(tick_values)
         data['physical'] = json.dumps(physical)
         data['emotional'] = json.dumps(emotional)
         data['intellectual'] = json.dumps(intellectual)
