@@ -91,6 +91,7 @@ def qigong_cycles(request):
             current_day = days_elapsed % cycle_length
             description = cycles[cycle_type][_get_phase(cycle_length, current_day)]
             data['cycles'][cycle_type] = {
+                'length': cycle_length,
                 'day': current_day,
                 'level': "%.0f" % _get_level(cycle_length, days_elapsed),
                 'phase': description,

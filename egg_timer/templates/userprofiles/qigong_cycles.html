@@ -73,10 +73,23 @@
         <br/>
 
         <table class="table table-bordered">
-            <tr><th>Type</th><th>Day</th><th>Phase</th><th>Level</th></tr>
-            <tr><td class="physical">Physical</td><td>{{ cycles.physical.day }}</td><td>{{ cycles.physical.phase }}</td><td>{{ cycles.physical.level }}%</td></tr>
-            <tr><td class="emotional">Emotional</td><td>{{ cycles.emotional.day }}</td><td>{{ cycles.emotional.phase }}</td><td>{{ cycles.emotional.level }}%</td></tr>
-            <tr><td class="intellectual">Intellectual</td><td>{{ cycles.intellectual.day }}</td><td>{{ cycles.intellectual.phase }}</td><td>{{ cycles.intellectual.level }}%</td></tr>
+            <tr>
+                <th>Type</th>
+                <th>Cycle Length</th>
+                <th>Day</th>
+                <th>Phase</th>
+                <th>Level</th>
+            </tr>
+
+            {% for cycle_name, cycle_info in cycles.items %}
+            <tr>
+                <td class="{{ cycle_name }}">{{ cycle_name|title }}</td>
+                <td>{{ cycle_info.length }}</td>
+                <td>{{ cycle_info.day }}</td>
+                <td>{{ cycle_info.phase }}</td>
+                <td>{{ cycle_info.level }}%</td>
+            </tr>
+            {% endfor %}
         </table>
 
         <br/>
