@@ -71,6 +71,9 @@ def qigong_cycles(request):
     # TODO deal with birth time and time zones
     # TODO add vertical lines at peaks
     # TODO add labels on vertical (and horizontal?) lines
+    # TODO birthdate date picker
+    # TODO specify date for calculation (does not have to be today)
+    # TODO allow user to select their current timezone
     birth_date_string = request.GET.get('birth_date')
     if birth_date_string:
         try:

@@ -9,6 +9,10 @@
 {% block content %}
     <h3>Statistics for {{ user.get_profile.full_name }}</h3>
 
+    <table class="table-condensed">
+        <tr><th>Average Cycle Length:</th><td>{{ user.get_profile.statistics.average_cycle_length }}</td></tr>
+    </table>
+
     {% if bins %}
 
     <h4>Cycle Length Frequency</h4>
