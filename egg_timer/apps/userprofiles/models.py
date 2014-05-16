@@ -7,6 +7,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(auth_models.User)
     birth_date = models.DateTimeField(null=True, blank=True)
+    luteal_phase_length = models.IntegerField(default=14)
 
     def __unicode__(self):
         return "%s (%s)" % (self.user.username, self.full_name)

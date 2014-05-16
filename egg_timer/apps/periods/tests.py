@@ -32,16 +32,34 @@ class TestModels(TestCase):
 
     def test_statistics_unicode_no_average(self):
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
+
         self.assertEqual(u'Jessamyn (avg: Not enough cycles to calculate)', '%s' % stats)
+        self.assertEqual([], stats.next_periods)
+        self.assertEqual([], stats.next_ovulations)
 
     def test_statistics_unicode_with_average(self):
+        self._create_period(start_date=datetime.date(2013, 2, 15))
+        self._create_period(start_date=datetime.date(2013, 3, 15))
+        self._create_period(start_date=datetime.date(2013, 4, 10))
+
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
-        stats.average_cycle_length = 21
-        self.assertEqual(u'Jessamyn (avg: 21)', '%s' % stats)
+
+        self.assertEqual(u'Jessamyn (avg: 27)', '%s' % stats)
+        expected_periods = [datetime.date(2013, 5, 7),
+                            datetime.date(2013, 6, 3),
+                            datetime.date(2013, 6, 30)]
+        self.assertEqual(expected_periods, stats.next_periods)
+        expected_ovulations = [datetime.date(2013, 4, 23),
+                               datetime.date(2013, 5, 20),
+                               datetime.date(2013, 6, 16)]
+        self.assertEqual(expected_ovulations, stats.next_ovulations)
 
     def test_statistics_current_cycle_length_no_periods(self):
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
+
         self.assertEqual(-1, stats.current_cycle_length)
+        self.assertEqual([], stats.next_periods)
+        self.assertEqual([], stats.next_ovulations)
 
     def test_update_length_none_existing(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
