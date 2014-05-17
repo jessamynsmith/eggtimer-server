@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponse
 from tastypie.authentication import ApiKeyAuthentication, MultiAuthentication, SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
@@ -53,23 +54,6 @@ class PeriodResource(ModelResource):
         }
         resource_name = 'periods'
 
-    def create_response(self, request, data, response_class=HttpResponse,
-            **response_kwargs):
-        # Should calculated data be in a separate resource?
-        # FullCalendar is easier with one api call...
-        if request.GET.get('include_future'):
-            statistics = period_models.Statistics.objects.filter(
-                userprofile__user=request.user)[0]
-            for expected_date in statistics.next_periods:
-                period = {'start_date': expected_date, 'type': 'projected_period'}
-                data['objects'].append(Bundle(data=period))
-            for expected_date in statistics.next_ovulations:
-                ovulation = {'start_date': expected_date, 'type': 'projected_ovulation'}
-                data['objects'].append(Bundle(data=ovulation))
-
-        return super(PeriodResource, self).create_response(request, data,
-            response_class, **response_kwargs)
-
     def get_object_list(self, request):
         return super(PeriodResource, self).get_object_list(request).filter(
             userprofile__user=request.user)
@@ -78,3 +62,63 @@ class PeriodResource(ModelResource):
         user_profile = bundle.request.user.get_profile()
         return super(PeriodResource, self).obj_create(
             bundle, request=request, userprofile=user_profile, **kwargs)
+
+
+class PeriodDetailResource(PeriodResource):
+
+    class Meta(BaseMeta):
+        queryset = period_models.Period.objects.all().order_by('start_date')
+        ordering = ['start_date']
+        filtering = {
+            'length': ALL,
+            'start_date': ALL,
+        }
+        resource_name = 'periods_detail'
+
+    def create_response(self, request, data, response_class=HttpResponse,
+            **response_kwargs):
+
+        statistics = period_models.Statistics.objects.filter(
+            userprofile__user=request.user)[0]
+        projected_data = []
+        for expected_date in statistics.next_periods:
+            period = {'start_date': expected_date, 'type': 'projected period'}
+            projected_data.append(Bundle(data=period))
+        for expected_date in statistics.next_ovulations:
+            ovulation = {'start_date': expected_date, 'type': 'projected ovulation'}
+            projected_data.append(Bundle(data=ovulation))
+
+        start_date = request.GET.get('start_date__gte')
+        if start_date:
+            start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+            
+        end_date = request.GET.get('start_date__lte')
+        if end_date:
+            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+        period_start_dates = period_models.Period.objects.filter(
+            start_date__gte=start_date, start_date__lte=end_date)
+        period_start_dates = list(period_start_dates.values_list('start_date', flat=True))
+        period_start_dates.extend(statistics.next_periods)
+
+        previous_periods = period_models.Period.objects.filter(
+            start_date__lte=start_date).order_by('-start_date')
+        if previous_periods:
+            previous_period = previous_periods[0]
+
+            one_day = datetime.timedelta(days=1)
+            current_date = start_date.date()
+            current_day = (current_date - previous_period.start_date).days + 1
+            while current_date <= datetime.date.today():
+                if current_date in period_start_dates:
+                    current_day = 1
+                day_count = {'start_date': current_date, 'type': 'day count',
+                             'text': 'Day: %s' % current_day}
+                data['objects'].append(Bundle(data=day_count))
+                current_date += one_day
+                current_day += 1
+
+        data['objects'].extend(projected_data)
+
+        return super(PeriodResource, self).create_response(request, data,
+            response_class, **response_kwargs)
