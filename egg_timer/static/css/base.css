@@ -7,6 +7,10 @@ h1 {
     font-weight: bold;
 }
 
+h1 a {
+    color: black;
+}
+
 .logo {
     margin-bottom: 0px;
 }
