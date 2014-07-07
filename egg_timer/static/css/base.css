@@ -7,7 +7,7 @@ h1 {
     font-weight: bold;
 }
 
-h1 a {
+h1 a:link, h1 a:visited, h1 a:hover, h1 a:active {
     color: black;
 }
 
