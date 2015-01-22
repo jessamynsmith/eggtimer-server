@@ -16,7 +16,7 @@ class Command(BaseCommand):
         users = userprofile_models.UserProfile.objects.filter(
             periods__isnull=False).filter(statistics__isnull=False).distinct()
         for user in users:
-            if not user.statistics.average_cycle_length:
+            if not self.userprofile.periods.count():
                 continue
 
             expected_in = (user.statistics.average_cycle_length
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 day = 'days'
 
             context = Context({
-                'full_name': user.full_name,
+                'full_name': user.user.username,
                 'expected_in': expected_abs,
                 'day': day,
                 'expected_date': formatted_date,

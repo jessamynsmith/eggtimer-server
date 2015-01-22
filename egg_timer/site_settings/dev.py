@@ -35,7 +35,12 @@ INSTALLED_APPS.extend([
 # Use nose to run all tests
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
+DJANGO_ARGS = [
+    '--verbosity=0',
+]
+
 NOSE_ARGS = [
+    '--verbosity=0',
     '--cover-branches',
     '--cover-package=egg_timer',
     '--cover-inclusive',  # Cover all files

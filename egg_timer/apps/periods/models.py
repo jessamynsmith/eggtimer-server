@@ -25,8 +25,8 @@ class Period(models.Model):
         start_time = ''
         if self.start_time:
             start_time = ' %s' % self.start_time
-        return u"%s (%s%s)" % (self.userprofile.full_name, self.start_date,
-                              start_time)
+        return u"%s (%s%s)" % (self.userprofile.user.username, self.start_date,
+                               start_time)
 
     def get_absolute_url(self):
         return reverse('period_detail', args=[self.pk])
@@ -36,7 +36,7 @@ class Statistics(models.Model):
 
     userprofile = models.OneToOneField(userprofile_models.UserProfile,
                                        related_name='statistics')
-    average_cycle_length = models.IntegerField(null=True, blank=True)
+    average_cycle_length = models.IntegerField(default=28)
 
     # Todo could cache these calculations, via getattr?
     @property
@@ -50,7 +50,7 @@ class Statistics(models.Model):
     @property
     def next_periods(self):
         next_dates = []
-        if self.average_cycle_length:
+        if self.userprofile.periods.count():
             last_period = self.userprofile.periods.order_by('-start_date')[0]
             for i in range(1, 4):
                 next_dates.append(last_period.start_date + datetime.timedelta(
@@ -60,7 +60,7 @@ class Statistics(models.Model):
     @property
     def next_ovulations(self):
         next_dates = []
-        if self.average_cycle_length:
+        if self.userprofile.periods.count():
             last_period = self.userprofile.periods.order_by('-start_date')[0]
             for i in range(1, 4):
                 next_dates.append(last_period.start_date + datetime.timedelta(
@@ -68,10 +68,7 @@ class Statistics(models.Model):
         return next_dates
 
     def __unicode__(self):
-        average = self.average_cycle_length
-        if not average:
-            average = 'Not enough cycles to calculate'
-        return u"%s (avg: %s)" % (self.userprofile.full_name, average)
+        return u"%s (avg: %s)" % (self.userprofile.user.username, self.average_cycle_length)
 
     def get_absolute_url(self):
         return reverse('statistics_detail', args=[self.pk])
@@ -149,8 +146,6 @@ def update_statistics(sender, instance, **kwargs):
     if len(cycle_lengths) > 0:
         avg = float(sum(cycle_lengths)) / len(cycle_lengths)
         stats.average_cycle_length = int(round(avg))
-    else:
-        stats.average_cycle_length = None
     stats.save()
 
 

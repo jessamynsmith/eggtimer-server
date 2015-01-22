@@ -19,10 +19,6 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
-    @property
-    def full_name(self):
-        return self.user.get_full_name()
-
 
 def create_userprofile(sender, instance, **kwargs):
     try:
@@ -34,6 +30,7 @@ def create_userprofile(sender, instance, **kwargs):
             group.user_set.add(instance)
             group.save()
         except auth_models.Group.DoesNotExist:
+            # TODO when/how to create group?
             pass
 
 

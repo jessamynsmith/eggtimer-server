@@ -23,17 +23,17 @@ class TestModels(TestCase):
 
     def test_period_unicode_no_start_time(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
-        self.assertEqual('Jessamyn (2013-04-15)', '%s' % period)
+        self.assertEqual(u'jessamyn (2013-04-15)', '%s' % period)
 
     def test_period_unicode_with_start_time(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
         period.start_time = datetime.time(1, 2, 3)
-        self.assertEqual(u'Jessamyn (2013-04-15 01:02:03)', '%s' % period)
+        self.assertEqual(u'jessamyn (2013-04-15 01:02:03)', '%s' % period)
 
     def test_statistics_unicode_no_average(self):
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
 
-        self.assertEqual(u'Jessamyn (avg: Not enough cycles to calculate)', '%s' % stats)
+        self.assertEqual(u'jessamyn (avg: 28)', '%s' % stats)
         self.assertEqual([], stats.next_periods)
         self.assertEqual([], stats.next_ovulations)
 
@@ -44,7 +44,7 @@ class TestModels(TestCase):
 
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
 
-        self.assertEqual(u'Jessamyn (avg: 27)', '%s' % stats)
+        self.assertEqual(u'jessamyn (avg: 27)', '%s' % stats)
         expected_periods = [datetime.date(2013, 5, 7),
                             datetime.date(2013, 6, 3),
                             datetime.date(2013, 6, 30)]
@@ -93,9 +93,14 @@ class TestModels(TestCase):
         period_models.update_statistics(period_models.Period, period)
 
         stats = period_models.Statistics.objects.get(userprofile=self.user.userprofile)
-        self.assertIsNone(stats.average_cycle_length)
+        self.assertEqual(28, stats.average_cycle_length)
         self.assertEqual(20, stats.current_cycle_length)
-        self.assertEqual([], stats.next_periods)
+        next_periods = [
+            datetime.date(2013, 5, 13),
+            datetime.date(2013, 6, 10),
+            datetime.date(2013, 7, 8)
+        ]
+        self.assertEqual(next_periods, stats.next_periods)
 
     @patch('egg_timer.apps.periods.models._today')
     def test_update_statistics_periods_exist(self, mock_today):
