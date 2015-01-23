@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 day = 'days'
 
             context = Context({
-                'full_name': user.user.username,
+                'full_name': user.full_name,
                 'expected_in': expected_abs,
                 'day': day,
                 'expected_date': formatted_date,

@@ -25,7 +25,7 @@ class Period(models.Model):
         start_time = ''
         if self.start_time:
             start_time = ' %s' % self.start_time
-        return u"%s (%s%s)" % (self.userprofile.user.username, self.start_date,
+        return u"%s (%s%s)" % (self.userprofile.full_name, self.start_date,
                                start_time)
 
     def get_absolute_url(self):
@@ -68,7 +68,7 @@ class Statistics(models.Model):
         return next_dates
 
     def __unicode__(self):
-        return u"%s (avg: %s)" % (self.userprofile.user.username, self.average_cycle_length)
+        return u"%s (avg: %s)" % (self.userprofile.full_name, self.average_cycle_length)
 
     def get_absolute_url(self):
         return reverse('statistics_detail', args=[self.pk])

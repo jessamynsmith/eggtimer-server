@@ -19,6 +19,13 @@ class UserProfile(models.Model):
     def email(self):
         return self.user.email
 
+    @property
+    def full_name(self):
+        full_name = self.user.get_full_name()
+        if not full_name:
+            full_name = self.user.username
+        return full_name
+
 
 def create_userprofile(sender, instance, **kwargs):
     try:

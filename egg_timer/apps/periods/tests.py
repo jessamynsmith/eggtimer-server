@@ -23,17 +23,17 @@ class TestModels(TestCase):
 
     def test_period_unicode_no_start_time(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
-        self.assertEqual(u'jessamyn (2013-04-15)', '%s' % period)
+        self.assertEqual(u'Jessamyn (2013-04-15)', '%s' % period)
 
     def test_period_unicode_with_start_time(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
         period.start_time = datetime.time(1, 2, 3)
-        self.assertEqual(u'jessamyn (2013-04-15 01:02:03)', '%s' % period)
+        self.assertEqual(u'Jessamyn (2013-04-15 01:02:03)', '%s' % period)
 
     def test_statistics_unicode_no_average(self):
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
 
-        self.assertEqual(u'jessamyn (avg: 28)', '%s' % stats)
+        self.assertEqual(u'Jessamyn (avg: 28)', '%s' % stats)
         self.assertEqual([], stats.next_periods)
         self.assertEqual([], stats.next_ovulations)
 
@@ -44,7 +44,7 @@ class TestModels(TestCase):
 
         stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
 
-        self.assertEqual(u'jessamyn (avg: 27)', '%s' % stats)
+        self.assertEqual(u'Jessamyn (avg: 27)', '%s' % stats)
         expected_periods = [datetime.date(2013, 5, 7),
                             datetime.date(2013, 6, 3),
                             datetime.date(2013, 6, 30)]
