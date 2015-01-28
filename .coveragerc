@@ -1,0 +1,7 @@
+[run]
+source = egg_timer
+branch = 1
+omit = */tests.py
+    */migrations/*
+    *__init__.py*
+    *settings*

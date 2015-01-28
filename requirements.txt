@@ -1,2 +1,2 @@
 # Default to installing production dependencies automatically
--r requirements/prod.txt
+-r requirements/production.txt

@@ -1,1 +1,1 @@
-from egg_timer.site_settings.prod import *
+from egg_timer.site_settings.production import *

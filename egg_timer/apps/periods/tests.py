@@ -9,14 +9,14 @@ from egg_timer.apps.periods import models as period_models
 class TestModels(TestCase):
 
     def setUp(self):
-        self.user = auth_models.User.objects.create_user(username='jessamyn',
-            password='bogus', email='jessamyn@example.com')
+        self.user = auth_models.User.objects.create_user(
+            username='jessamyn', password='bogus', email='jessamyn@example.com')
         self.user.first_name = u'Jessamyn'
         self.user.save()
 
     def _create_period(self, start_date, save=True):
-        period = period_models.Period.objects.create(userprofile=self.user.userprofile,
-            start_date=start_date)
+        period = period_models.Period.objects.create(
+            userprofile=self.user.userprofile, start_date=start_date)
         if save:
             period.save()
         return period

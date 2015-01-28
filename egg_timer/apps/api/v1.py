@@ -75,8 +75,7 @@ class PeriodDetailResource(PeriodResource):
         }
         resource_name = 'periods_detail'
 
-    def create_response(self, request, data, response_class=HttpResponse,
-            **response_kwargs):
+    def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
 
         statistics = period_models.Statistics.objects.filter(
             userprofile__user=request.user)[0]
@@ -91,7 +90,7 @@ class PeriodDetailResource(PeriodResource):
         start_date = request.GET.get('start_date__gte')
         if start_date:
             start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d")
-            
+
         end_date = request.GET.get('start_date__lte')
         if end_date:
             end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
@@ -121,5 +120,5 @@ class PeriodDetailResource(PeriodResource):
 
         data['objects'].extend(projected_data)
 
-        return super(PeriodResource, self).create_response(request, data,
-            response_class, **response_kwargs)
+        return super(PeriodResource, self).create_response(request, data, response_class,
+                                                           **response_kwargs)

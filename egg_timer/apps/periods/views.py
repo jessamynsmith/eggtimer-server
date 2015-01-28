@@ -17,7 +17,8 @@ def calendar(request):
     }
 
     return render_to_response('periods/calendar.html', data,
-        context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def statistics(request):
@@ -31,7 +32,8 @@ def statistics(request):
         data['bins'] = range(shortest, longest + 2)  # +1 for inclusive, +1 for last bin
 
     url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
-    data['periods_url'] = url + '?' + urlencode({'order_by': '-start_date', 'limit': '0', 'length__isnull': False})
+    args = {'order_by': '-start_date', 'limit': '0', 'length__isnull': False}
+    data['periods_url'] = url + '?' + urlencode(args)
 
     return render_to_response('periods/statistics.html', data,
-        context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))

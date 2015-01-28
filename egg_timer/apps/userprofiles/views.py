@@ -13,9 +13,11 @@ from django.template import RequestContext
 
 @login_required
 def profile(request):
-    # TODO add editing of profile, at least luteal phase and full name; change password would be nice
+    # TODO add editing of profile, at least luteal phase and full name;
+    # change password would be nice
     site = site_models.Site.objects.get(id=settings.SITE_ID)
-    periods_url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
+    periods_url = reverse('api_dispatch_list',
+                          kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {
         'username': request.user.username,
         'api_key': request.user.api_key.key
@@ -24,7 +26,8 @@ def profile(request):
         'periods_url': '%s%s?%s' % (site.domain, periods_url, urlencode(params))
     }
 
-    return render_to_response('userprofiles/profile.html', data, context_instance=RequestContext(request))
+    return render_to_response('userprofiles/profile.html', data,
+                              context_instance=RequestContext(request))
 
 
 def _get_level(cycle_length, days):

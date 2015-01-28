@@ -140,7 +140,8 @@ def update_statistics(sender, instance, **kwargs):
 
     stats = stats_list[0]
 
-    cycle_lengths = [x for x in instance.userprofile.periods.values_list('length', flat=True) if x is not None]
+    cycle_lengths = [x for x in instance.userprofile.periods.values_list('length', flat=True)
+                     if x is not None]
 
     # Calculate average (if possible) and update statistics object
     if len(cycle_lengths) > 0:

@@ -54,5 +54,3 @@ class Command(BaseCommand):
             if subject:
                 plaintext = get_template('email/%s.txt' % template_name)
                 email_sender.send(user, subject, plaintext.render(context), None)
-
-
