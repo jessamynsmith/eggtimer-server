@@ -3,9 +3,9 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from tastypie.api import Api
 
-from egg_timer.apps.api import v1 as api
-from egg_timer.apps.periods import views as period_views
-from egg_timer.apps.userprofiles import views as userprofile_views
+from eggtimer.apps.api import v1 as api
+from eggtimer.apps.periods import views as period_views
+from eggtimer.apps.userprofiles import views as userprofile_views
 
 admin.autodiscover()
 

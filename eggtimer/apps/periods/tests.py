@@ -3,7 +3,7 @@ from django.contrib.auth import models as auth_models
 from django.test import TestCase
 from mock import patch
 
-from egg_timer.apps.periods import models as period_models
+from eggtimer.apps.periods import models as period_models
 
 
 class TestModels(TestCase):
@@ -85,7 +85,7 @@ class TestModels(TestCase):
 
         self.assertEqual(15, period.length)
 
-    @patch('egg_timer.apps.periods.models._today')
+    @patch('eggtimer.apps.periods.models._today')
     def test_update_statistics_none_existing(self, mock_today):
         mock_today.return_value = datetime.date(2013, 5, 5)
         period = self._create_period(start_date=datetime.date(2013, 4, 15))
@@ -102,7 +102,7 @@ class TestModels(TestCase):
         ]
         self.assertEqual(next_periods, stats.next_periods)
 
-    @patch('egg_timer.apps.periods.models._today')
+    @patch('eggtimer.apps.periods.models._today')
     def test_update_statistics_periods_exist(self, mock_today):
         mock_today.return_value = datetime.date(2013, 5, 5)
         self._create_period(start_date=datetime.date(2013, 4, 1))

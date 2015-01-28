@@ -5,8 +5,8 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.bundle import Bundle
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL
-from egg_timer.apps.periods import models as period_models
-from egg_timer.apps.userprofiles import models as userprofile_models
+from eggtimer.apps.periods import models as period_models
+from eggtimer.apps.userprofiles import models as userprofile_models
 
 
 class BaseMeta(object):

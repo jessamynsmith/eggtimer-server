@@ -76,10 +76,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'egg_timer.urls'
+ROOT_URLCONF = 'eggtimer.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'egg_timer.wsgi.application'
+WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -103,9 +103,9 @@ INSTALLED_APPS = [
     'registration',
     'tastypie',
     'bootstrapform',
-    'egg_timer.apps.userprofiles',
-    'egg_timer.apps.api',
-    'egg_timer.apps.periods',
+    'eggtimer.apps.userprofiles',
+    'eggtimer.apps.api',
+    'eggtimer.apps.periods',
 ]
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'

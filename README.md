@@ -6,13 +6,13 @@ https://eggtimer.herokuapp.com/
 
 
 For local development, create a virtualenv:
-    mkvirtualenv egg_timer
+    mkvirtualenv eggtimer
 
 Install requirements:
     pip install -r requirements/development.txt
 
 Use dev settings:
-    export DJANGO_SETTINGS_MODULE=egg_timer.settings.development
+    export DJANGO_SETTINGS_MODULE=eggtimer.settings.development
 
 Run tests and view coverage:
 

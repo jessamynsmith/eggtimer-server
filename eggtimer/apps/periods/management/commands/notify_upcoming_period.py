@@ -4,9 +4,9 @@ from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 from django.template import Context
 
-from egg_timer.apps.periods import models as period_models
-from egg_timer.apps.userprofiles import models as userprofile_models
-from egg_timer.libs import email_sender
+from eggtimer.apps.periods import models as period_models
+from eggtimer.apps.userprofiles import models as userprofile_models
+from eggtimer.libs import email_sender
 
 
 class Command(BaseCommand):

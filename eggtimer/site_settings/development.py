@@ -1,4 +1,4 @@
-from egg_timer.site_settings.common import *
+from eggtimer.site_settings.common import *
 
 import os
 
@@ -10,7 +10,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'egg_timer',                      # Or path to database file if using sqlite3.
+        'NAME': 'eggtimer',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -26,7 +26,7 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '%s/Development/Django/egg_timer/emails' % HOME_DIR
+EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
 
 INSTALLED_APPS.extend([
     'django_nose',
@@ -42,8 +42,8 @@ DJANGO_ARGS = [
 NOSE_ARGS = [
     '--verbosity=0',
     '--cover-branches',
-    '--cover-package=egg_timer',
+    '--cover-package=eggtimer',
     '--cover-inclusive',  # Cover all files
     '--cover-html',
-    '--cover-html-dir=%s/egg_timer_coverage' % os.environ.get('HOME'),
+    '--cover-html-dir=%s/eggtimer_coverage' % os.environ.get('HOME'),
 ]

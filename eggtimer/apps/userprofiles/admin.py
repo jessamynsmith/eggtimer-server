@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from tastypie.models import create_api_key
 
-from egg_timer.apps.userprofiles import models as userprofile_models
+from eggtimer.apps.userprofiles import models as userprofile_models
 
 
 admin.site.register(userprofile_models.UserProfile)

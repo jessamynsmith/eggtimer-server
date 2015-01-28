@@ -1,5 +1,5 @@
 [run]
-source = egg_timer
+source = eggtimer
 branch = 1
 omit = */tests.py
     */migrations/*
