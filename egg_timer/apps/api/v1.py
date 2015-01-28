@@ -96,6 +96,7 @@ class PeriodDetailResource(PeriodResource):
         if end_date:
             end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
 
+        # TODO make filtering by request user automatic, not in every query
         period_start_dates = statistics.userprofile.periods.filter(
             userprofile__user=request.user, start_date__gte=start_date, start_date__lte=end_date)
         period_start_dates = list(period_start_dates.values_list('start_date', flat=True))

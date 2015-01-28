@@ -13,6 +13,7 @@ from django.template import RequestContext
 
 @login_required
 def profile(request):
+    # TODO add editing of profile, at least luteal phase and full name; change password would be nice
     site = site_models.Site.objects.get(id=settings.SITE_ID)
     periods_url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {
