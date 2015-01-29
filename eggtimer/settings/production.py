@@ -1,7 +1,7 @@
 # Django settings for quotations project.
 import os
 
-from eggtimer.site_settings.common import *
+from eggtimer.settings.common import *
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url

@@ -1,4 +1,4 @@
-from eggtimer.site_settings.common import *
+from eggtimer.settings.common import *
 
 import os
 
