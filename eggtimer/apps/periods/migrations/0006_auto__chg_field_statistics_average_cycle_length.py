@@ -9,6 +9,8 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
 
+        orm.Statistics.objects.filter(average_cycle_length__isnull=True).update(average_cycle_length=28)
+
         # Changing field 'Statistics.average_cycle_length'
         db.alter_column('periods_statistics', 'average_cycle_length', self.gf('django.db.models.fields.IntegerField')())
 
