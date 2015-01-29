@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Statistics for {{ user.get_profile.full_name }}{% endblock %}
+{% block title %}Statistics for {{ user.username }}{% endblock %}
 
 {% block head %}
     <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.js'></script>
 {% endblock %}
 
 {% block content %}
-    <h3>Statistics for {{ user.get_profile.full_name }}</h3>
+    <h3>Statistics for {{ user.username }}</h3>
 
     <table class="table-condensed">
-        <tr><th>Average Cycle Length:</th><td>{{ user.get_profile.statistics.average_cycle_length }}</td></tr>
+        <tr><th>Average Cycle Length:</th><td>{{ userprofile.statistics.average_cycle_length }}</td></tr>
     </table>
 
     {% if bins %}

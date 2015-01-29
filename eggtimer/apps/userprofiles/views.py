@@ -2,20 +2,19 @@ import datetime
 import json
 from urllib import urlencode
 
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import models as auth_models
-from django.contrib.sites import models as site_models
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
+from eggtimer.apps.userprofiles import models as userprofile_models
 
 
 @login_required
 def profile(request):
     # TODO add editing of profile, at least luteal phase and full name;
     # change password would be nice
-    site = site_models.Site.objects.get(id=settings.SITE_ID)
     periods_url = reverse('api_dispatch_list',
                           kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {
@@ -23,7 +22,7 @@ def profile(request):
         'api_key': request.user.api_key.key
     }
     data = {
-        'periods_url': '%s%s?%s' % (site.domain, periods_url, urlencode(params))
+        'periods_url': request.build_absolute_uri('%s?%s' % (periods_url, urlencode(params)))
     }
 
     return render_to_response('userprofiles/profile.html', data,
@@ -86,7 +85,7 @@ def qigong_cycles(request):
             data['error'] = "Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30"
 
     if request.user and request.user != auth_models.AnonymousUser():
-        userprofile = request.user.get_profile()
+        userprofile = userprofile_models.UserProfile.objects.get(user=request.user)
 
         if userprofile.birth_date:
             birth_date = userprofile.birth_date

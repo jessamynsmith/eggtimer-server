@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from eggtimer.apps.periods import models as period_models
+from eggtimer.apps.userprofiles import models as userprofile_models
 
 
 @login_required
@@ -22,10 +23,15 @@ def calendar(request):
 
 @login_required
 def statistics(request):
+    userprofile = userprofile_models.UserProfile.objects.get(user=request.user)
+
     periods = period_models.Period.objects.filter(
         userprofile__user=request.user, length__isnull=False).order_by('length')
     cycle_lengths = periods.values_list('length', flat=True)
-    data = {'cycle_lengths': json.dumps(list(cycle_lengths))}
+    data = {
+        'userprofile': userprofile,
+        'cycle_lengths': json.dumps(list(cycle_lengths))
+    }
     if len(cycle_lengths) > 0:
         shortest = cycle_lengths[0]
         longest = cycle_lengths[len(cycle_lengths) - 1]

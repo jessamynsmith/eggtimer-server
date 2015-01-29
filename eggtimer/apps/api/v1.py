@@ -59,9 +59,9 @@ class PeriodResource(ModelResource):
             userprofile__user=request.user)
 
     def obj_create(self, bundle, request=None, **kwargs):
-        user_profile = bundle.request.user.get_profile()
+        userprofile = userprofile_models.UserProfile.objects.get(user=bundle.request.user)
         return super(PeriodResource, self).obj_create(
-            bundle, request=request, userprofile=user_profile, **kwargs)
+            bundle, request=request, userprofile=userprofile, **kwargs)
 
 
 class PeriodDetailResource(PeriodResource):
