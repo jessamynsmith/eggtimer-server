@@ -3,6 +3,9 @@ import os
 
 from eggtimer.settings.common import *
 
+
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 DATABASES = {
