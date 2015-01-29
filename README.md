@@ -4,6 +4,8 @@ eggtimer
 A simple tracker for menstrual periods. Check out the live app:
 https://eggtimer.herokuapp.com/
 
+[![Build Status](https://travis-ci.org/jessamynsmith/eggtimer.svg?branch=master)](https://travis-ci.org/jessamynsmith/eggtimer)
+
 
 For local development, create a virtualenv:
 
