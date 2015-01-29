@@ -1,6 +1,6 @@
 -r common.txt
-boto==2.9.0
-dj-database-url==0.2.1
-django-s3-folder-storage==0.1
+boto==2.36.0
+dj-database-url==0.3.0
+django-s3-folder-storage==0.2
 django-storages==1.1.8
-gunicorn==0.17.2
+gunicorn==19.1.1
