@@ -1,9 +1,6 @@
 # Django settings for eggtimer project.
 import os
 
-# This is overridden by an environment variable in production.py
-SECRET_KEY = 'psu&amp;&amp;83=i(4wgd@9*go=nps9=1rw#9b_w6psy4mp6yoxqv1i5g'
-
 ADMINS = (
     (os.environ.get('ADMIN_NAME'), os.environ.get('ADMIN_EMAIL')),
 )

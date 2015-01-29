@@ -4,6 +4,8 @@ import os
 
 HOME_DIR = os.path.expanduser("~")
 
+SECRET_KEY = 'psu&amp;&amp;83=i(4wgd@9*go=nps9=1rw#9b_w6psy4mp6yoxqv1i5g'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
