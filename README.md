@@ -21,8 +21,7 @@ Use dev settings:
 
 Run tests and view coverage:
 
-    coverage run -m nose
-    coverage report
+     python manage.py test --with-coverage
 
 Check code style:
 

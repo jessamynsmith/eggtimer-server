@@ -17,7 +17,7 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '',
         'PORT': '',
-        }
+    }
 }
 
 MEDIA_ROOT = '/tmp/media'
