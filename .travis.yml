@@ -9,4 +9,4 @@ install: "pip install -r requirements/development.txt"
 script: python manage.py test --settings=eggtimer.settings.development --with-coverage && flake8
 
 after_success:
-  coveralls
+    coveralls
