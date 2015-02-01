@@ -1,11 +1,11 @@
 eggtimer
 ==============
 
-A simple tracker for menstrual periods. Check out the live app:
-https://eggtimer.herokuapp.com/
-
 [![Build Status](https://travis-ci.org/jessamynsmith/eggtimer.svg?branch=master)](https://travis-ci.org/jessamynsmith/eggtimer)
 [![Coverage Status](https://coveralls.io/repos/jessamynsmith/eggtimer/badge.svg?branch=master)](https://coveralls.io/r/jessamynsmith/eggtimer?branch=master)
+
+A simple tracker for menstrual periods. Check out the live app:
+https://eggtimer.herokuapp.com/
 
 For local development, create a virtualenv:
 
