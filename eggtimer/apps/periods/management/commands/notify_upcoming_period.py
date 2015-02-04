@@ -13,14 +13,15 @@ class Command(BaseCommand):
     help = 'Notify users of upcoming periods'
 
     def handle(self, *args, **options):
-        users = userprofile_models.UserProfile.objects.filter(
-            periods__isnull=False).filter(statistics__isnull=False).distinct()
-        for user in users:
-            if not user.periods.count():
+        profiles = userprofile_models.UserProfile.objects.filter(
+            periods__isnull=False, statistics__isnull=False).exclude(
+            send_emails=False).distinct()
+        for profile in profiles:
+            if not profile.periods.count():
                 continue
 
-            expected_in = (user.statistics.average_cycle_length
-                           - user.statistics.current_cycle_length)
+            expected_in = (profile.statistics.average_cycle_length
+                           - profile.statistics.current_cycle_length)
             expected_abs = abs(expected_in)
             expected_date = period_models._today() + datetime.timedelta(
                 days=expected_in)
@@ -31,7 +32,7 @@ class Command(BaseCommand):
                 day = 'days'
 
             context = Context({
-                'full_name': user.full_name,
+                'full_name': profile.full_name,
                 'expected_in': expected_abs,
                 'day': day,
                 'expected_date': formatted_date,
@@ -53,4 +54,4 @@ class Command(BaseCommand):
                 template_name = 'ovulating'
             if subject:
                 plaintext = get_template('email/%s.txt' % template_name)
-                email_sender.send(user, subject, plaintext.render(context), None)
+                email_sender.send(profile, subject, plaintext.render(context), None)

@@ -6,6 +6,7 @@ from django.db import models
 class UserProfile(models.Model):
 
     user = models.OneToOneField(auth_models.User)
+    send_emails = models.BooleanField(default=True)
     birth_date = models.DateTimeField(null=True, blank=True)
     luteal_phase_length = models.IntegerField(default=14)
 
