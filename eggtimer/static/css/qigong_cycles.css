@@ -1,0 +1,33 @@
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.line {
+    fill: none;
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.physical {
+    fill: none;
+    stroke: red;
+    color: red;
+    stroke-width: 2px;
+}
+
+.emotional {
+    fill: none;
+    color: blue;
+    stroke: blue;
+    stroke-width: 2px;
+}
+
+.intellectual {
+    fill: none;
+    color: purple;
+    stroke: purple;
+    stroke-width: 2px;
+}

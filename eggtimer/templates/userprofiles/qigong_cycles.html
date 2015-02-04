@@ -3,46 +3,10 @@
 {% block title %}Medical Qigong Energetic Cycles{% if user.username %} for {{ user.username }}{% endif %}{% endblock %}
 
 {% block head %}
-    <script type='text/javascript' src='{{ STATIC_URL }}js/d3.v3/d3.v3.js'></script>
+    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js'></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/qigong_cycles.css" type="text/css" media="screen" />
 
-    <style>
-
-        .axis path,
-        .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-        }
-
-        .line {
-            fill: none;
-            stroke: black;
-            stroke-width: 2px;
-        }
-
-        .physical {
-            fill: none;
-            stroke: red;
-            color: red;
-            stroke-width: 2px;
-        }
-
-        .emotional {
-            fill: none;
-            color: blue;
-            stroke: blue;
-            stroke-width: 2px;
-        }
-
-        .intellectual {
-            fill: none;
-            color: purple;
-            stroke: purple;
-            stroke-width: 2px;
-        }
-
-</style>
-
+    <script type='text/javascript' src='{{ STATIC_URL }}js/qigong_cycles.js'></script>
 {% endblock %}
 
 {% block content %}
@@ -97,161 +61,11 @@
 
         <br/>
 
-    <script>
-
-        var width = $(window).width() - 110;
-        var height = 300;
-        var padding = {top: 15, right: 15, bottom: 70, left: 60};
-
-        var tickValues = {{ tick_values|safe }};
-        var physical_data = {{ cycles.physical.data|safe }};
-        var emotional_data = {{ cycles.emotional.data|safe }};
-        var intellectual_data = {{ cycles.intellectual.data|safe }};
-
-        var xScale = d3.scale.ordinal()
-                .domain(physical_data.map(function (d) {
-                    return d[0];
-                }))
-                .rangePoints([0, width]);
-
-        var yScale = d3.scale.linear()
-                .range([height, 0])
-                .domain([0, 100]);
-
-        var xAxis = d3.svg.axis()
-                .scale(xScale)
-                .orient("bottom")
-                .tickValues(tickValues);
-
-        var yAxis = d3.svg.axis()
-                .scale(yScale)
-                .orient("left");
-
-        var line = d3.svg.line()
-                .x(function (d) {
-                    return xScale(d[0]);
-                })
-                .y(function (d) {
-                    return yScale(d[1]);
-                });
-
-        var svg = d3.select("body").append("svg")
-                .attr("width", width + padding.left + padding.right)
-                .attr("height", height + padding.top + padding.bottom)
-                .append("g")
-                .attr("transform", "translate(" + padding.left + "," + padding.top + ")");
-
-        svg.append("path")
-                .datum(physical_data)
-                .attr("class", "physical")
-                .attr("d", line);
-
-        svg.append("path")
-                .datum(emotional_data)
-                .attr("class", "emotional")
-                .attr("d", line);
-
-        svg.append("path")
-                .datum(intellectual_data)
-                .attr("class", "intellectual")
-                .attr("d", line);
-
-        svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis)
-                .selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-1em")
-                .attr("dy", "0.6em")
-                .attr("transform", function (d) {
-                    return "rotate(-35)"
-                });
-
-        svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxis);
-
-        var today = svg.selectAll('path.median.x')
-                .data([
-                    [
-                        ["{{ today }}", 0],
-                        ["{{ today }}", 100]
-                    ]
-                ])
-                .enter()
-                .append('svg:path')
-                .attr('class', 'line')
-                .style("stroke-dasharray", ("3, 3"))
-                .attr("d", d3.svg.line()
-                        .x(function (d, i) {
-                            return xScale(d[0]);
-                        })
-                        .y(function (d, i) {
-                            return yScale(d[1]);
-                        })
-                );
-
-        var physical = svg.selectAll('path.median.y')
-                .data([
-                    [
-                        ["{{ start }}", {{ cycles.physical.level }}],
-                        ["{{ today }}", {{ cycles.physical.level }}]
-                    ]
-                ])
-                .enter()
-                .append('svg:path')
-                .attr('class', 'physical')
-                .style("stroke-dasharray", ("3, 3"))
-                .attr("d", d3.svg.line()
-                        .x(function (d, i) {
-                            return xScale(d[0]);
-                        })
-                        .y(function (d, i) {
-                            return yScale(d[1]);
-                        })
-                );
-
-        var emotional = svg.selectAll('path.median.y')
-                .data([
-                    [
-                        ["{{ start }}", {{ cycles.emotional.level }}],
-                        ["{{ today }}", {{ cycles.emotional.level }}]
-                    ]
-                ])
-                .enter()
-                .append('svg:path')
-                .attr('class', 'emotional')
-                .style("stroke-dasharray", ("3, 3"))
-                .attr("d", d3.svg.line()
-                        .x(function (d, i) {
-                            return xScale(d[0]);
-                        })
-                        .y(function (d, i) {
-                            return yScale(d[1]);
-                        })
-                );
-
-        var intellectual = svg.selectAll('path.median.y')
-                .data([
-                    [
-                        ["{{ start }}", {{ cycles.intellectual.level }}],
-                        ["{{ today }}", {{ cycles.intellectual.level }}]
-                    ]
-                ])
-                .enter()
-                .append('svg:path')
-                .attr('class', 'intellectual')
-                .style("stroke-dasharray", ("3, 3"))
-                .attr("d", d3.svg.line()
-                        .x(function (d, i) {
-                            return xScale(d[0]);
-                        })
-                        .y(function (d, i) {
-                            return yScale(d[1]);
-                        })
-                );
-
+    <script type="text/javascript">
+        qigong_cycles({{ tick_values|safe }}, {{ cycles.physical.data|safe }},
+                {{ cycles.emotional.data|safe }}, {{ cycles.intellectual.data|safe }},
+                {{ cycles.physical.level }}, {{ cycles.emotional.level }}, {{ cycles.intellectual.level }},
+                "{{ start }}", "{{ today }}");
     </script>
 
     {% endif %}
