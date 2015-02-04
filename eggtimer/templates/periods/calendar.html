@@ -3,19 +3,24 @@
 {% block title %}Periods for {{ user.username }}{% endblock %}
 
 {% block head %}
-	<link rel='stylesheet' type='text/css' href='{{ STATIC_URL }}fullcalendar/fullcalendar.css' />
-    <script type='text/javascript' src='{{ STATIC_URL }}fullcalendar/fullcalendar.js'></script>
+
+	<link rel='stylesheet' type='text/css'
+          href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.6/fullcalendar.min.css' />
+    <script type="text/javascript"
+            src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script type='text/javascript'
+            src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.6/fullcalendar.min.js'></script>
 
 	<script type='text/javascript'>
 		$(document).ready(function() {
             $('#calendar').fullCalendar({
-                events: function(start, end, callback) {
+                events: function(start, end, timezone, callback) {
                     $.ajax({
                         url: '{{ periods_url }}',
                         dataType: 'json',
                         data: {
-                            start_date__gte: start.toJSON().split('T')[0],
-                            start_date__lte: end.toJSON().split('T')[0]
+                            start_date__gte: start.format('YYYY-MM-DD'),
+                            start_date__lte: end.format('YYYY-MM-DD')
                         },
                         success: function(doc) {
                             var events = [];
@@ -47,11 +52,11 @@
                         }
                     });
                 },
-                dayClick: function() {
-                    var start_date = arguments[0].toJSON().split('T')[0];
+                dayClick: function(date, jsEvent, view) {
+                    var start_date = date.toDate();
                     var data = {'start_date': start_date};
                     var now = new Date();
-                    if (arguments[0].getDate() == now.getDate()) {
+                    if (start_date == now.getDate()) {
                         data['start_time'] = now.toLocaleTimeString();
                     }
                     $.ajax({
@@ -73,7 +78,7 @@
                     });
 
                 },
-                eventClick: function() {
+                eventClick: function(calEvent, jsEvent, view) {
                     var period_id = arguments[0].period_id;
                     $.ajax({
                         url: '{{ periods_url }}' + period_id + '/',
