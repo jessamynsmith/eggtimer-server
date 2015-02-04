@@ -33,5 +33,5 @@ docopt = 0.6.2
 PyYAML = 3.11
 requests = 2.5.1
 paragres = 0.5
-pipreq = 0.2
+pipreq = 0.3
 
