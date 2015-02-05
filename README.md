@@ -19,6 +19,11 @@ Use dev settings:
 
     export DJANGO_SETTINGS_MODULE=eggtimer.settings.development
 
+Set up db:
+
+    python manage.py syncdb
+    python manage.py migrate
+
 Run tests and view coverage:
 
      python manage.py test --with-coverage
@@ -26,6 +31,10 @@ Run tests and view coverage:
 Check code style:
 
     flake8
+
+Run server:
+
+    python manage.py runserver
 
 
 Thank you to:
