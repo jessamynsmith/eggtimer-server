@@ -20,15 +20,15 @@ DATABASES = {
     }
 }
 
-MEDIA_ROOT = '/tmp/media'
-MEDIA_URL = ''
-
 STATIC_ROOT = '/tmp/static'
-STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+MEDIA_ROOT = '/tmp/media'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
+
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS.extend([
     'django_nose',

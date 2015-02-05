@@ -21,8 +21,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eggtimer.settings.production")
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+from dj_static import Cling, MediaCling
 
-# Apply WSGI middleware here.
-# from helloworld.wsgi import HelloWorldApplication
-# application = HelloWorldApplication(application)
+application = Cling(MediaCling(get_wsgi_application()))

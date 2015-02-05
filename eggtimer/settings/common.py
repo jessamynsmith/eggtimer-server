@@ -20,11 +20,8 @@ USE_TZ = True
 APP_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__),
                                          os.path.pardir))
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -66,7 +63,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'eggtimer.urls'
 
-WSGI_APPLICATION = 'eggtimer.wsgi.application'
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'quotations.wsgi.application'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,7 +78,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     'eggtimer.apps.userprofiles',
     'eggtimer.apps.api',
-    'eggtimer.apps.periods',
+    'quotations.apps.quotations',
 ]
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'

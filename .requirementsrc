@@ -13,11 +13,10 @@ django-registration-redux = 1.1
 python-mimeparse = 0.1.4
 
 [production]
-boto = 2.36.0
 dj-database-url = 0.3.0
-django-s3-folder-storage = 0.2
-django-storages = 1.1.8
 gunicorn = 19.1.1
+dj-static = 0.0.6
+static3 = 0.5.1
 
 [development]
 coverage = 3.7.1
