@@ -1,7 +1,7 @@
 [run]
 source = eggtimer
 branch = 1
-omit = */tests.py
+omit = *tests*
     */migrations/*
     *__init__.py*
-    */settings/*
+    *settings*
