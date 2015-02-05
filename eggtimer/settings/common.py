@@ -64,7 +64,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'eggtimer.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'eggtimer.wsgi.application'
+WSGI_APPLICATION = 'eggtimer.wsgi.wsgi.application'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

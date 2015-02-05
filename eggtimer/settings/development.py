@@ -42,7 +42,7 @@ DJANGO_ARGS = [
 ]
 
 NOSE_ARGS = [
-    '--exclude=settings',
+    '--exclude-dir=eggtimer/wsgi',
     '--verbosity=0',
     '--cover-branches',
     '--cover-package=eggtimer',
