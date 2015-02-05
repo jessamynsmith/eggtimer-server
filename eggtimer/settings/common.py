@@ -64,7 +64,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'eggtimer.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'quotations.wsgi.application'
+WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     'bootstrapform',
     'eggtimer.apps.userprofiles',
     'eggtimer.apps.api',
-    'quotations.apps.quotations',
+    'eggtimer.apps.periods',
 ]
 
 AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
