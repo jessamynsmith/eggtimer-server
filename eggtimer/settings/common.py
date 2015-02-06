@@ -2,7 +2,7 @@
 import os
 
 ADMINS = (
-    (os.environ.get('ADMIN_NAME'), os.environ.get('ADMIN_EMAIL')),
+    (os.environ.get('ADMIN_NAME', 'admin'), os.environ.get('ADMIN_EMAIL', 'example@example.com')),
 )
 
 SITE_ID = 1
