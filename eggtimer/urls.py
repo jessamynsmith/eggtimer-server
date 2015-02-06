@@ -23,6 +23,7 @@ urlpatterns = patterns(
     (r'^$', lambda x: HttpResponseRedirect('/calendar/')),
     url(r'^accounts/profile/$', userprofile_views.profile, name='user_profile'),
     (r'^accounts/', include('registration.backends.default.urls')),
+    (r'^accounts/', include('password_reset.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
 

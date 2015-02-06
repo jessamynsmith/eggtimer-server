@@ -13,6 +13,7 @@ django-registration-redux = 1.1
 python-mimeparse = 0.1.4
 dj-static = 0.0.6
 static3 = 0.5.1
+django-password-reset = 0.7
 
 [production]
 dj-database-url = 0.3.0
