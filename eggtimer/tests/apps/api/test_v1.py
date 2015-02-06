@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth import models as auth_models
 from django.http import HttpRequest
 from django.test import TestCase
+import json
 from mock import patch
 
 from eggtimer.apps.periods import models as period_models
@@ -31,7 +32,8 @@ class TestPeriodDetailResource(TestCase):
         response = self.resource.create_response(self.request, data)
 
         self.assertEqual('application/json', response['Content-Type'])
-        self.assertEqual(0, len(data['objects']))
+        content = json.loads(response.content.decode('ascii'))
+        self.assertEqual(0, len(content['objects']))
 
     @patch('eggtimer.apps.periods.models._today')
     def test_create_response(self, mock_today):
@@ -41,9 +43,9 @@ class TestPeriodDetailResource(TestCase):
         response = self.resource.create_response(self.request, data)
 
         self.assertEqual('application/json', response['Content-Type'])
-        # TODO assert on response content
-        self.assertEqual(7, len(data['objects']))
-        data_0 = {"start_date": datetime.date(2014, 3, 14), "text": "Day: 15", "type": "day count"}
-        self.assertEqual(data_0, data['objects'][0].data)
-        data_1 = {"start_date": datetime.date(2014, 5, 9), "type": "projected ovulation"}
-        self.assertEqual(data_1, data['objects'][6].data)
+        content = json.loads(response.content.decode('ascii'))
+        self.assertEqual(7, len(content['objects']))
+        data_0 = {"start_date": '2014-03-14', "text": "Day: 15", "type": "day count"}
+        self.assertEqual(data_0, content['objects'][0])
+        data_1 = {"start_date": '2014-05-09', "type": "projected ovulation"}
+        self.assertEqual(data_1, content['objects'][6])
