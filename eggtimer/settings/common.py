@@ -5,6 +5,8 @@ ADMINS = (
     (os.environ.get('ADMIN_NAME'), os.environ.get('ADMIN_EMAIL')),
 )
 
+SITE_ID = 1
+
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 TIME_ZONE = 'America/Toronto'
@@ -64,13 +66,14 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'eggtimer.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'eggtimer.wsgi.wsgi.application'
+WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'registration',

@@ -1,6 +1,6 @@
 import datetime
 import json
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import models as auth_models
@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
+from eggtimer.apps.api.v1 import DATE_FORMAT
 from eggtimer.apps.userprofiles import models as userprofile_models
 
 
@@ -80,7 +81,7 @@ def qigong_cycles(request):
     birth_date_string = request.GET.get('birth_date')
     if birth_date_string:
         try:
-            birth_date = datetime.datetime.strptime(birth_date_string, "%Y-%m-%d")
+            birth_date = datetime.datetime.strptime(birth_date_string, DATE_FORMAT)
         except ValueError:
             data['error'] = "Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30"
 

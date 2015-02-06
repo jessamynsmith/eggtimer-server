@@ -1,5 +1,5 @@
 import json
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -35,7 +35,8 @@ def statistics(request):
     if len(cycle_lengths) > 0:
         shortest = cycle_lengths[0]
         longest = cycle_lengths[len(cycle_lengths) - 1]
-        data['bins'] = range(shortest, longest + 2)  # +1 for inclusive, +1 for last bin
+        # +1 each for inclusive, +1 for last bin
+        data['bins'] = [x for x in range(shortest, longest + 2)]
 
     url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     args = {'order_by': '-start_date', 'limit': '0', 'length__isnull': False}

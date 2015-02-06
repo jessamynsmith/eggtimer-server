@@ -21,7 +21,7 @@ class Period(models.Model):
     class Meta:
         unique_together = (("userprofile", "start_date"),)
 
-    def __unicode__(self):
+    def __str__(self):
         start_time = ''
         if self.start_time:
             start_time = ' %s' % self.start_time
@@ -67,7 +67,7 @@ class Statistics(models.Model):
                     days=i*self.average_cycle_length - self.userprofile.luteal_phase_length))
         return next_dates
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (avg: %s)" % (self.userprofile.full_name, self.average_cycle_length)
 
     def get_absolute_url(self):
@@ -145,7 +145,7 @@ def update_statistics(sender, instance, **kwargs):
 
     # Calculate average (if possible) and update statistics object
     if len(cycle_lengths) > 0:
-        avg = float(sum(cycle_lengths)) / len(cycle_lengths)
+        avg = sum(cycle_lengths) / len(cycle_lengths)
         stats.average_cycle_length = int(round(avg))
     stats.save()
 

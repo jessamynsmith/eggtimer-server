@@ -2,12 +2,10 @@ language: python
 python:
     - "2.7"
 
-# command to install dependencies
 install: "pip install -r requirements/development.txt"
 
-# command to run tests
 script:
-    - python manage.py test --settings=eggtimer.settings.development --with-coverage
+    - coverage run manage.py test eggtimer --settings=eggtimer.settings.development
     - flake8
 
 after_success:

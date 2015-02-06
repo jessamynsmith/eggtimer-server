@@ -9,6 +9,9 @@ from eggtimer.apps.periods import models as period_models
 from eggtimer.apps.userprofiles import models as userprofile_models
 
 
+DATE_FORMAT = "%Y-%m-%d"
+
+
 class BaseMeta(object):
     authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
     authorization = DjangoAuthorization()
@@ -87,29 +90,34 @@ class PeriodDetailResource(PeriodResource):
             ovulation = {'start_date': expected_date, 'type': 'projected ovulation'}
             projected_data.append(Bundle(data=ovulation))
 
+        # TODO make filtering by request user automatic, not in every query
+        period_start_dates = statistics.userprofile.periods.filter(
+            userprofile__user=request.user)
+        previous_periods = statistics.userprofile.periods.all()
+        current_date = period_models._today()
+
         start_date = request.GET.get('start_date__gte')
         if start_date:
-            start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+            start_date = datetime.datetime.strptime(start_date, DATE_FORMAT)
+            period_start_dates.filter(start_date__gte=start_date)
+            previous_periods.filter(start_date__lte=start_date)
+            current_date = start_date.date()
 
         end_date = request.GET.get('start_date__lte')
         if end_date:
-            end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+            end_date = datetime.datetime.strptime(end_date, DATE_FORMAT)
+            period_start_dates.filter(start_date__lte=end_date)
 
-        # TODO make filtering by request user automatic, not in every query
-        period_start_dates = statistics.userprofile.periods.filter(
-            userprofile__user=request.user, start_date__gte=start_date, start_date__lte=end_date)
         period_start_dates = list(period_start_dates.values_list('start_date', flat=True))
         period_start_dates.extend(statistics.next_periods)
 
-        previous_periods = statistics.userprofile.periods.filter(
-            start_date__lte=start_date).order_by('-start_date')
-        if previous_periods:
+        previous_periods = previous_periods.order_by('-start_date')
+        if previous_periods.exists():
             previous_period = previous_periods[0]
 
             one_day = datetime.timedelta(days=1)
-            current_date = start_date.date()
             current_day = (current_date - previous_period.start_date).days + 1
-            while current_date <= datetime.date.today():
+            while current_date <= period_models._today():
                 if current_date in period_start_dates:
                     current_day = 1
                 day_count = {'start_date': current_date, 'type': 'day count',

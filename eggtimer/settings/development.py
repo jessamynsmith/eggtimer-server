@@ -30,24 +30,4 @@ EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
 
 ALLOWED_HOSTS = ['*']
 
-INSTALLED_APPS.extend([
-    'django_nose',
-])
-
-# Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
-DJANGO_ARGS = [
-    '--verbosity=0',
-]
-
-NOSE_ARGS = [
-    '--exclude=settings',
-    '--exclude-dir=eggtimer/wsgi',
-    '--verbosity=0',
-    '--cover-branches',
-    '--cover-package=eggtimer',
-    '--cover-inclusive',  # Cover all files
-    '--cover-html',
-    '--cover-html-dir=%s/eggtimer_coverage' % os.environ.get('HOME'),
-]
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'

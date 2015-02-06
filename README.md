@@ -7,15 +7,19 @@ eggtimer
 A simple tracker for menstrual periods. Check out the live app:
 https://eggtimer.herokuapp.com/
 
-For local development, create a virtualenv:
+Development
+-----------
 
-    mkvirtualenv eggtimer
+Fork the project on github and git clone your fork, e.g.:
 
-Install requirements:
+    git clone https://github.com/<username>/quotations.git
 
+Create a virtualenv and install dependencies:
+
+    mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
-Use dev settings:
+Use development settings:
 
     export DJANGO_SETTINGS_MODULE=eggtimer.settings.development
 
@@ -26,7 +30,8 @@ Set up db:
 
 Run tests and view coverage:
 
-     python manage.py test --with-coverage
+     coverage run manage.py test eggtimer
+     coverage report
 
 Check code style:
 

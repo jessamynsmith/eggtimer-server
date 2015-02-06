@@ -104,6 +104,7 @@ class TestModels(TestCase):
     @patch('eggtimer.apps.periods.models._today')
     def test_update_statistics_periods_exist(self, mock_today):
         mock_today.return_value = datetime.date(2013, 5, 5)
+        self._create_period(start_date=datetime.date(2013, 3, 15))
         self._create_period(start_date=datetime.date(2013, 4, 1))
         period = self._create_period(start_date=datetime.date(2013, 4, 15))
         self._create_period(start_date=datetime.date(2013, 4, 30))

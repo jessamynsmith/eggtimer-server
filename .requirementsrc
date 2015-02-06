@@ -11,18 +11,16 @@ python-dateutil = 2.4.0
 six = 1.9.0
 django-registration-redux = 1.1
 python-mimeparse = 0.1.4
-
-[production]
-dj-database-url = 0.3.0
-gunicorn = 19.1.1
 dj-static = 0.0.6
 static3 = 0.5.1
 
+[production]
+dj-database-url = 0.3.0
+gunicorn = 19.2.1
+
 [development]
 coverage = 3.7.1
-django-nose = 1.3
 mock = 1.0.1
-nose = 1.3.4
 flake8 = 2.3.0
 mccabe = 0.3
 pep8 = 1.5.7
@@ -33,5 +31,4 @@ PyYAML = 3.11
 requests = 2.5.1
 paragres = 0.5
 pipreq = 0.3
-nose-exclude = 0.2.0
 

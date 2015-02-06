@@ -17,9 +17,6 @@ class Command(BaseCommand):
             periods__isnull=False, statistics__isnull=False).exclude(
             send_emails=False).distinct()
         for profile in profiles:
-            if not profile.periods.count():
-                continue
-
             expected_in = (profile.statistics.average_cycle_length
                            - profile.statistics.current_cycle_length)
             expected_abs = abs(expected_in)

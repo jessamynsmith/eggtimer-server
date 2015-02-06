@@ -1,0 +1,66 @@
+import datetime
+from django.contrib.auth import models as auth_models
+from django.test import TestCase
+from mock import ANY, patch
+
+from eggtimer.apps.periods import models as period_models
+from eggtimer.apps.periods.management.commands import notify_upcoming_period
+
+
+class TestModels(TestCase):
+
+    def setUp(self):
+        self.command = notify_upcoming_period.Command()
+        self.user = auth_models.User.objects.create_user(
+            username='jessamyn', password='bogus', email='jessamyn@example.com',
+            first_name=u'Jessamyn')
+        period_models.Period(userprofile=self.user.userprofile,
+                             start_date=datetime.date(2014, 1, 31)).save()
+        period_models.Period(userprofile=self.user.userprofile,
+                             start_date=datetime.date(2014, 2, 28)).save()
+
+    @patch('django.core.mail.EmailMultiAlternatives.send')
+    def test_notify_upcoming_period_no_periods(self, mock_send):
+        period_models.Period.objects.all().delete()
+
+        self.command.handle()
+
+        self.assertFalse(mock_send.called)
+
+    @patch('eggtimer.libs.email_sender.send')
+    @patch('eggtimer.apps.periods.models._today')
+    def test_notify_upcoming_period_ovulation(self, mock_today, mock_send):
+        mock_today.return_value = datetime.date(2014, 3, 14)
+
+        self.command.handle()
+
+        mock_send.assert_called_once_with(self.user.userprofile, 'Ovulation today!', ANY, None)
+
+    @patch('eggtimer.libs.email_sender.send')
+    @patch('eggtimer.apps.periods.models._today')
+    def test_notify_upcoming_period_expected_soon(self, mock_today, mock_send):
+        mock_today.return_value = datetime.date(2014, 3, 25)
+
+        self.command.handle()
+
+        mock_send.assert_called_once_with(self.user.userprofile, 'Period expected in 3 days',
+                                          ANY, None)
+
+    @patch('eggtimer.libs.email_sender.send')
+    @patch('eggtimer.apps.periods.models._today')
+    def test_notify_upcoming_period_expected_today(self, mock_today, mock_send):
+        mock_today.return_value = datetime.date(2014, 3, 28)
+
+        self.command.handle()
+
+        mock_send.assert_called_once_with(self.user.userprofile, 'Period today!', ANY, None)
+
+    @patch('eggtimer.libs.email_sender.send')
+    @patch('eggtimer.apps.periods.models._today')
+    def test_notify_upcoming_period_overdue(self, mock_today, mock_send):
+        mock_today.return_value = datetime.date(2014, 3, 31)
+
+        self.command.handle()
+
+        mock_send.assert_called_once_with(self.user.userprofile, 'Period was expected 3 days ago',
+                                          ANY, None)
