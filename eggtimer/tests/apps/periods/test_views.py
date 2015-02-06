@@ -37,5 +37,5 @@ class TestViews(TestCase):
         response = views.statistics(self.request)
 
         self.assertContains(response, '<th>Average Cycle Length:</th><td>28</td>')
-        self.assertContains(response, 'cycle_length_frequency(range(28, 30), [28]);')
+        self.assertContains(response, 'cycle_length_frequency([28, 29], [28]);')
         self.assertContains(response, 'cycle_length_history(')
