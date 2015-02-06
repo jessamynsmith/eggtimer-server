@@ -5,3 +5,5 @@ omit = *tests*
     */migrations/*
     *__init__.py*
     *settings*
+plugins =
+    django_coverage_plugin
