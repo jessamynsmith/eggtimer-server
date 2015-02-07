@@ -50,12 +50,8 @@ initializeCalendar = function(periods_url) {
                 contentType: 'application/json',
                 type: 'POST',
                 data: JSON.stringify(data),
-                // The ``X-CSRFToken`` evidently can't be set in the
-                // ``headers`` option, so force it here.
-                // This method requires jQuery 1.5+.
                 beforeSend: function(jqXHR, settings) {
-                    // Pull the token out of the DOM.
-                    jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
+                    jqXHR.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
                 },
                 success: function(data, textStatus, jqXHR) {
                     console.log("Period created starting on " + start_date);
@@ -70,12 +66,8 @@ initializeCalendar = function(periods_url) {
                 url: periods_url + period_id + '/',
                 contentType: 'application/json',
                 type: 'DELETE',
-                // The ``X-CSRFToken`` evidently can't be set in the
-                // ``headers`` option, so force it here.
-                // This method requires jQuery 1.5+.
                 beforeSend: function(jqXHR, settings) {
-                    // Pull the token out of the DOM.
-                    jqXHR.setRequestHeader('X-CSRFToken', $('input[name=csrfmiddlewaretoken]').val());
+                    jqXHR.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
                 },
                 success: function(data, textStatus, jqXHR) {
                     console.log("Period " + period_id + " deleted.");
