@@ -6,7 +6,6 @@ from tastypie.bundle import Bundle
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL
 from eggtimer.apps.periods import models as period_models
-from eggtimer.apps.userprofiles import models as userprofile_models
 
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -28,24 +27,22 @@ class StatisticsResource(ModelResource):
         resource_name = 'statistics'
 
     def get_object_list(self, request):
-        return super(StatisticsResource, self).get_object_list(request).filter(
-            userprofile__user=request.user)
+        return super(StatisticsResource, self).get_object_list(request).filter(user=request.user)
 
 
-class UserProfileResource(ModelResource):
+class UserResource(ModelResource):
     statistics = fields.ForeignKey(StatisticsResource, 'statistics', full=True)
 
     class Meta(BaseMeta):
-        queryset = userprofile_models.UserProfile.objects.all()
-        resource_name = 'userprofiles'
+        queryset = period_models.User.objects.all()
+        resource_name = 'users'
 
     def get_object_list(self, request):
-        return super(UserProfileResource, self).get_object_list(request).filter(
-            user=request.user)
+        return super(UserResource, self).get_object_list(request).filter(user=request.user)
 
 
 class PeriodResource(ModelResource):
-    userprofile = fields.ForeignKey(UserProfileResource, 'userprofile')
+    user = fields.ForeignKey(UserResource, 'user')
     start_date = fields.DateField('start_date')
 
     class Meta(BaseMeta):
@@ -58,13 +55,11 @@ class PeriodResource(ModelResource):
         resource_name = 'periods'
 
     def get_object_list(self, request):
-        return super(PeriodResource, self).get_object_list(request).filter(
-            userprofile__user=request.user)
+        return super(PeriodResource, self).get_object_list(request).filter(user=request.user)
 
     def obj_create(self, bundle, request=None, **kwargs):
-        userprofile = userprofile_models.UserProfile.objects.get(user=bundle.request.user)
         return super(PeriodResource, self).obj_create(
-            bundle, request=request, userprofile=userprofile, **kwargs)
+            bundle, request=request, user=bundle.request.user, **kwargs)
 
 
 class PeriodDetailResource(PeriodResource):
@@ -80,8 +75,7 @@ class PeriodDetailResource(PeriodResource):
 
     def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
 
-        statistics = period_models.Statistics.objects.filter(
-            userprofile__user=request.user)[0]
+        statistics = period_models.Statistics.objects.filter(user=request.user)[0]
         projected_data = []
         for expected_date in statistics.next_periods:
             period = {'start_date': expected_date, 'type': 'projected period'}
@@ -91,9 +85,8 @@ class PeriodDetailResource(PeriodResource):
             projected_data.append(Bundle(data=ovulation))
 
         # TODO make filtering by request user automatic, not in every query
-        period_start_dates = statistics.userprofile.periods.filter(
-            userprofile__user=request.user)
-        previous_periods = statistics.userprofile.periods.all()
+        period_start_dates = statistics.user.periods.filter(user=request.user)
+        previous_periods = statistics.user.periods.all()
         current_date = period_models._today()
 
         start_date = request.GET.get('start_date__gte')

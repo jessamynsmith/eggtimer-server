@@ -1,7 +1,6 @@
 [run]
 source = eggtimer
-# Re-enable when template coverage supports it
-# branch = True
+branch = True
 omit = *tests*
     */migrations/*
     *__init__.py*

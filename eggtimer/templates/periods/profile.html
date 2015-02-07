@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Account Information for {{ user.username }}{% endblock %}
+{% block title %}Account Information for {{ user.get_full_name }}{% endblock %}
 
 {% block content %}
-	<h3>Account Info for {{ user.username }}</h3>
+	<h3>Account Info for {{ user.get_full_name }}</h3>
 
     <p>
     <a href="{% url 'qigong_cycles' %}">Medical Qigong Cycles</a>

@@ -1,5 +1,5 @@
 import datetime
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from mock import patch
 
@@ -9,13 +9,11 @@ from eggtimer.apps.periods import models as period_models
 class TestModels(TestCase):
 
     def setUp(self):
-        self.user = auth_models.User.objects.create_user(
-            username='jessamyn', password='bogus', email='jessamyn@example.com',
-            first_name=u'Jessamyn')
+        self.user = get_user_model().objects.create_user(
+            password='bogus', email='jessamyn@example.com', first_name=u'Jessamyn')
 
     def _create_period(self, start_date, save=True):
-        period = period_models.Period.objects.create(
-            userprofile=self.user.userprofile, start_date=start_date)
+        period = period_models.Period.objects.create(user=self.user, start_date=start_date)
         if save:
             period.save()
         return period
@@ -30,7 +28,7 @@ class TestModels(TestCase):
         self.assertEqual(u'Jessamyn (2013-04-15 01:02:03)', '%s' % period)
 
     def test_statistics_unicode_no_average(self):
-        stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
+        stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(u'Jessamyn (avg: 28)', '%s' % stats)
         self.assertEqual([], stats.next_periods)
@@ -41,7 +39,7 @@ class TestModels(TestCase):
         self._create_period(start_date=datetime.date(2013, 3, 15))
         self._create_period(start_date=datetime.date(2013, 4, 10))
 
-        stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
+        stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(u'Jessamyn (avg: 27)', '%s' % stats)
         expected_periods = [datetime.date(2013, 5, 7),
@@ -54,7 +52,7 @@ class TestModels(TestCase):
         self.assertEqual(expected_ovulations, stats.next_ovulations)
 
     def test_statistics_current_cycle_length_no_periods(self):
-        stats = period_models.Statistics.objects.filter(userprofile=self.user.userprofile)[0]
+        stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(-1, stats.current_cycle_length)
         self.assertEqual([], stats.next_periods)
@@ -91,7 +89,7 @@ class TestModels(TestCase):
 
         period_models.update_statistics(period_models.Period, period)
 
-        stats = period_models.Statistics.objects.get(userprofile=self.user.userprofile)
+        stats = period_models.Statistics.objects.get(user=self.user)
         self.assertEqual(28, stats.average_cycle_length)
         self.assertEqual(20, stats.current_cycle_length)
         next_periods = [
@@ -111,7 +109,7 @@ class TestModels(TestCase):
 
         period_models.update_statistics(period_models.Period, period)
 
-        stats = period_models.Statistics.objects.get(userprofile=self.user.userprofile)
+        stats = period_models.Statistics.objects.get(user=self.user)
         self.assertEqual(15, stats.average_cycle_length)
         self.assertEqual(5, stats.current_cycle_length)
         next_periods = [

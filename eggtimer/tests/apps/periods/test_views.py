@@ -1,5 +1,5 @@
 import datetime
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.test import TestCase
 
@@ -10,13 +10,10 @@ from eggtimer.apps.periods import views
 class TestViews(TestCase):
 
     def setUp(self):
-        self.user = auth_models.User.objects.create_user(
-            username='jessamyn', password='bogus', email='jessamyn@example.com',
-            first_name=u'Jessamyn')
-        period_models.Period(userprofile=self.user.userprofile,
-                             start_date=datetime.date(2014, 1, 31)).save()
-        period_models.Period(userprofile=self.user.userprofile,
-                             start_date=datetime.date(2014, 2, 28)).save()
+        self.user = get_user_model().objects.create_user(
+            password='bogus', email='jessamyn@example.com', first_name=u'Jessamyn')
+        period_models.Period(user=self.user, start_date=datetime.date(2014, 1, 31)).save()
+        period_models.Period(user=self.user, start_date=datetime.date(2014, 2, 28)).save()
         self.request = HttpRequest()
         self.request.user = self.user
 

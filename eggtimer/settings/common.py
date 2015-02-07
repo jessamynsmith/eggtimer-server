@@ -77,15 +77,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'registration',
+    # TODO do I still need this with allauth?
     'password_reset',
     'tastypie',
     'bootstrapform',
-    'eggtimer.apps.userprofiles',
     'eggtimer.apps.api',
     'eggtimer.apps.periods',
 ]
 
-AUTH_PROFILE_MODULE = 'userprofiles.UserProfile'
+AUTH_USER_MODEL = 'periods.User'
 LOGIN_REDIRECT_URL = '/calendar/'
 
 from email.utils import formataddr

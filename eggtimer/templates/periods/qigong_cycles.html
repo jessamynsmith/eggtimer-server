@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Medical Qigong Energetic Cycles{% if user.username %} for {{ user.username }}{% endif %}{% endblock %}
+{% block title %}Medical Qigong Energetic Cycles{% if user.get_full_name %} for {{ user.get_full_name }}{% endif %}{% endblock %}
 
 {% block head %}
     <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js'></script>
@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <h3>Medical Qigong Energetic Cycles{% if user.username %} for {{ user.username }}{% endif %}</h3>
+    <h3>Medical Qigong Energetic Cycles{% if user.get_full_name %} for {{ user.get_full_name }}{% endif %}</h3>
 
     <p>In <a href="http://www.medicalqigong.org/">Medical Qigong</a> theory, your physical, emotional, and intellectual energetic cycles begin the moment
         you are born, and continue throughout your lifetime.</p>

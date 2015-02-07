@@ -5,7 +5,6 @@ from tastypie.api import Api
 
 from eggtimer.apps.api import v1 as api
 from eggtimer.apps.periods import views as period_views
-from eggtimer.apps.userprofiles import views as userprofile_views
 
 admin.autodiscover()
 
@@ -13,7 +12,7 @@ v1_api = Api(api_name='v1')
 v1_api.register(api.PeriodResource())
 v1_api.register(api.PeriodDetailResource())
 v1_api.register(api.StatisticsResource())
-v1_api.register(api.UserProfileResource())
+v1_api.register(api.UserResource())
 
 urlpatterns = patterns(
     '',
@@ -21,7 +20,7 @@ urlpatterns = patterns(
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     (r'^$', lambda x: HttpResponseRedirect('/calendar/')),
-    url(r'^accounts/profile/$', userprofile_views.profile, name='user_profile'),
+    url(r'^accounts/profile/$', period_views.profile, name='user_profile'),
     (r'^accounts/', include('registration.backends.default.urls')),
     (r'^accounts/', include('password_reset.urls')),
     url(r'^admin/', include(admin.site.urls)),
@@ -29,6 +28,5 @@ urlpatterns = patterns(
 
     url(r'^calendar/$', period_views.calendar, name='calendar'),
     url(r'^statistics/$', period_views.statistics, name='statistics'),
-
-    url(r'^qigong/cycles/$', userprofile_views.qigong_cycles, name='qigong_cycles'),
+    url(r'^qigong/cycles/$', period_views.qigong_cycles, name='qigong_cycles'),
 )

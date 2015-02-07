@@ -1,5 +1,5 @@
 import datetime
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from mock import ANY, patch
 
@@ -11,13 +11,10 @@ class TestModels(TestCase):
 
     def setUp(self):
         self.command = notify_upcoming_period.Command()
-        self.user = auth_models.User.objects.create_user(
-            username='jessamyn', password='bogus', email='jessamyn@example.com',
-            first_name=u'Jessamyn')
-        period_models.Period(userprofile=self.user.userprofile,
-                             start_date=datetime.date(2014, 1, 31)).save()
-        period_models.Period(userprofile=self.user.userprofile,
-                             start_date=datetime.date(2014, 2, 28)).save()
+        self.user = get_user_model().objects.create_user(
+            password='bogus', email='jessamyn@example.com', first_name=u'Jessamyn')
+        period_models.Period(user=self.user, start_date=datetime.date(2014, 1, 31)).save()
+        period_models.Period(user=self.user, start_date=datetime.date(2014, 2, 28)).save()
 
     @patch('django.core.mail.EmailMultiAlternatives.send')
     def test_notify_upcoming_period_no_periods(self, mock_send):
@@ -34,7 +31,7 @@ class TestModels(TestCase):
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user.userprofile, 'Ovulation today!', ANY, None)
+        mock_send.assert_called_once_with(self.user, 'Ovulation today!', ANY, None)
 
     @patch('eggtimer.libs.email_sender.send')
     @patch('eggtimer.apps.periods.models._today')
@@ -43,7 +40,7 @@ class TestModels(TestCase):
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user.userprofile, 'Period expected in 3 days',
+        mock_send.assert_called_once_with(self.user, 'Period expected in 3 days',
                                           ANY, None)
 
     @patch('eggtimer.libs.email_sender.send')
@@ -53,7 +50,7 @@ class TestModels(TestCase):
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user.userprofile, 'Period today!', ANY, None)
+        mock_send.assert_called_once_with(self.user, 'Period today!', ANY, None)
 
     @patch('eggtimer.libs.email_sender.send')
     @patch('eggtimer.apps.periods.models._today')
@@ -62,5 +59,5 @@ class TestModels(TestCase):
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user.userprofile, 'Period was expected 3 days ago',
+        mock_send.assert_called_once_with(self.user, 'Period was expected 3 days ago',
                                           ANY, None)

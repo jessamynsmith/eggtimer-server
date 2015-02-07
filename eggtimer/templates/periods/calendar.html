@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Periods for {{ user.username }}{% endblock %}
+{% block title %}Periods for {{ user.get_full_name }}{% endblock %}
 
 {% block head %}
 
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block content %}
-	<h3>Periods for {{ user.username }}</h3>
+	<h3>Periods for {{ user.get_full_name }}</h3>
 
 {#    TODO Would be nice to put current month in URL so reloading doesn't lose it    #}
     <div id='calendar'></div>

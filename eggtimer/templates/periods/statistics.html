@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Statistics for {{ user.username }}{% endblock %}
+{% block title %}Statistics for {{ user.get_full_name }}{% endblock %}
 
 {% block head %}
     <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js'></script>
@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block content %}
-    <h3>Statistics for {{ user.username }}</h3>
+    <h3>Statistics for {{ user.get_full_name }}</h3>
 
     <table class="table-condensed">
-        <tr><th>Average Cycle Length:</th><td>{{ userprofile.statistics.average_cycle_length }}</td></tr>
+        <tr><th>Average Cycle Length:</th><td>{{ user.statistics.average_cycle_length }}</td></tr>
     </table>
 
     {% if bins %}
