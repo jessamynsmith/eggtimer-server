@@ -134,7 +134,7 @@ class Statistics(models.Model):
         return next_dates
 
     def __str__(self):
-        return u"%s (avg: %s)" % (self.user.full_name, self.average_cycle_length)
+        return u"%s (avg: %s)" % (self.user.get_full_name(), self.average_cycle_length)
 
     def get_absolute_url(self):
         return reverse('statistics_detail', args=[self.pk])
