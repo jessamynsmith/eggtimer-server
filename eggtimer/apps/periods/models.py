@@ -15,6 +15,7 @@ def _today():
     return datetime.date.today()
 
 
+# TODO pull user into its own app so I can reuse it?
 class UserManager(auth_models.BaseUserManager):
 
     def _create_user(self, email, password,
