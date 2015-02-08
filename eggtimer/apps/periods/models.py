@@ -105,7 +105,6 @@ class Statistics(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='statistics', null=True)
     average_cycle_length = models.IntegerField(default=28)
 
-    # Todo could cache these calculations, via getattr?
     @property
     def current_cycle_length(self):
         current_cycle = -1
