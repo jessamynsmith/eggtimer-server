@@ -47,9 +47,9 @@ def statistics(request):
 
 @login_required
 def profile(request):
-    # allow user to request API key
+    # TODO allow user to request API key
     # TODO add editing of profile, at least luteal phase and full name;
-    # change password would be nice
+    # TODO change password
     periods_url = reverse('api_dispatch_list',
                           kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {

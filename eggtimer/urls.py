@@ -16,9 +16,6 @@ v1_api.register(api.UserResource())
 
 urlpatterns = patterns(
     '',
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
     (r'^$', lambda x: HttpResponseRedirect('/calendar/')),
     url(r'^accounts/profile/$', period_views.profile, name='user_profile'),
     (r'^accounts/', include('registration.backends.default.urls')),
