@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'custom_user',
     'registration',
     # TODO do I still need this with allauth?
     'password_reset',
