@@ -15,6 +15,7 @@ dj-static = 0.0.6
 static3 = 0.5.1
 django-password-reset = 0.7
 pytz = 2014.10
+django-custom-user = 0.5
 
 [production]
 dj-database-url = 0.3.0
