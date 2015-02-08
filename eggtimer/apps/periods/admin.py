@@ -24,7 +24,7 @@ class UserAdmin(auth_admin.UserAdmin):
     add_fieldsets = ((None, {'classes': ('wide',), 'fields': ('email', 'password1', 'password2')}),)
     form = period_forms.UserChangeForm
     add_form = period_forms.UserCreationForm
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
+    list_display = ('email', 'first_name', 'last_name', 'send_emails')
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
