@@ -168,8 +168,7 @@ def update_statistics(sender, instance, **kwargs):
     stats.save()
 
 
-signals.post_save.connect(create_api_key, sender=User)
-
+signals.post_save.connect(create_api_key, sender=settings.AUTH_USER_MODEL)
 signals.post_save.connect(create_statistics, sender=settings.AUTH_USER_MODEL)
 
 signals.pre_save.connect(update_length, sender=Period)

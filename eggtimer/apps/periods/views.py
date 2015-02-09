@@ -53,7 +53,7 @@ def profile(request):
     periods_url = reverse('api_dispatch_list',
                           kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {
-        'username': request.user.get_full_name(),
+        'username': request.user.get_username(),
         'api_key': request.user.api_key.key
     }
     data = {
