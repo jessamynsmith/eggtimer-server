@@ -15,12 +15,13 @@ framework.
 """
 import os
 
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling, MediaCling
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eggtimer.settings.production")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
-from django.core.wsgi import get_wsgi_application
-from dj_static import Cling, MediaCling
 
 application = Cling(MediaCling(get_wsgi_application()))
