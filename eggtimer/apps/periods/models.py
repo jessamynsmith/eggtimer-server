@@ -1,5 +1,6 @@
 from custom_user.models import AbstractEmailUser
 from django.conf import settings
+from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals
@@ -92,6 +93,17 @@ class Statistics(models.Model):
         return reverse('statistics_detail', args=[self.pk])
 
 
+def add_to_permissions_group(sender, instance, **kwargs):
+    try:
+        group = Group.objects.get(name='users')
+    except Group.DoesNotExist:
+        group = Group(name='users')
+        group.save()
+        group.permissions.add(*Permission.objects.filter(codename__endswith='_period').all())
+    group.user_set.add(instance)
+    group.save()
+
+
 def create_statistics(sender, instance, **kwargs):
     if not hasattr(instance, 'statistics'):
         stats = Statistics(user=instance)
@@ -169,6 +181,7 @@ def update_statistics(sender, instance, **kwargs):
 
 
 signals.post_save.connect(create_api_key, sender=settings.AUTH_USER_MODEL)
+signals.post_save.connect(add_to_permissions_group, sender=settings.AUTH_USER_MODEL)
 signals.post_save.connect(create_statistics, sender=settings.AUTH_USER_MODEL)
 
 signals.pre_save.connect(update_length, sender=Period)

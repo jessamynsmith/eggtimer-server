@@ -1,5 +1,5 @@
 import datetime
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, models as auth_models
 from django.test import TestCase
 from mock import patch
 
@@ -57,6 +57,29 @@ class TestModels(TestCase):
         self.assertEqual(-1, stats.current_cycle_length)
         self.assertEqual([], stats.next_periods)
         self.assertEqual([], stats.next_ovulations)
+
+    def test_add_to_permissions_group_group_does_not_exist(self):
+        user = period_models.User(email='jane@jane.com')
+        user.save()
+        user.groups.all().delete()
+
+        period_models.add_to_permissions_group(period_models.User, user)
+
+        groups = user.groups.all()
+        self.assertEqual(1, groups.count())
+        self.assertEqual(3, groups[0].permissions.count())
+
+    def test_add_to_permissions_group_group_exists(self):
+        user = period_models.User(email='jane@jane.com')
+        user.save()
+        user.groups.all().delete()
+        auth_models.Group(name='users').save()
+
+        period_models.add_to_permissions_group(period_models.User, user)
+
+        groups = user.groups.all()
+        self.assertEqual(1, groups.count())
+        self.assertEqual(0, groups[0].permissions.count())
 
     def test_update_length_none_existing(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
