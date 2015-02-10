@@ -19,7 +19,8 @@ Create a virtualenv and install dependencies:
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
-Use development settings:
+Edit development settings as needed to match your environment (check DATABASES in particular),
+and ensure those settings will be used automatically:
 
     export DJANGO_SETTINGS_MODULE=eggtimer.settings.development
 
