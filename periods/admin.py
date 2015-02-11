@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.utils.translation import ugettext_lazy as _
 
-from eggtimer.apps.periods import models
-from eggtimer.apps.periods import forms as period_forms
+from periods import forms as period_forms, models
 
 
 class UserAdmin(auth_admin.UserAdmin):

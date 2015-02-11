@@ -16,9 +16,6 @@ DATABASES = {
 
 # Static asset configuration
 STATIC_ROOT = 'staticfiles'
-STATICFILES_DIRS = (
-    os.path.join(APP_PATH, 'static'),
-)
 
 MEDIA_ROOT = 'media'
 

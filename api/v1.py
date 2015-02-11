@@ -1,11 +1,13 @@
 import datetime
+
 from django.http import HttpResponse
 from tastypie.authentication import ApiKeyAuthentication, MultiAuthentication, SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.bundle import Bundle
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL
-from eggtimer.apps.periods import models as period_models
+
+from periods import models as period_models
 
 
 DATE_FORMAT = "%Y-%m-%d"

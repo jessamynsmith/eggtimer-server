@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from eggtimer.apps.api.v1 import DATE_FORMAT
-from eggtimer.apps.periods import models as period_models
+from api.v1 import DATE_FORMAT
+from periods import models as period_models
 
 
 @login_required

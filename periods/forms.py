@@ -1,6 +1,6 @@
 from django.contrib.auth import forms as auth_forms
 
-from eggtimer.apps.periods import models as period_models
+from periods import models as period_models
 
 
 class UserCreationForm(auth_forms.UserCreationForm):

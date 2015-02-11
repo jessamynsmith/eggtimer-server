@@ -31,7 +31,7 @@ Set up db:
 
 Run tests and view coverage:
 
-    coverage run manage.py test eggtimer
+    coverage run manage.py test
     coverage report
 
 Check code style:

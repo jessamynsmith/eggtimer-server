@@ -1,11 +1,11 @@
 import datetime
+
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.test import TestCase
 from django.utils import timezone
 
-from eggtimer.apps.periods import models as period_models
-from eggtimer.apps.periods import views
+from periods import models as period_models, views
 
 
 class TestViews(TestCase):

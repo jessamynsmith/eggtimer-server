@@ -19,8 +19,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-APP_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__),
-                                         os.path.pardir))
+APP_PATH = os.path.realpath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir))
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -103,8 +102,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'tastypie',
     'bootstrapform',
-    'eggtimer.apps.api',
-    'eggtimer.apps.periods',
+    'api',
+    'periods',
 ]
 
 # auth and allauth settings

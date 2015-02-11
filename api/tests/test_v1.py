@@ -1,12 +1,13 @@
 import datetime
+import json
+
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.test import TestCase
-import json
 from mock import patch
 
-from eggtimer.apps.periods import models as period_models
-from eggtimer.apps.api import v1
+from periods import models as period_models
+from api import v1
 
 
 class TestPeriodDetailResource(TestCase):
@@ -20,7 +21,7 @@ class TestPeriodDetailResource(TestCase):
         self.request = HttpRequest()
         self.request.user = self.user
 
-    @patch('eggtimer.apps.periods.models._today')
+    @patch('periods.models._today')
     def test_create_response_no_data(self, mock_today):
         mock_today.return_value = datetime.date(2014, 3, 14)
         data = {'objects': []}
@@ -32,7 +33,7 @@ class TestPeriodDetailResource(TestCase):
         content = json.loads(response.content.decode('ascii'))
         self.assertEqual(0, len(content['objects']))
 
-    @patch('eggtimer.apps.periods.models._today')
+    @patch('periods.models._today')
     def test_create_response(self, mock_today):
         mock_today.return_value = datetime.date(2014, 3, 14)
         data = {'objects': []}

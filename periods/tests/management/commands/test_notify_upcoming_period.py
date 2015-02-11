@@ -1,10 +1,11 @@
 import datetime
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from mock import ANY, patch
 
-from eggtimer.apps.periods import models as period_models
-from eggtimer.apps.periods.management.commands import notify_upcoming_period
+from periods import models as period_models
+from periods.management.commands import notify_upcoming_period
 
 
 class TestModels(TestCase):
@@ -24,8 +25,8 @@ class TestModels(TestCase):
 
         self.assertFalse(mock_send.called)
 
-    @patch('eggtimer.libs.email_sender.send')
-    @patch('eggtimer.apps.periods.models._today')
+    @patch('periods.email_sender.send')
+    @patch('periods.models._today')
     def test_notify_upcoming_period_ovulation(self, mock_today, mock_send):
         mock_today.return_value = datetime.date(2014, 3, 14)
 
@@ -33,8 +34,8 @@ class TestModels(TestCase):
 
         mock_send.assert_called_once_with(self.user, 'Ovulation today!', ANY, None)
 
-    @patch('eggtimer.libs.email_sender.send')
-    @patch('eggtimer.apps.periods.models._today')
+    @patch('periods.email_sender.send')
+    @patch('periods.models._today')
     def test_notify_upcoming_period_expected_soon(self, mock_today, mock_send):
         mock_today.return_value = datetime.date(2014, 3, 25)
 
@@ -43,8 +44,8 @@ class TestModels(TestCase):
         mock_send.assert_called_once_with(self.user, 'Period expected in 3 days',
                                           ANY, None)
 
-    @patch('eggtimer.libs.email_sender.send')
-    @patch('eggtimer.apps.periods.models._today')
+    @patch('periods.email_sender.send')
+    @patch('periods.models._today')
     def test_notify_upcoming_period_expected_today(self, mock_today, mock_send):
         mock_today.return_value = datetime.date(2014, 3, 28)
 
@@ -52,8 +53,8 @@ class TestModels(TestCase):
 
         mock_send.assert_called_once_with(self.user, 'Period today!', ANY, None)
 
-    @patch('eggtimer.libs.email_sender.send')
-    @patch('eggtimer.apps.periods.models._today')
+    @patch('periods.email_sender.send')
+    @patch('periods.models._today')
     def test_notify_upcoming_period_overdue(self, mock_today, mock_send):
         mock_today.return_value = datetime.date(2014, 3, 31)
 

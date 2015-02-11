@@ -1,5 +1,5 @@
 [run]
-source = eggtimer
+source = api, eggtimer, periods
 branch = True
 omit = *tests*
     */migrations/*

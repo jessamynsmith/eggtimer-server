@@ -1,11 +1,11 @@
 import datetime
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 from django.template import Context
 
-from eggtimer.apps.periods import models as period_models
-from eggtimer.libs import email_sender
+from periods import models as period_models, email_sender
 
 
 class Command(BaseCommand):
