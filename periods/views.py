@@ -11,6 +11,9 @@ from api.v1 import DATE_FORMAT
 from periods import models as period_models
 
 
+# TODO add unit test for javascript -- maybe jasmine?
+
+
 @login_required
 def calendar(request):
     url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods_detail', 'api_name': 'v1'})

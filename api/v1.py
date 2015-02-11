@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from tastypie.authentication import ApiKeyAuthentication, MultiAuthentication, SessionAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.bundle import Bundle
+from tastypie.exceptions import BadRequest
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL
 
@@ -18,6 +19,7 @@ class BaseMeta(object):
     authorization = DjangoAuthorization()
     list_allowed_methods = ('get', 'post')
     detail_allowed_methods = ('get', 'post', 'put', 'delete')
+    # TODO make filtering by request user automatic, not in every query
 
 
 class StatisticsResource(ModelResource):
@@ -76,50 +78,51 @@ class PeriodDetailResource(PeriodResource):
         resource_name = 'periods_detail'
 
     def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
+        # data already contains period start dates; extend to contain projected data and day counts
 
-        statistics = period_models.Statistics.objects.filter(user=request.user)[0]
+        start_date = request.GET.get('start_date__gte')
+        end_date = request.GET.get('start_date__lte')
+        if not start_date or not end_date:
+            raise BadRequest("Must specify date range, e.g. start_date__gte=<date>&"
+                             "start_date__lte=<date>")
+
         projected_data = []
-        for expected_date in statistics.next_periods:
+        for expected_date in request.user.statistics.next_periods:
             period = {'start_date': expected_date, 'type': 'projected period'}
             projected_data.append(Bundle(data=period))
-        for expected_date in statistics.next_ovulations:
+        for expected_date in request.user.statistics.next_ovulations:
             ovulation = {'start_date': expected_date, 'type': 'projected ovulation'}
             projected_data.append(Bundle(data=ovulation))
 
-        # TODO make filtering by request user automatic, not in every query
-        period_start_dates = statistics.user.periods.filter(user=request.user)
-        previous_periods = statistics.user.periods.all()
-        current_date = period_models._today()
+        start_date = datetime.datetime.strptime(start_date, DATE_FORMAT)
+        end_date = datetime.datetime.strptime(end_date, DATE_FORMAT)
 
-        start_date = request.GET.get('start_date__gte')
-        if start_date:
-            start_date = datetime.datetime.strptime(start_date, DATE_FORMAT)
-            period_start_dates.filter(start_date__gte=start_date)
-            previous_periods.filter(start_date__lte=start_date)
-            current_date = start_date.date()
-
-        end_date = request.GET.get('start_date__lte')
-        if end_date:
-            end_date = datetime.datetime.strptime(end_date, DATE_FORMAT)
-            period_start_dates.filter(start_date__lte=end_date)
-
+        period_start_dates = request.user.periods.filter(
+            start_date__gte=start_date, start_date__lte=end_date).order_by('start_date')
         period_start_dates = list(period_start_dates.values_list('start_date', flat=True))
-        period_start_dates.extend(statistics.next_periods)
+        period_start_dates.extend(request.user.statistics.next_periods)
 
-        previous_periods = previous_periods.order_by('-start_date')
+        one_day = datetime.timedelta(days=1)
+
+        previous_periods = request.user.periods.filter(
+            start_date__lt=start_date).order_by('-start_date')
         if previous_periods.exists():
-            previous_period = previous_periods[0]
+            current_date = start_date.date()
+            current_day = (start_date.date() - previous_periods[0].start_date).days
+        elif len(period_start_dates):
+            current_date = period_start_dates[0]
+            current_day = 1
+        else:
+            current_date = end_date.date() + one_day
 
-            one_day = datetime.timedelta(days=1)
-            current_day = (current_date - previous_period.start_date).days + 1
-            while current_date <= period_models._today():
-                if current_date in period_start_dates:
-                    current_day = 1
-                day_count = {'start_date': current_date, 'type': 'day count',
-                             'text': 'Day: %s' % current_day}
-                data['objects'].append(Bundle(data=day_count))
-                current_date += one_day
-                current_day += 1
+        while current_date <= end_date.date():
+            if current_date in period_start_dates:
+                current_day = 1
+            day_count = {'start_date': current_date, 'type': 'day count',
+                         'text': 'Day: %s' % current_day}
+            projected_data.append(Bundle(data=day_count))
+            current_date += one_day
+            current_day += 1
 
         data['objects'].extend(projected_data)
 
