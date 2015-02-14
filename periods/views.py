@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from api.v1 import DATE_FORMAT
-from periods import models as period_models
+from periods import forms as period_forms, models as period_models
 
 
 @login_required
@@ -48,15 +48,22 @@ def statistics(request):
 @login_required
 def profile(request):
     # TODO allow user to request API key
-    # TODO add editing of profile, at least luteal phase and full name;
-    # TODO change password
     periods_url = reverse('api_dispatch_list',
                           kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {
         'username': request.user.get_username(),
         'api_key': request.user.api_key.key
     }
+
+    if request.method == 'POST':
+        form = period_forms.UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = period_forms.UserForm(instance=request.user)
+
     data = {
+        'form': form,
         'periods_url': request.build_absolute_uri('%s?%s' % (periods_url, urlencode(params)))
     }
 

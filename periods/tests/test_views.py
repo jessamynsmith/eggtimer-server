@@ -1,7 +1,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.http import HttpRequest
+from django.http import HttpRequest, QueryDict
 from django.test import TestCase
 from django.utils import timezone
 
@@ -40,7 +40,30 @@ class TestViews(TestCase):
         self.assertContains(response, 'cycle_length_frequency([28, 29], [28]);')
         self.assertContains(response, 'cycle_length_history(')
 
-    def test_profile(self):
+    def test_profile_post_invalid_data(self):
+        self.request.method = 'POST'
+        self.request.POST = QueryDict(u'birth_date=blah')
+
+        response = views.profile(self.request)
+
+        user = period_models.User.objects.get(pk=self.request.user.pk)
+        self.assertEqual(None, user.birth_date)
+        self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')
+        self.assertContains(response, '<h4>API Information</h4>')
+
+    def test_profile_post_valid_data(self):
+        self.request.method = 'POST'
+        self.request.POST = QueryDict(u'first_name=Jess&luteal_phase_length=12')
+
+        response = views.profile(self.request)
+
+        user = period_models.User.objects.get(pk=self.request.user.pk)
+        self.assertEqual(u'Jess', user.first_name)
+        self.assertEqual(12, user.luteal_phase_length)
+        self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')
+        self.assertContains(response, '<h4>API Information</h4>')
+
+    def test_profile_get(self):
         response = views.profile(self.request)
 
         self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')

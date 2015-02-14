@@ -9,6 +9,19 @@
     <a href="{% url 'qigong_cycles' %}">Medical Qigong Cycles</a>
     </p>
 
+    <p>
+    <a href="{% url 'account_change_password' %}">Change Your Password</a>
+    </p>
+
+    <h4>User Profile</h4>
+    <p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-default">Update</button>
+    </form>
+    </p>
+
     <h4>API Information</h4>
     <p>
     API key: {{ user.api_key.key }}

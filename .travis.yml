@@ -14,5 +14,6 @@ script:
     - NODE_ENV=test EGGTIMER_COVERAGE=1 mocha --reporter json-cov */tests/static/js/* > coverage.json
     - jshint */static/js
 
+# TODO coveralls isn't showing django template coverage or javascript coverage
 after_success:
     coveralls --merge coverage.json
