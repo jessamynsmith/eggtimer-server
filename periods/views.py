@@ -1,6 +1,6 @@
 import datetime
 import json
-from urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse

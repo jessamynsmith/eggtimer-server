@@ -1,5 +1,6 @@
 language: python
 python:
+    - "2.7"
     - "3.4"
 
 before_script:
@@ -10,8 +11,8 @@ install: "pip install -r requirements/development.txt"
 script:
     - coverage run manage.py test --settings=eggtimer.settings.development
     - flake8
-    - NODE_ENV=test EGGTIMER_COVERAGE=1 mocha --reporter mocha-lcov-reporter */tests/static/js/* > js_coverage
+    - NODE_ENV=test EGGTIMER_COVERAGE=1 mocha --reporter json-cov */tests/static/js/* > coverage.json
     - jshint */static/js
 
 after_success:
-    coveralls --merge js_coverage
+    coveralls --merge coverage.json
