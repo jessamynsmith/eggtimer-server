@@ -41,6 +41,22 @@ Check code style:
 Run server:
 
     python manage.py runserver
+    
+The javascript linter and tests require you to install node, then:
+
+    npm install -g jshint mocha blanket
+
+Set up your environment to know about node:
+
+    export NODE_PATH=/path/to/node_modules/
+    
+Run JavaScript tests:
+
+    mocha -R html-cov */tests/static/js/* > ~/eggtimer_javascript_coverage.html
+    
+Lint JavaScript:
+
+    jshint */static/js
 
 
 Thank you to:

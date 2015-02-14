@@ -2,11 +2,16 @@ language: python
 python:
     - "3.4"
 
+before_script:
+  - npm install jshint mocha blanket
+
 install: "pip install -r requirements/development.txt"
 
 script:
     - coverage run manage.py test eggtimer --settings=eggtimer.settings.development
     - flake8
+    - mocha */tests/static/js/*
+    - jshint */static/js
 
 after_success:
     coveralls
