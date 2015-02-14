@@ -53,7 +53,7 @@ Set up your environment to know about node:
 Run JavaScript tests:
 
     mocha -R html-cov */tests/static/js/* > ~/eggtimer_javascript_coverage.html
-    
+
 Lint JavaScript:
 
     jshint */static/js

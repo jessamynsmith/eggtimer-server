@@ -1,0 +1,12 @@
+{
+    "devDependencies": {
+        "mocha": "~2.1.0",
+        "mocha-lcov-reporter": "~0.0.1",
+        "blanket": "~1.1.6"
+    },
+    "config": {
+        "blanket": {
+            "pattern": "*/tests/static/js/*"
+        }
+    }
+}
