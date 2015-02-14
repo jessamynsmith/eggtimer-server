@@ -8,7 +8,7 @@ before_script:
 install: "pip install -r requirements/development.txt"
 
 script:
-    - coverage run manage.py test eggtimer --settings=eggtimer.settings.development
+    - coverage run manage.py test --settings=eggtimer.settings.development
     - flake8
     - mocha */tests/static/js/*
     - jshint */static/js
