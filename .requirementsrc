@@ -26,7 +26,7 @@ dj-database-url = 0.3.0
 gunicorn = 19.2.1
 
 [development]
-coverage = 4.0a4
+coverage = 3.7.1
 mock = 1.0.1
 flake8 = 2.3.0
 mccabe = 0.3
