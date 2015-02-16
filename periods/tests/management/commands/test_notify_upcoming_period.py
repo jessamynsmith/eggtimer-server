@@ -25,6 +25,26 @@ class TestModels(TestCase):
 
         self.assertFalse(mock_send.called)
 
+    @patch('django.core.mail.EmailMultiAlternatives.send')
+    @patch('periods.models._today')
+    def test_notify_upcoming_period_send_disabled(self, mock_today, mock_send):
+        mock_today.return_value = datetime.date(2014, 3, 14)
+        self.user.send_emails = False
+        self.user.save()
+
+        self.command.handle()
+
+        self.assertFalse(mock_send.called)
+
+    @patch('periods.email_sender.send')
+    @patch('periods.models._today')
+    def test_notify_upcoming_period_no_events(self, mock_today, mock_send):
+        mock_today.return_value = datetime.date(2014, 3, 13)
+
+        self.command.handle()
+
+        self.assertFalse(mock_send.called)
+
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_ovulation(self, mock_today, mock_send):
@@ -56,9 +76,9 @@ class TestModels(TestCase):
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_overdue(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 31)
+        mock_today.return_value = datetime.date(2014, 3, 29)
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user, 'Period was expected 3 days ago',
+        mock_send.assert_called_once_with(self.user, 'Period was expected 1 day ago',
                                           ANY, None)

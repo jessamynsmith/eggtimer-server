@@ -1,6 +1,8 @@
 # Django settings for eggtimer project.
 import os
 
+from email.utils import formataddr
+
 ADMINS = (
     (os.environ.get('ADMIN_NAME', 'admin'), os.environ.get('ADMIN_EMAIL', 'example@example.com')),
 )
@@ -122,7 +124,6 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-from email.utils import formataddr
 DEFAULT_FROM_EMAIL = formataddr(ADMINS[0])
 EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
 EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')

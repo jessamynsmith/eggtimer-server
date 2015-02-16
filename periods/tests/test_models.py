@@ -12,12 +12,26 @@ class TestModels(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
             password='bogus', email='jessamyn@example.com', first_name=u'Jessamyn')
+        self.basic_user = get_user_model().objects.create_user(
+            password='bogus', email='basic@example.com')
 
     def _create_period(self, start_date, save=True):
         period = period_models.Period.objects.create(user=self.user, start_date=start_date)
         if save:
             period.save()
         return period
+
+    def test_user_get_full_name_email(self):
+        self.assertEqual(u'basic@example.com', '%s' % self.basic_user.get_full_name())
+
+    def test_user_get_full_name(self):
+        self.assertEqual(u'Jessamyn', '%s' % self.user.get_full_name())
+
+    def test_user_get_short_name_email(self):
+        self.assertEqual(u'basic@example.com', '%s' % self.basic_user.get_short_name())
+
+    def test_user_get_short_name(self):
+        self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
 
     def test_period_unicode_no_start_time(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)

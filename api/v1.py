@@ -14,15 +14,20 @@ from periods import models as period_models
 DATE_FORMAT = "%Y-%m-%d"
 
 
+class EggTimerResource(ModelResource):
+
+    def get_object_list(self, request):
+        return super(EggTimerResource, self).get_object_list(request).filter(user=request.user)
+
+
 class BaseMeta(object):
     authentication = MultiAuthentication(ApiKeyAuthentication(), SessionAuthentication())
     authorization = DjangoAuthorization()
     list_allowed_methods = ('get', 'post')
     detail_allowed_methods = ('get', 'post', 'put', 'delete')
-    # TODO make filtering by request user automatic, not in every query
 
 
-class StatisticsResource(ModelResource):
+class StatisticsResource(EggTimerResource):
     current_cycle_length = fields.IntegerField('current_cycle_length')
     next_periods = fields.DateField('next_periods')
 
@@ -30,22 +35,16 @@ class StatisticsResource(ModelResource):
         queryset = period_models.Statistics.objects.all()
         resource_name = 'statistics'
 
-    def get_object_list(self, request):
-        return super(StatisticsResource, self).get_object_list(request).filter(user=request.user)
 
-
-class UserResource(ModelResource):
+class UserResource(EggTimerResource):
     statistics = fields.ForeignKey(StatisticsResource, 'statistics', full=True)
 
     class Meta(BaseMeta):
         queryset = period_models.User.objects.all()
         resource_name = 'users'
 
-    def get_object_list(self, request):
-        return super(UserResource, self).get_object_list(request).filter(user=request.user)
 
-
-class PeriodResource(ModelResource):
+class PeriodResource(EggTimerResource):
     user = fields.ForeignKey(UserResource, 'user')
     start_date = fields.DateField('start_date')
 
@@ -57,9 +56,6 @@ class PeriodResource(ModelResource):
             'start_date': ALL,
         }
         resource_name = 'periods'
-
-    def get_object_list(self, request):
-        return super(PeriodResource, self).get_object_list(request).filter(user=request.user)
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(PeriodResource, self).obj_create(
@@ -113,7 +109,9 @@ class PeriodDetailResource(PeriodResource):
             current_date = period_start_dates[0]
             current_day = 1
         else:
+            # Bump date past end date so we don't create any day counts
             current_date = end_date.date() + one_day
+            current_day = None
 
         while current_date <= end_date.date():
             if current_date in period_start_dates:
@@ -126,5 +124,5 @@ class PeriodDetailResource(PeriodResource):
 
         data['objects'].extend(projected_data)
 
-        return super(PeriodResource, self).create_response(request, data, response_class,
-                                                           **response_kwargs)
+        return super(PeriodDetailResource, self).create_response(request, data, response_class,
+                                                                 **response_kwargs)

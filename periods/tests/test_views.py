@@ -1,4 +1,5 @@
 import datetime
+import pytz
 
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest, QueryDict
@@ -75,7 +76,6 @@ class TestViews(TestCase):
         self.assertContains(response, '<label class="control-label" for="id_birth_date">Birth Date')
 
     def test_qigong_cycles(self):
-        import pytz
         self.user.birth_date = pytz.timezone("US/Eastern").localize(timezone.datetime(1981, 3, 31))
         self.user.save()
 

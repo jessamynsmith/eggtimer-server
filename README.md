@@ -32,7 +32,7 @@ Set up db:
 Run tests and view coverage:
 
     coverage run manage.py test
-    coverage report
+    coverage report -m
 
 Check code style:
 

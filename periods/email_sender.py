@@ -8,3 +8,4 @@ def send(recipient, subject, text_body, html_body):
     if html_body:
         msg.attach_alternative(html_body, "text/html")
     msg.send()
+    return True

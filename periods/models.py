@@ -1,7 +1,6 @@
 from custom_user.models import AbstractEmailUser
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
@@ -30,7 +29,10 @@ class User(AbstractEmailUser):
         return full_name
 
     def get_short_name(self):
-        return self.first_name
+        short_name = self.first_name
+        if not short_name:
+            short_name = self.email
+        return short_name
 
 
 class Period(models.Model):
@@ -48,9 +50,6 @@ class Period(models.Model):
         if self.start_time:
             start_time = ' %s' % self.start_time
         return u"%s (%s%s)" % (self.user.get_full_name(), self.start_date, start_time)
-
-    def get_absolute_url(self):
-        return reverse('period_detail', args=[self.pk])
 
 
 class Statistics(models.Model):
@@ -88,9 +87,6 @@ class Statistics(models.Model):
 
     def __str__(self):
         return u"%s (avg: %s)" % (self.user.get_full_name(), self.average_cycle_length)
-
-    def get_absolute_url(self):
-        return reverse('statistics_detail', args=[self.pk])
 
 
 def add_to_permissions_group(sender, instance, **kwargs):
