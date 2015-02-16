@@ -3,8 +3,6 @@ python:
     - "2.7"
     - "3.4"
 
-env: DJANGO_SETTINGS_MODULE=eggtimer.settings.development
-
 install:
     - pip install -r requirements/development.txt
     - gem install coveralls-lcov
@@ -20,4 +18,4 @@ script:
     - jshint */static/js
 
 after_success:
-    coveralls --merge coverage.json
+    DJANGO_SETTINGS_MODULE=eggtimer.settings.development PYTHONPATH=. coveralls --merge coverage.json
