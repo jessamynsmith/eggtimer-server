@@ -104,7 +104,7 @@ class PeriodDetailResource(PeriodResource):
             start_date__lt=start_date).order_by('-start_date')
         if previous_periods.exists():
             current_date = start_date.date()
-            current_day = (start_date.date() - previous_periods[0].start_date).days
+            current_day = (start_date.date() - previous_periods[0].start_date).days + 1
         elif len(period_start_dates):
             current_date = period_start_dates[0]
             current_day = 1
