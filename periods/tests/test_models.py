@@ -83,6 +83,8 @@ class TestModels(TestCase):
         groups = user.groups.all()
         self.assertEqual(1, groups.count())
         self.assertEqual(3, groups[0].permissions.count())
+        for permission in groups[0].permissions.all():
+            self.assertEqual('_period', permission.codename[-7:])
 
     def test_add_to_permissions_group_group_exists(self):
         user = period_models.User(email='jane@jane.com')
