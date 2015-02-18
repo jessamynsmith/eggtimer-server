@@ -8,7 +8,7 @@ install:
     - gem install coveralls-lcov
 
 before_script:
-  - npm install jshint mocha blanket mocha-lcov-reporter
+  - npm install jshint mocha blanket mocha-lcov-reporter moment
 
 script:
     - coverage run manage.py test --settings=eggtimer.settings.development
