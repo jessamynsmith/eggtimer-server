@@ -34,6 +34,9 @@ class User(AbstractEmailUser):
             short_name = self.email
         return short_name
 
+    def __str__(self):
+        return u"%s (%s)" % (self.get_full_name(), self.email)
+
 
 class Period(models.Model):
 
@@ -53,6 +56,9 @@ class Period(models.Model):
 
 
 class Statistics(models.Model):
+
+    class Meta:
+        verbose_name_plural = "statistics"
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='statistics', null=True)
     average_cycle_length = models.IntegerField(default=28)
@@ -86,7 +92,7 @@ class Statistics(models.Model):
         return next_dates
 
     def __str__(self):
-        return u"%s (avg: %s)" % (self.user.get_full_name(), self.average_cycle_length)
+        return u"%s (%s)" % (self.user.get_full_name(), self.user.email)
 
 
 def add_to_permissions_group(sender, instance, **kwargs):

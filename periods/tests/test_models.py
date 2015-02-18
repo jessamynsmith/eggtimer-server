@@ -33,6 +33,9 @@ class TestModels(TestCase):
     def test_user_get_short_name(self):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
 
+    def test_user_str(self):
+        self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
+
     def test_period_unicode_no_start_time(self):
         period = self._create_period(start_date=datetime.date(2013, 4, 15), save=False)
         self.assertEqual(u'Jessamyn (2013-04-15)', '%s' % period)
@@ -42,21 +45,22 @@ class TestModels(TestCase):
         period.start_time = datetime.time(1, 2, 3)
         self.assertEqual(u'Jessamyn (2013-04-15 01:02:03)', '%s' % period)
 
-    def test_statistics_unicode_no_average(self):
+    def test_statistics_str(self):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
-        self.assertEqual(u'Jessamyn (avg: 28)', '%s' % stats)
+        self.assertEqual(u'Jessamyn (jessamyn@example.com)', '%s' % stats)
         self.assertEqual([], stats.next_periods)
         self.assertEqual([], stats.next_ovulations)
 
-    def test_statistics_unicode_with_average(self):
+    def test_statistics_with_average(self):
         self._create_period(start_date=datetime.date(2013, 2, 15))
         self._create_period(start_date=datetime.date(2013, 3, 15))
         self._create_period(start_date=datetime.date(2013, 4, 10))
 
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
-        self.assertEqual(u'Jessamyn (avg: 27)', '%s' % stats)
+        self.assertEqual(u'Jessamyn (jessamyn@example.com)', '%s' % stats)
+        self.assertEqual(27, stats.average_cycle_length)
         expected_periods = [datetime.date(2013, 5, 7),
                             datetime.date(2013, 6, 3),
                             datetime.date(2013, 6, 30)]
