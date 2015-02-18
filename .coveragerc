@@ -1,6 +1,6 @@
 [run]
 source = api, eggtimer, periods
-branch = True
+# branch = True  # This messes up template coverage, so disable for now
 omit = *tests*
     */migrations/*
     *__init__.py*
