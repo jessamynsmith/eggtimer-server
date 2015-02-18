@@ -1,8 +1,8 @@
 -r common.txt
 PyYAML==3.11
 coverage==4.0a5
--e git://github.com/jessamynsmith/coveralls-python.git@41f12b5d3e7f9ae795c00f869ed92c4a188c42cd#egg=coveralls
--e git://github.com/jessamynsmith/django_coverage_plugin.git@92c7294bd440baed63da61aa43a5f1485b807804#egg=django-coverage-plugin
+coveralls==1.0a1
+django-coverage-plugin==0.3.3
 docopt==0.6.2
 flake8==2.3.0
 mccabe==0.3

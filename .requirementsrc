@@ -26,13 +26,13 @@ dj-database-url = 0.3.0
 gunicorn = 19.2.1
 
 [development]
-coverage = 4.0a4
+coverage = 4.0a5
 mock = 1.0.1
 flake8 = 2.3.0
 mccabe = 0.3
 pep8 = 1.6.1
 pyflakes = 0.8.1
-coveralls = 1.0a0
+coveralls = 1.0a1
 docopt = 0.6.2
 PyYAML = 3.11
 paragres = 0.5
