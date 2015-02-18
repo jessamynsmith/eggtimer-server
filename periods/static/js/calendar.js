@@ -28,17 +28,45 @@ makeEvents = function(data) {
     return events;
 };
 
-initializeCalendar = function(periods_url) {
+getDefaultDate = function(moment, queryString) {
+    var startDate = null;
+    var endDate = null;
+    var defaultDate = null;
+    if (queryString && queryString.length) {
+        var queries = queryString.substring(1).split("&");
+        for (var i=0; i< queries.length; i++) {
+            var parts = queries[i].split('=');
+            if (parts[0] === "start") {
+                startDate = moment(parts[1]);
+            }
+            if (parts[0] === "end") {
+                endDate = moment(parts[1]);
+            }
+        }
+        if (startDate && endDate) {
+            defaultDate = startDate + (endDate - startDate) / 2;
+        }
+    }
+    return defaultDate;
+};
+
+var initializeCalendar = function(periods_url) {
     $('#calendar').fullCalendar({
+        defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
+            var startDate = start.format('YYYY-MM-DD');
+            var endDate = end.format('YYYY-MM-DD');
             $.ajax({
                 url: periods_url,
                 dataType: 'json',
                 data: {
-                    start_date__gte: start.format('YYYY-MM-DD'),
-                    start_date__lte: end.format('YYYY-MM-DD')
+                    start_date__gte: startDate,
+                    start_date__lte: endDate
                 },
                 success: function(doc) {
+                    var newUrl = window.location.protocol + "//" + window.location.host +
+                        window.location.pathname + "?start=" + startDate + "&end=" + endDate;
+                    window.history.pushState({path:newUrl}, '', newUrl);
                     callback(makeEvents(doc.objects));
                 }
             });

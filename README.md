@@ -44,7 +44,7 @@ Run server:
     
 The javascript linter and tests require you to install node, then:
 
-    npm install -g jshint mocha blanket
+    npm install -g jshint mocha blanket moment
 
 Set up your environment to know about node:
 

@@ -5,6 +5,7 @@ require('blanket')({
 });
 
 var assert = require("assert");
+var moment = require('moment');
 
 var calendar = require("../../../static/js/calendar.js");
 
@@ -35,6 +36,27 @@ describe('Array', function () {
             expected = JSON.stringify({title: "Day: 1", start: "2015-01-01", "period_id": "4",
                 color: "#ffffff", "textColor": "#666666", "editable": false});
             assert.equal(JSON.stringify(result[3]), expected);
+        });
+    })
+});
+
+describe('String', function () {
+    describe('#getDefaultDate()', function () {
+        it('should return null if no querystring', function () {
+            var result = getDefaultDate("");
+            assert.equal(null, result);
+        });
+        it('should return null if only start in querystring', function () {
+            var result = getDefaultDate(moment, "?start=2014-12-28");
+            assert.equal(null, result);
+        });
+        it('should return null if only end in querystring', function () {
+            var result = getDefaultDate(moment, "?end=2015-02-08");
+            assert.equal(null, result);
+        });
+        it('should return moment if start and date in querystring', function () {
+            var result = getDefaultDate(moment, "?start=2014-12-28&end=2015-02-08");
+            assert.equal("2015-01-18", moment(result).format("YYYY-MM-DD"));
         });
     })
 });
