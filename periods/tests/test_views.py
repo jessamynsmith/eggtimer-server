@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpRequest, QueryDict
 from django.test import TestCase
 from django.utils import timezone
+from tastypie import models as tastypie_models
 
 from periods import models as period_models, views
 
@@ -69,6 +70,23 @@ class TestViews(TestCase):
 
         self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')
         self.assertContains(response, '<h4>API Information</h4>')
+
+    def test_regenerate_key_post(self):
+        self.request.method = 'POST'
+        api_key = tastypie_models.ApiKey.objects.get(user=self.request.user).key
+
+        response = views.regenerate_key(self.request)
+
+        self.assertContains(response, '', status_code=302)
+        self.assertNotEquals(api_key, self.request.user.api_key.key)
+
+    def test_regenerate_key_get(self):
+        api_key = tastypie_models.ApiKey.objects.get(user=self.request.user).key
+
+        response = views.regenerate_key(self.request)
+
+        self.assertContains(response, '', status_code=302)
+        self.assertEquals(api_key, self.request.user.api_key.key)
 
     def test_qigong_cycles_no_data(self):
         response = views.qigong_cycles(self.request)

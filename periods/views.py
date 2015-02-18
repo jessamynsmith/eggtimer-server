@@ -4,6 +4,7 @@ from six.moves.urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -47,7 +48,6 @@ def statistics(request):
 
 @login_required
 def profile(request):
-    # TODO allow user to request API key
     periods_url = reverse('api_dispatch_list',
                           kwargs={'resource_name': 'periods', 'api_name': 'v1'})
     params = {
@@ -69,6 +69,15 @@ def profile(request):
 
     return render_to_response('periods/profile.html', data,
                               context_instance=RequestContext(request))
+
+
+@login_required
+def regenerate_key(request):
+    if request.method == 'POST':
+        request.user.api_key.key = request.user.api_key.generate_key()
+        request.user.api_key.save()
+
+    return HttpResponseRedirect(reverse('user_profile'))
 
 
 def _get_level(cycle_length, days):
