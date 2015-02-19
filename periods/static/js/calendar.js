@@ -1,12 +1,22 @@
+formatMoment = function(instance) {
+    if (instance !== null) {
+        return instance.format('YYYY-MM-DD');
+    }
+    return '';
+};
+
 makeEvents = function(data) {
     events = Array();
 
     data.forEach(function(item) {
         var event = {
             title: 'period',
+            itemId: item.id,
+            itemType: item.type,
             start: item.start_date,
-            period_id: item.id,
-            color: '#0f76ed'
+            color: '#0f76ed',
+            // Maybe someday allow dragging of period events
+            editable: false
         };
 
         var eventType = item.type;
@@ -20,7 +30,6 @@ makeEvents = function(data) {
             event.title = item.text;
             event.color = '#ffffff';
             event.textColor = '#666666';
-            event.editable = false;
         }
 
         events.push(event);
@@ -50,14 +59,84 @@ getDefaultDate = function(moment, queryString) {
     return defaultDate;
 };
 
-var initializeCalendar = function(periods_url) {
-    $('#calendar').fullCalendar({
+doAjax = function(url, method, itemId, data) {
+    console.log("Calling " + method + " on item " + itemId + " ...");
+    if (itemId !== null) {
+        url += itemId + '/';
+    }
+    $.ajax({
+        url: url,
+        contentType: 'application/json',
+        type: method,
+        data: JSON.stringify(data),
+        beforeSend: function(jqXHR, settings) {
+            jqXHR.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+        },
+        success: function(data, textStatus, jqXHR) {
+            console.log(method + " on " + itemId + " succeeded");
+            $('#id_calendar').fullCalendar( 'refetchEvents' );
+        }
+    });
+};
+
+editEvent = function(action, periodsUrl, itemId, itemDate, itemTime) {
+    var method = 'POST';
+    var buttons = [];
+    if (action === 'Update') {
+        method = 'PUT';
+        buttons.push({
+            id: 'btn-delete',
+            label: 'Delete',
+            cssClass: 'btn-warning',
+            action: function(dialogRef) {
+                BootstrapDialog.confirm('Are you sure you want to delete this event?', function(result) {
+                    if (result) {
+                        doAjax(periodsUrl, 'DELETE', itemId, {});
+                        dialogRef.close();
+                    }
+                });
+            }
+        });
+    }
+    buttons.push({
+        id: 'btn-cancel',
+        label: 'Cancel',
+        cssClass: 'btn-cancel',
+        autospin: false,
+        action: function(dialogRef) {
+            dialogRef.close();
+        }
+    },{
+        id: 'btn-ok',
+        label: action,
+        cssClass: 'btn-primary',
+        action: function(dialogRef) {
+            var data = {'start_date': $('#id_start_date').val()};
+            if (itemTime) {
+                data.start_time = itemTime;
+            }
+            doAjax(periodsUrl, method, itemId, data);
+            dialogRef.close();
+        }
+    });
+    BootstrapDialog.show({
+        title: action + ' event',
+        message: $('<input id="id_start_date" type="text" class="form-control" name="birth_date" value="' +
+        formatMoment(itemDate) + '">').datepicker({dateFormat: 'yy-mm-dd'}),
+        closable: true,
+        buttons: buttons
+    });
+
+};
+
+var initializeCalendar = function(periodsUrl) {
+    $('#id_calendar').fullCalendar({
         defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
-            var startDate = start.format('YYYY-MM-DD');
-            var endDate = end.format('YYYY-MM-DD');
+            var startDate = formatMoment(start);
+            var endDate = formatMoment(end);
             $.ajax({
-                url: periods_url,
+                url: periodsUrl,
                 dataType: 'json',
                 data: {
                     start_date__gte: startDate,
@@ -72,41 +151,20 @@ var initializeCalendar = function(periods_url) {
             });
         },
         dayClick: function(date, jsEvent, view) {
-            var start_date = date.toDate();
-            var data = {'start_date': start_date};
+            var startDate = date.toDate();
+            var startTime = null;
             var now = new Date();
-            if (start_date == now.getDate()) {
-                data.start_time = now.toLocaleTimeString();
+            if (startDate == now.getDate()) {
+                startTime = now.toLocaleTimeString();
             }
-            $.ajax({
-                url: periods_url,
-                contentType: 'application/json',
-                type: 'POST',
-                data: JSON.stringify(data),
-                beforeSend: function(jqXHR, settings) {
-                    jqXHR.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
-                },
-                success: function(data, textStatus, jqXHR) {
-                    console.log("Period created starting on " + start_date);
-                    $('#calendar').fullCalendar( 'refetchEvents' );
-                }
-            });
-
+            editEvent('Add', periodsUrl, null, moment(startDate), startTime);
         },
-        eventClick: function(calEvent, jsEvent, view) {
-            var period_id = arguments[0].period_id;
-            $.ajax({
-                url: periods_url + period_id + '/',
-                contentType: 'application/json',
-                type: 'DELETE',
-                beforeSend: function(jqXHR, settings) {
-                    jqXHR.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
-                },
-                success: function(data, textStatus, jqXHR) {
-                    console.log("Period " + period_id + " deleted.");
-                    $('#calendar').fullCalendar( 'refetchEvents' );
-                }
-            });
+        eventClick: function(event, jsEvent, view) {
+            // Right now, periods do not have a type. This will change when I add spotting.
+            if (event.itemType !== null) {
+                return;
+            }
+            editEvent('Update', periodsUrl, event.itemId, event.start, null);
         }
     });
 };

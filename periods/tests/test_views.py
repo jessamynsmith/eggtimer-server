@@ -26,7 +26,7 @@ class TestViews(TestCase):
         response = views.calendar(self.request)
 
         self.assertContains(response, 'initializeCalendar(')
-        self.assertContains(response, 'div id=\'calendar\'></div>')
+        self.assertContains(response, 'div id=\'id_calendar\'></div>')
 
     def test_statistics_no_data(self):
         period_models.Period.objects.all().delete()
