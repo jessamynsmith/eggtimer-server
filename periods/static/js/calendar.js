@@ -1,8 +1,16 @@
-formatMoment = function(instance) {
+formatMoment = function(instance, format) {
     if (instance !== null) {
-        return instance.format('YYYY-MM-DD');
+        return instance.format(format);
     }
     return '';
+};
+
+formatMomentDate = function(instance) {
+    return formatMoment(instance, 'YYYY-MM-DD');
+};
+
+formatMomentTime = function(instance) {
+    return formatMoment(instance, 'HH:mm');
 };
 
 makeEvents = function(data) {
@@ -30,6 +38,12 @@ makeEvents = function(data) {
             event.title = item.text;
             event.color = '#ffffff';
             event.textColor = '#666666';
+        } else {
+            var startTime = item.start_time;
+            if (!startTime) {
+                startTime = '00:00:00';
+            }
+            event.start = item.start_date + 'T' + startTime;
         }
 
         events.push(event);
@@ -79,7 +93,7 @@ doAjax = function(url, method, itemId, data) {
     });
 };
 
-editEvent = function(action, periodsUrl, itemId, itemDate, itemTime) {
+editEvent = function(action, periodsUrl, itemId, itemDate) {
     var method = 'POST';
     var buttons = [];
     if (action === 'Update') {
@@ -111,9 +125,10 @@ editEvent = function(action, periodsUrl, itemId, itemDate, itemTime) {
         label: action,
         cssClass: 'btn-primary',
         action: function(dialogRef) {
-            var data = {'start_date': $('#id_start_date').val()};
-            if (itemTime) {
-                data.start_time = itemTime;
+            var data = {start_date: $('#id_start_date').val()};
+            var startTime = $('#id_start_time').val();
+            if (startTime) {
+                data.start_time  = startTime;
             }
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
@@ -121,20 +136,25 @@ editEvent = function(action, periodsUrl, itemId, itemDate, itemTime) {
     });
     BootstrapDialog.show({
         title: action + ' event',
-        message: $('<input id="id_start_date" type="text" class="form-control" name="birth_date" value="' +
-        formatMoment(itemDate) + '">').datepicker({dateFormat: 'yy-mm-dd'}),
+        message: function(dialog) {
+            var content = $('<input id="id_start_date" type="text" class="form-control" ' +
+            'value="' + formatMomentDate(itemDate) + '">' +
+            '<input id="id_start_time" type="text" class="form-control" value="' +
+            formatMomentTime(itemDate) + '" placeholder="00:00">');
+            $('#id_start_date').datepicker({dateFormat: 'yy-mm-dd'});
+            return content;
+        },
         closable: true,
         buttons: buttons
     });
-
 };
 
 var initializeCalendar = function(periodsUrl) {
     $('#id_calendar').fullCalendar({
         defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
-            var startDate = formatMoment(start);
-            var endDate = formatMoment(end);
+            var startDate = formatMomentDate(start);
+            var endDate = formatMomentDate(end);
             $.ajax({
                 url: periodsUrl,
                 dataType: 'json',
@@ -151,20 +171,11 @@ var initializeCalendar = function(periodsUrl) {
             });
         },
         dayClick: function(date, jsEvent, view) {
-            var startDate = date.toDate();
-            var startTime = null;
-            var now = new Date();
-            if (startDate == now.getDate()) {
-                startTime = now.toLocaleTimeString();
-            }
-            editEvent('Add', periodsUrl, null, moment(startDate), startTime);
+            editEvent('Add', periodsUrl, null, moment());
         },
         eventClick: function(event, jsEvent, view) {
             // Right now, periods do not have a type. This will change when I add spotting.
-            if (event.itemType !== null) {
-                return;
-            }
-            editEvent('Update', periodsUrl, event.itemId, event.start, null);
+            editEvent('Update', periodsUrl, event.itemId, event.start);
         }
     });
 };

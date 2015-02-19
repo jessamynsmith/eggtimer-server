@@ -11,14 +11,27 @@ var calendar = require("../../../static/js/calendar.js");
 
 
 describe('String', function () {
-    describe('#formatMoment()', function () {
+    describe('#formatMomentDate()', function () {
         it('should return empty string if no moment provided', function () {
-            var result = formatMoment(null);
+            var result = formatMomentDate(null);
             assert.equal('', result);
         });
         it('should return formatted date if moment provided', function () {
-            var result = formatMoment(moment("12-28-2014"));
+            var result = formatMomentDate(moment("12-28-2014"));
             assert.equal('2014-12-28', result);
+        });
+    })
+});
+
+describe('String', function () {
+    describe('#formatMomentTime()', function () {
+        it('should return empty string if no moment provided', function () {
+            var result = formatMomentTime(null);
+            assert.equal('', result);
+        });
+        it('should return formatted date if moment provided', function () {
+            var result = formatMomentTime(moment("12-28-2014 03:33:44"));
+            assert.equal('03:33', result);
         });
     })
 });
@@ -39,7 +52,7 @@ describe('Array', function () {
             var result = makeEvents(data);
             assert.equal(4, result.length);
             var expected = JSON.stringify({title: "period", "itemId": "1", "itemType": "period",
-                start: "2015-01-01", color: "#0f76ed", "editable": false});
+                start: "2015-01-01T00:00:00", color: "#0f76ed", "editable": false});
             assert.equal(JSON.stringify(result[0]), expected);
             expected = JSON.stringify({title: "projected period", "itemId": "2", "itemType":
                 "projected period", start: "2015-01-28", color: "darkred", "editable": false});
