@@ -1,9 +1,10 @@
 [run]
 source = api, eggtimer, periods
-# branch = True  # This messes up template coverage, so disable for now
+# When new version of coverage is out, enable branch
+#branch = True
 omit = *tests*
     */migrations/*
-    *__init__.py*
+    *__init__.py
     *settings*
 plugins =
     django_coverage_plugin

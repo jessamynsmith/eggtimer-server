@@ -2,7 +2,7 @@
 PyYAML==3.11
 coverage==4.0a5
 -e git://github.com/jessamynsmith/coveralls-python.git@778fc5c78cf3027decb41bd1b69a7fe5fbf7dfc6#egg=coveralls
-django-coverage-plugin==0.3.3
+-e git://github.com/jessamynsmith/django_coverage_plugin.git@92c7294bd440baed63da61aa43a5f1485b807804#egg=django-coverage-plugin
 docopt==0.6.2
 flake8==2.3.0
 mccabe==0.3

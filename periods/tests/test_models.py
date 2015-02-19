@@ -126,6 +126,16 @@ class TestModels(TestCase):
 
         self.assertEqual(15, period.length)
 
+    @patch('periods.models.Statistics.save')
+    def test_update_statistics_deleted_user(self, mock_save):
+        period = self._create_period(start_date=datetime.date(2013, 4, 15))
+        period.user.delete()
+        pre_update_call_count = mock_save.call_count
+
+        period_models.update_statistics(period_models.Period, period)
+
+        self.assertEqual(pre_update_call_count, mock_save.call_count)
+
     @patch('periods.models._today')
     def test_update_statistics_none_existing(self, mock_today):
         mock_today.return_value = datetime.date(2013, 5, 5)
