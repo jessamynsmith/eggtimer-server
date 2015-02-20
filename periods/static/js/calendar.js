@@ -141,14 +141,15 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
     BootstrapDialog.show({
         title: action + ' event',
         message: function(dialog) {
-            var content = $('<label for="id_start_date">Start Date:</label>' +
+            return $('<label for="id_start_date">Start Date:</label>' +
             '<input id="id_start_date" type="text" class="form-control width_form_control" ' +
             'value="' + formatMomentDate(itemDate) + '">' +
             '<label for="id_start_time">Start Time:</label>' +
             '<input id="id_start_time" type="text" class="form-control width_form_control" ' +
             'value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
+        },
+        onshown: function(dialog) {
             $('#id_start_date').datepicker({dateFormat: 'yy-mm-dd'});
-            return content;
         },
         closable: true,
         buttons: buttons
