@@ -13,6 +13,10 @@ formatMomentTime = function(instance) {
     return formatMoment(instance, 'HH:mm');
 };
 
+makeDateTimeString = function(date, time) {
+    return date + 'T' + time;
+};
+
 makeEvents = function(data) {
     events = Array();
 
@@ -43,7 +47,7 @@ makeEvents = function(data) {
             if (!startTime) {
                 startTime = '00:00:00';
             }
-            event.start = item.start_date + 'T' + startTime;
+            event.start = makeDateTimeString(item.start_date, startTime);
         }
 
         events.push(event);
@@ -137,10 +141,12 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
     BootstrapDialog.show({
         title: action + ' event',
         message: function(dialog) {
-            var content = $('<input id="id_start_date" type="text" class="form-control" ' +
+            var content = $('<label for="id_start_date">Start Date:</label>' +
+            '<input id="id_start_date" type="text" class="form-control width_form_control" ' +
             'value="' + formatMomentDate(itemDate) + '">' +
-            '<input id="id_start_time" type="text" class="form-control" value="' +
-            formatMomentTime(itemDate) + '" placeholder="00:00">');
+            '<label for="id_start_time">Start Time:</label>' +
+            '<input id="id_start_time" type="text" class="form-control width_form_control" ' +
+            'value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
             $('#id_start_date').datepicker({dateFormat: 'yy-mm-dd'});
             return content;
         },
@@ -171,7 +177,13 @@ var initializeCalendar = function(periodsUrl) {
             });
         },
         dayClick: function(date, jsEvent, view) {
-            editEvent('Add', periodsUrl, null, moment());
+            var dayMoment = moment(date);
+            var now = moment();
+            if (dayMoment.date() == now.date()) {
+                // If the entry is for the current day, populate time
+                dayMoment = now;
+            }
+            editEvent('Add', periodsUrl, null, dayMoment);
         },
         eventClick: function(event, jsEvent, view) {
             // Right now, periods do not have a type. This will change when I add spotting.

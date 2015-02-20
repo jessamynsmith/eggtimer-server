@@ -36,6 +36,15 @@ describe('String', function () {
     })
 });
 
+describe('String', function () {
+    describe('#makeDateTimeString()', function () {
+        it('should return formatted date time string', function () {
+            var result = makeDateTimeString("2014-12-28", "03:33");
+            assert.equal('2014-12-28T03:33', result);
+        });
+    })
+});
+
 describe('Array', function () {
     describe('#makeEvents()', function () {
         it('should return empty array if no data', function () {
