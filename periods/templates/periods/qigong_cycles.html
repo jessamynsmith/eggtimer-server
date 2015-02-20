@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/qigong_cycles.css" type="text/css" media="screen" />
 
     <script type='text/javascript' src='{{ STATIC_URL }}js/qigong_cycles.js'></script>
+
+    <script type="text/javascript">
+		$(document).ready(function() {
+            qigong_cycles({{ tick_values|safe }}, {{ cycles.physical.data|safe }},
+                {{ cycles.emotional.data|safe }}, {{ cycles.intellectual.data|safe }},
+                {{ cycles.physical.level }}, {{ cycles.emotional.level }}, {{ cycles.intellectual.level }},
+                "{{ start }}", "{{ today }}");
+        });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -18,15 +27,14 @@
     {% if not birth_date %}
         <p>Enter your birth date to calculate your current cycle status!</p>
 
-        <form>
+        <form method="post">
+            {% csrf_token %}
             <div class="form-group">
-                <label class="control-label" for="id_birth_date">Birth Date</label>
                 {% if error %}
                     <p class="error_message">{{ error }}</p>
                 {% endif %}
-                <div>
-                    <input id="id_birth_date" type="text" class="form-control" name="birth_date" value="{{ birth_date }}" placeholder="YYYY-MM-DD">
-                </div>
+                <label for="id_birth_date">Birth Date: </label>
+                <input id="id_birth_date" type="text" name="birth_date" value="{{ birth_date }}" placeholder="YYYY-MM-DD">
             </div>
             <button type="submit" class="btn btn-default spacing_top">Calculate</button>
         </form>
@@ -60,13 +68,6 @@
         </table>
 
         <br/>
-
-    <script type="text/javascript">
-        qigong_cycles({{ tick_values|safe }}, {{ cycles.physical.data|safe }},
-                {{ cycles.emotional.data|safe }}, {{ cycles.intellectual.data|safe }},
-                {{ cycles.physical.level }}, {{ cycles.emotional.level }}, {{ cycles.intellectual.level }},
-                "{{ start }}", "{{ today }}");
-    </script>
 
     {% endif %}
 

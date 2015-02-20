@@ -128,10 +128,12 @@ def qigong_cycles(request):
     # TODO birthdate date picker
     # TODO specify date for calculation (does not have to be today)
     # TODO allow user to select their current timezone
-    birth_date_string = request.GET.get('birth_date')
+    birth_date_string = request.POST.get('birth_date')
     if birth_date_string:
         try:
             birth_date = datetime.datetime.strptime(birth_date_string, DATE_FORMAT)
+            request.user.birth_date = birth_date
+            request.user.save()
         except ValueError:
             data['error'] = "Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30"
 

@@ -91,7 +91,19 @@ class TestViews(TestCase):
     def test_qigong_cycles_no_data(self):
         response = views.qigong_cycles(self.request)
 
-        self.assertContains(response, '<label class="control-label" for="id_birth_date">Birth Date')
+        self.assertContains(response, '<label for="id_birth_date">Birth Date')
+
+    def test_qigong_cycles_post(self):
+        self.request.method = "POST"
+        self.request.POST = QueryDict(u"birth_date=1980-02-28")
+
+        response = views.qigong_cycles(self.request)
+
+        self.assertContains(response, '<td class="intellectual">Intellectual</td>')
+        self.assertContains(response, 'qigong_cycles(["')
+        user = period_models.User.objects.get(pk=self.request.user.pk)
+        expected = pytz.timezone("US/Eastern").localize(timezone.datetime(1980, 2, 28))
+        self.assertEqual(expected, user.birth_date)
 
     def test_qigong_cycles(self):
         self.user.birth_date = pytz.timezone("US/Eastern").localize(timezone.datetime(1981, 3, 31))

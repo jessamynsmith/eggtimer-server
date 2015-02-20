@@ -142,13 +142,12 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
         title: action + ' event',
         message: function(dialog) {
             return $('<label for="id_start_date">Start Date:</label>' +
-            '<input id="id_start_date" type="text" class="form-control width_form_control" ' +
-            'value="' + formatMomentDate(itemDate) + '">' +
+            '<input id="id_start_date" type="text" value="' + formatMomentDate(itemDate) + '"><br/>' +
             '<label for="id_start_time">Start Time:</label>' +
-            '<input id="id_start_time" type="text" class="form-control width_form_control" ' +
-            'value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
+            '<input id="id_start_time" type="text" value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
         },
         onshown: function(dialog) {
+            addFormStyles();
             $('#id_start_date').datepicker({dateFormat: 'yy-mm-dd'});
         },
         closable: true,
