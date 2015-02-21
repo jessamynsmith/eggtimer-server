@@ -48,30 +48,26 @@ describe('String', function () {
 describe('Array', function () {
     describe('#makeEvents()', function () {
         it('should return empty array if no data', function () {
-            var result = makeEvents(Array());
-            assert.equal(0, result.length);
+            var result = makeEvents(moment, Array());
+            assert.equal(0, result.events.length);
         });
         it('should return array of items if data', function () {
             var data = Array(
                 {id: '1', type: 'period', start_date: '2015-01-01'},
                 {id: '2', type: 'projected period', start_date: '2015-01-28'},
-                {id: '3', type: 'projected ovulation', start_date: '2015-01-14'},
-                {id: '4', type: 'day count', start_date: '2015-01-01', text: 'Day: 1'}
+                {id: '3', type: 'projected ovulation', start_date: '2015-01-14'}
             );
-            var result = makeEvents(data);
-            assert.equal(4, result.length);
+            var result = makeEvents(moment, data);
+            assert.equal(3, result.events.length);
             var expected = JSON.stringify({title: "period", "itemId": "1", "itemType": "period",
                 start: "2015-01-01T00:00:00", color: "#0f76ed", "editable": false});
-            assert.equal(JSON.stringify(result[0]), expected);
+            assert.equal(JSON.stringify(result.events[0]), expected);
             expected = JSON.stringify({title: "projected period", "itemId": "2", "itemType":
                 "projected period", start: "2015-01-28", color: "darkred", "editable": false});
-            assert.equal(JSON.stringify(result[1]), expected);
+            assert.equal(JSON.stringify(result.events[1]), expected);
             expected = JSON.stringify({title: "projected ovulation", "itemId": "3", "itemType":
                 "projected ovulation", start: "2015-01-14", color: "purple", "editable": false});
-            assert.equal(JSON.stringify(result[2]), expected);
-            expected = JSON.stringify({title: "Day: 1", "itemId": "4", "itemType": 'day count',
-                start: "2015-01-01", color: "#ffffff", "editable": false, "textColor": "#666666"});
-            assert.equal(JSON.stringify(result[3]), expected);
+            assert.equal(JSON.stringify(result.events[2]), expected);
         });
     })
 });

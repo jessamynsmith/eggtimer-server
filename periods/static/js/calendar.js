@@ -17,8 +17,9 @@ makeDateTimeString = function(date, time) {
     return date + 'T' + time;
 };
 
-makeEvents = function(data) {
+makeEvents = function(moment, data) {
     events = Array();
+    periodStartDates = Array();
 
     data.forEach(function(item) {
         var event = {
@@ -43,6 +44,7 @@ makeEvents = function(data) {
             event.color = '#ffffff';
             event.textColor = '#666666';
         } else {
+            periodStartDates.push(moment(item.start_date));
             var startTime = item.start_time;
             if (!startTime) {
                 startTime = '00:00:00';
@@ -52,7 +54,29 @@ makeEvents = function(data) {
 
         events.push(event);
     });
-    return events;
+    return {events: events, periodStartDates: periodStartDates};
+};
+
+addDayCounts = function(periodStartDates, firstDate, firstDay) {
+    $('.day-count').remove();
+    if (!firstDay) {
+        console.log("No days to add");
+        return;
+    }
+    console.log("Adding day counts");
+    var currentDay = firstDay;
+    var nextPeriodStart = periodStartDates.shift();
+    $('.fc-day-number').each(function() {
+        var currentDate = moment($(this).attr('data-date'));
+        if (currentDate >= firstDate) {
+            if (currentDate.isSame(nextPeriodStart)) {
+                nextPeriodStart = periodStartDates.shift();
+                currentDay = 1;
+            }
+            $(this).append("<p class='day-count'>" + currentDay + "</p>");
+            currentDay += 1;
+        }
+    });
 };
 
 getDefaultDate = function(moment, queryString) {
@@ -172,7 +196,9 @@ var initializeCalendar = function(periodsUrl) {
                     var newUrl = window.location.protocol + "//" + window.location.host +
                         window.location.pathname + "?start=" + startDate + "&end=" + endDate;
                     window.history.pushState({path:newUrl}, '', newUrl);
-                    callback(makeEvents(doc.objects));
+                    var events = makeEvents(moment, doc.objects);
+                    addDayCounts(events.periodStartDates, moment(doc.first_date), doc.first_day);
+                    callback(events.events);
                 }
             });
         },

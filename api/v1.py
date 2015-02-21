@@ -89,40 +89,24 @@ class PeriodDetailResource(PeriodResource):
         for expected_date in request.user.statistics.next_ovulations:
             ovulation = {'start_date': expected_date, 'type': 'projected ovulation'}
             projected_data.append(Bundle(data=ovulation))
+        data['objects'].extend(projected_data)
 
         start_date = datetime.datetime.strptime(start_date, DATE_FORMAT)
-        end_date = datetime.datetime.strptime(end_date, DATE_FORMAT)
-
-        period_start_dates = request.user.periods.filter(
-            start_date__gte=start_date, start_date__lte=end_date).order_by('start_date')
-        period_start_dates = list(period_start_dates.values_list('start_date', flat=True))
-        period_start_dates.extend(request.user.statistics.next_periods)
-
-        one_day = datetime.timedelta(days=1)
 
         previous_periods = request.user.periods.filter(
             start_date__lt=start_date).order_by('-start_date')
+        next_periods = request.user.periods.filter(
+            start_date__gte=start_date).order_by('start_date')
+        first_date = ''
+        first_day = ''
         if previous_periods.exists():
-            current_date = start_date.date()
-            current_day = (start_date.date() - previous_periods[0].start_date).days + 1
-        elif len(period_start_dates):
-            current_date = period_start_dates[0]
-            current_day = 1
-        else:
-            # Bump date past end date so we don't create any day counts
-            current_date = end_date.date() + one_day
-            current_day = None
-
-        while current_date <= end_date.date():
-            if current_date in period_start_dates:
-                current_day = 1
-            day_count = {'start_date': current_date, 'type': 'day count',
-                         'text': 'Day: %s' % current_day}
-            projected_data.append(Bundle(data=day_count))
-            current_date += one_day
-            current_day += 1
-
-        data['objects'].extend(projected_data)
+            first_date = start_date.date()
+            first_day = (start_date.date() - previous_periods[0].start_date).days + 1
+        elif next_periods.exists():
+            first_date = next_periods[0].start_date
+            first_day = 1
+        data['first_date'] = first_date
+        data['first_day'] = first_day
 
         return super(PeriodDetailResource, self).create_response(request, data, response_class,
                                                                  **response_kwargs)

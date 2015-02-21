@@ -77,6 +77,8 @@ class TestPeriodDetailResource(TestCase):
 
         self.assertEqual('application/json', response['Content-Type'])
         content = json.loads(response.content.decode('ascii'))
+        self.assertEqual('', content['first_day'])
+        self.assertEqual('', content['first_date'])
         self.assertEqual(0, len(content['objects']))
 
     @patch('periods.models._today')
@@ -88,16 +90,14 @@ class TestPeriodDetailResource(TestCase):
 
         self.assertEqual('application/json', response['Content-Type'])
         content = json.loads(response.content.decode('ascii'))
-        self.assertEqual(23, len(content['objects']))
+        self.assertEqual(6, len(content['objects']))
 
+        self.assertEqual(1, content['first_day'])
+        self.assertEqual('2014-02-12', content['first_date'])
         data_0 = {'start_date': '2014-03-12', 'type': 'projected period'}
         self.assertEqual(data_0, content['objects'][0])
         data_3 = {'start_date': '2014-02-26', 'type': 'projected ovulation'}
         self.assertEqual(data_3, content['objects'][3])
-        data_6 = {'text': 'Day: 1', 'start_date': '2014-02-12', 'type': 'day count'}
-        self.assertEqual(data_6, content['objects'][6])
-        data_22 = {'text': 'Day: 17', 'start_date': '2014-02-28', 'type': 'day count'}
-        self.assertEqual(data_22, content['objects'][22])
 
     @patch('periods.models._today')
     def test_create_response(self, mock_today):
@@ -107,17 +107,11 @@ class TestPeriodDetailResource(TestCase):
 
         self.assertEqual('application/json', response['Content-Type'])
         content = json.loads(response.content.decode('ascii'))
-        self.assertEqual(34, len(content['objects']))
+        self.assertEqual(6, len(content['objects']))
 
+        self.assertEqual(18, content['first_day'])
+        self.assertEqual('2014-02-01', content['first_date'])
         data_0 = {'start_date': '2014-03-12', 'type': 'projected period'}
         self.assertEqual(data_0, content['objects'][0])
         data_3 = {'start_date': '2014-02-26', 'type': 'projected ovulation'}
         self.assertEqual(data_3, content['objects'][3])
-        data_6 = {'text': 'Day: 18', 'start_date': '2014-02-01', 'type': 'day count'}
-        self.assertEqual(data_6, content['objects'][6])
-        data_16 = {'text': 'Day: 28', 'start_date': '2014-02-11', 'type': 'day count'}
-        self.assertEqual(data_16, content['objects'][16])
-        data_17 = {'text': 'Day: 1', 'start_date': '2014-02-12', 'type': 'day count'}
-        self.assertEqual(data_17, content['objects'][17])
-        data_33 = {'text': 'Day: 17', 'start_date': '2014-02-28', 'type': 'day count'}
-        self.assertEqual(data_33, content['objects'][33])
