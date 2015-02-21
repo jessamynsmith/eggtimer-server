@@ -2,7 +2,7 @@
 PyYAML==3.11
 coverage==4.0a5
 coveralls==1.0a2
--e git://github.com/jessamynsmith/django_coverage_plugin.git@92c7294bd440baed63da61aa43a5f1485b807804#egg=django-coverage-plugin
+-e git://github.com/jessamynsmith/django_coverage_plugin.git@9eb8488fbc6d744f47bafd25911e36903f71e90d#egg=django-coverage-plugin
 docopt==0.6.2
 flake8==2.3.0
 mccabe==0.3
