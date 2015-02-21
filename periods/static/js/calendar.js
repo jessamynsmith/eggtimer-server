@@ -166,9 +166,9 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
         title: action + ' event',
         message: function(dialog) {
             return $('<label for="id_start_date">Start Date:</label>' +
-            '<input id="id_start_date" type="text" value="' + formatMomentDate(itemDate) + '"><br/>' +
+            '<input id="id_start_date" type="date" value="' + formatMomentDate(itemDate) + '"><br/>' +
             '<label for="id_start_time">Start Time:</label>' +
-            '<input id="id_start_time" type="text" value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
+            '<input id="id_start_time" type="time" value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
         },
         onshown: function(dialog) {
             addFormStyles();
