@@ -58,6 +58,9 @@ describe('Array', function () {
                 {id: '3', type: 'projected ovulation', start_date: '2015-01-14'}
             );
             var result = makeEvents(moment, data);
+            assert.equal(2, result.periodStartDates.length);
+            assert.equal('2015-01-01', result.periodStartDates[0].format('YYYY-MM-DD'));
+            assert.equal('2015-01-28', result.periodStartDates[1].format('YYYY-MM-DD'));
             assert.equal(3, result.events.length);
             var expected = JSON.stringify({title: "period", "itemId": "1", "itemType": "period",
                 start: "2015-01-01T00:00:00", color: "#0f76ed", "editable": false});

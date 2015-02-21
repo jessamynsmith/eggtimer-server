@@ -74,7 +74,7 @@ class PeriodDetailResource(PeriodResource):
         resource_name = 'periods_detail'
 
     def create_response(self, request, data, response_class=HttpResponse, **response_kwargs):
-        # data already contains period start dates; extend to contain projected data and day counts
+        # data already contains period start dates; extend to contain projected data and count
 
         start_date = request.GET.get('start_date__gte')
         end_date = request.GET.get('start_date__lte')

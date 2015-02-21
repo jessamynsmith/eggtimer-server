@@ -34,15 +34,12 @@ makeEvents = function(moment, data) {
 
         var eventType = item.type;
         if (eventType == 'projected period') {
+            periodStartDates.push(moment(item.start_date));
             event.title = eventType;
             event.color = 'darkred';
         } else if (eventType == 'projected ovulation') {
             event.title = eventType;
             event.color = 'purple';
-        } else if (eventType == 'day count') {
-            event.title = item.text;
-            event.color = '#ffffff';
-            event.textColor = '#666666';
         } else {
             periodStartDates.push(moment(item.start_date));
             var startTime = item.start_time;
@@ -172,7 +169,6 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
         },
         onshown: function(dialog) {
             addFormStyles();
-            $('#id_start_date').datepicker({dateFormat: 'yy-mm-dd'});
         },
         closable: true,
         buttons: buttons
