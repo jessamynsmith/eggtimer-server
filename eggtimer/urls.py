@@ -21,6 +21,7 @@ urlpatterns = patterns(
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/$', period_views.profile, name='user_profile'),
     url(r'^accounts/profile/regenerate_key/$', period_views.regenerate_key, name='regenerate_key'),
+    url(r'^avatar/', include('avatar.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(v1_api.urls)),
 
