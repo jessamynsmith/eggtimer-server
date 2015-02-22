@@ -13,15 +13,8 @@
 {% block content %}
 	<h3>Account Info for {{ user.get_full_name }}</h3>
 
-    {% load avatar_tags %}
-    {% avatar user %}
-
     <div>
     <a href="{% url 'qigong_cycles' %}">Medical Qigong Cycles</a>
-    </div>
-
-    <div>
-    <a href="{% url 'avatar_change' %}">Change your avatar</a>
     </div>
 
     <div>

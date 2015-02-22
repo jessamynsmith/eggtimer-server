@@ -104,7 +104,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'tastypie',
     'bootstrapform',
-    'avatar',
     'api',
     'periods',
 ]
