@@ -35,9 +35,10 @@ class TestModels(TestCase):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
 
     def test_user_str(self):
-        self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
+        self.assertTrue(re.match(r'user_[\d]+@example.com \(user_[\d]+@example.com\)',
+                                 '%s' % self.basic_user))
 
-    def test_flow_event_unicode(self):
+    def test_flow_event_str(self):
         self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 00:00:00-0[\d]:00\)',
                                  '%s' % self.period))
 

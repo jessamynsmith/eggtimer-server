@@ -68,7 +68,7 @@ class User(AbstractEmailUser):
         return short_name
 
     def __str__(self):
-        return u"%s (%s)" % (self.get_full_name(), self.email)
+        return "%s (%s)" % (self.get_full_name(), self.email)
 
 
 class FlowLevel(enum.Enum):
@@ -103,8 +103,8 @@ class FlowEvent(models.Model):
     comment = models.TextField(max_length=250, null=True, blank=True)
 
     def __str__(self):
-        return u"%s %s (%s)" % (self.user.get_full_name(), FlowLevel.label(self.level),
-                                self.timestamp)
+        return "%s %s (%s)" % (self.user.get_full_name(), FlowLevel.label(self.level),
+                               self.timestamp)
 
 
 class Statistics(models.Model):
@@ -145,7 +145,7 @@ class Statistics(models.Model):
         return next_dates
 
     def __str__(self):
-        return u"%s (%s)" % (self.user.get_full_name(), self.user.email)
+        return "%s (%s)" % (self.user.get_full_name(), self.user.email)
 
 
 def add_to_permissions_group(sender, instance, **kwargs):
