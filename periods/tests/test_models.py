@@ -1,4 +1,5 @@
 import datetime
+import re
 
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
@@ -17,13 +18,14 @@ class TestModels(TestCase):
         self.period = FlowEventFactory()
 
     def test_user_get_full_name_email(self):
-        self.assertRegex('%s' % self.basic_user.get_full_name(), r'user_[\d]+@example.com')
+        self.assertTrue(re.match(r'user_[\d]+@example.com', '%s' % self.basic_user.get_full_name()))
 
     def test_user_get_full_name(self):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_full_name())
 
     def test_user_get_short_name_email(self):
-        self.assertRegex('%s' % self.basic_user.get_short_name(), r'user_[\d]+@example.com')
+        self.assertTrue(re.match(r'user_[\d]+@example.com',
+                                 '%s' % self.basic_user.get_short_name()))
 
     def test_user_get_short_name(self):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
