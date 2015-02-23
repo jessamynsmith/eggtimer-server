@@ -1,5 +1,6 @@
 import datetime
 import json
+import pytz
 
 from django.http import HttpRequest, QueryDict
 from django.test import TestCase
@@ -10,6 +11,9 @@ from tastypie.exceptions import BadRequest
 from periods import models as period_models
 from periods.tests.factories import FlowEventFactory
 from api import v1
+
+
+TIMEZONE = pytz.timezone("US/Eastern")
 
 
 class TestPeriodResource(TestCase):
@@ -30,7 +34,7 @@ class TestPeriodResource(TestCase):
     def test_obj_create(self):
         bundle = Bundle(request=self.request)
         bundle.data = {'timestamp': '2015-02-17T00:00:00.000Z'}
-        bundle.obj = period_models.FlowEvent(first_day=True, timestamp=datetime.date(2015, 2, 17))
+        bundle.obj = FlowEventFactory()
 
         result = self.resource.obj_create(bundle, request=self.request)
 
@@ -44,7 +48,8 @@ class TestPeriodDetailResource(TestCase):
 
     def setUp(self):
         period1 = FlowEventFactory()
-        FlowEventFactory(user=period1.user, timestamp=datetime.date(2014, 2, 12))
+        FlowEventFactory(
+            user=period1.user, timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 12)))
         self.resource = v1.PeriodDetailResource()
         self.request = HttpRequest()
         self.request.user = period1.user
@@ -76,8 +81,9 @@ class TestPeriodDetailResource(TestCase):
 
     @patch('periods.models._today')
     def test_create_response_day_1(self, mock_today):
-        mock_today.return_value = datetime.date(2014, 1, 31)
-        period_models.FlowEvent.objects.filter(timestamp__lte=datetime.date(2014, 1, 31)).delete()
+        cutoff_date = TIMEZONE.localize(datetime.datetime(2014, 1, 31))
+        mock_today.return_value = cutoff_date
+        period_models.FlowEvent.objects.filter(timestamp__lte=cutoff_date).delete()
 
         response = self.resource.create_response(self.request, self.data)
 
@@ -94,7 +100,7 @@ class TestPeriodDetailResource(TestCase):
 
     @patch('periods.models._today')
     def test_create_response(self, mock_today):
-        mock_today.return_value = datetime.date(2014, 2, 14)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 2, 14))
 
         response = self.resource.create_response(self.request, self.data)
 

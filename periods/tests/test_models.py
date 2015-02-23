@@ -1,4 +1,5 @@
 import datetime
+import pytz
 import re
 
 from django.contrib.auth import models as auth_models
@@ -7,6 +8,9 @@ from mock import patch
 
 from periods import models as period_models
 from periods.tests.factories import FlowEventFactory, UserFactory
+
+
+TIMEZONE = pytz.timezone("US/Eastern")
 
 
 class TestModels(TestCase):
@@ -33,8 +37,9 @@ class TestModels(TestCase):
     def test_user_str(self):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
 
-    def test_flow_event_unicode_no_start_time(self):
-        self.assertEqual(u'Jessamyn MEDIUM (2014-01-31 00:00:00)', '%s' % self.period)
+    def test_flow_event_unicode(self):
+        self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 00:00:00-0[\d]:00\)',
+                                 '%s' % self.period))
 
     def test_statistics_str(self):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
@@ -44,9 +49,12 @@ class TestModels(TestCase):
         self.assertEqual([], stats.next_ovulations)
 
     def test_statistics_with_average(self):
-        FlowEventFactory(user=self.period.user, timestamp=datetime.date(2014, 2, 15))
-        FlowEventFactory(user=self.period.user, timestamp=datetime.date(2014, 3, 15))
-        FlowEventFactory(user=self.period.user, timestamp=datetime.date(2014, 4, 10))
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 15)))
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 3, 15)))
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 4, 10)))
 
         stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
 
@@ -102,14 +110,15 @@ class TestModels(TestCase):
 
     @patch('periods.models._today')
     def test_update_statistics_none_existing(self, mock_today):
-        mock_today.return_value = datetime.date(2014, 4, 5)
-        period = FlowEventFactory(user=self.period.user, timestamp=datetime.datetime(2014, 2, 27))
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
+        period = FlowEventFactory(user=self.period.user,
+                                  timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 27)))
 
         period_models.update_statistics(period_models.FlowEvent, period)
 
         stats = period_models.Statistics.objects.get(user=self.period.user)
         self.assertEqual(27, stats.average_cycle_length)
-        self.assertEqual(37, stats.current_cycle_length)
+        self.assertEqual(36, stats.current_cycle_length)
         next_periods = [
             datetime.date(2014, 3, 26),
             datetime.date(2014, 4, 22),
@@ -119,10 +128,13 @@ class TestModels(TestCase):
 
     @patch('periods.models._today')
     def test_update_statistics_periods_exist(self, mock_today):
-        mock_today.return_value = datetime.date(2014, 4, 5)
-        FlowEventFactory(user=self.period.user, timestamp=datetime.datetime(2014, 2, 14))
-        period = FlowEventFactory(user=self.period.user, timestamp=datetime.datetime(2014, 2, 28))
-        FlowEventFactory(user=self.period.user, timestamp=datetime.datetime(2014, 3, 14))
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 14)))
+        period = FlowEventFactory(user=self.period.user,
+                                  timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 3, 14)))
 
         period_models.update_statistics(period_models.FlowEvent, period)
 

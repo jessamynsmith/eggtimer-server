@@ -10,11 +10,15 @@ from periods import models as period_models, views
 from periods.tests.factories import FlowEventFactory
 
 
+TIMEZONE = pytz.timezone("US/Eastern")
+
+
 class TestViews(TestCase):
 
     def setUp(self):
         period = FlowEventFactory()
-        FlowEventFactory(user=period.user, timestamp=datetime.date(2014, 2, 28))
+        FlowEventFactory(user=period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
         self.request = HttpRequest()
         self.request.user = period.user
         self.request.META['SERVER_NAME'] = 'localhost'

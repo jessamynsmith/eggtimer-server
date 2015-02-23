@@ -1,5 +1,6 @@
 import datetime
 import json
+import pytz
 from six.moves.urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
@@ -131,7 +132,7 @@ def qigong_cycles(request):
     if birth_date_string:
         try:
             birth_date = datetime.datetime.strptime(birth_date_string, DATE_FORMAT)
-            request.user.birth_date = birth_date
+            request.user.birth_date = pytz.timezone("US/Eastern").localize(birth_date)
             request.user.save()
         except ValueError:
             data['error'] = "Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30"

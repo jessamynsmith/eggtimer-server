@@ -1,5 +1,7 @@
-from custom_user.models import AbstractEmailUser
 import datetime
+import pytz
+
+from custom_user.models import AbstractEmailUser
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
 from django.db import models
@@ -11,7 +13,7 @@ from tastypie.models import create_api_key
 
 def _today():
     # Create helper method to allow mocking during tests
-    return datetime.date.today()
+    return datetime.datetime.now(pytz.utc)
 
 
 class User(AbstractEmailUser):
@@ -119,7 +121,7 @@ class Statistics(models.Model):
         today = _today()
         previous_period = self.user.get_previous_period(previous_to=today)
         if previous_period:
-            current_cycle = (today - previous_period.timestamp.date()).days
+            current_cycle = (today - previous_period.timestamp).days
         return current_cycle
 
     @property

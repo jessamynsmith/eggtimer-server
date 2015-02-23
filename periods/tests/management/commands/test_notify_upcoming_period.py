@@ -1,4 +1,5 @@
 import datetime
+import pytz
 
 from django.test import TestCase
 from mock import ANY, patch
@@ -8,13 +9,17 @@ from periods.management.commands import notify_upcoming_period
 from periods.tests.factories import FlowEventFactory
 
 
+TIMEZONE = pytz.timezone("US/Eastern")
+
+
 class TestCommand(TestCase):
 
     def setUp(self):
         self.command = notify_upcoming_period.Command()
         flow_event = FlowEventFactory()
         self.user = flow_event.user
-        FlowEventFactory(user=self.user, timestamp=datetime.datetime(2014, 2, 28))
+        FlowEventFactory(user=self.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
 
     @patch('django.core.mail.EmailMultiAlternatives.send')
     def test_notify_upcoming_period_no_periods(self, mock_send):
@@ -27,7 +32,7 @@ class TestCommand(TestCase):
     @patch('django.core.mail.EmailMultiAlternatives.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_send_disabled(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 14)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 14))
         self.user.send_emails = False
         self.user.save()
 
@@ -38,7 +43,7 @@ class TestCommand(TestCase):
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_no_events(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 13)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 13))
 
         self.command.handle()
 
@@ -47,7 +52,7 @@ class TestCommand(TestCase):
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_ovulation(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 14)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 15))
 
         self.command.handle()
 
@@ -56,7 +61,7 @@ class TestCommand(TestCase):
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_expected_soon(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 25)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 26))
 
         self.command.handle()
 
@@ -66,7 +71,7 @@ class TestCommand(TestCase):
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_expected_today(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 28)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 29))
 
         self.command.handle()
 
@@ -75,7 +80,7 @@ class TestCommand(TestCase):
     @patch('periods.email_sender.send')
     @patch('periods.models._today')
     def test_notify_upcoming_period_overdue(self, mock_today, mock_send):
-        mock_today.return_value = datetime.date(2014, 3, 29)
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 30))
 
         self.command.handle()
 
