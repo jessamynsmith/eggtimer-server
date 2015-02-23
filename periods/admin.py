@@ -5,11 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 from periods import models
 
 
-class PeriodAdmin(admin.ModelAdmin):
+class FlowAdmin(admin.ModelAdmin):
 
-    list_display = ['user', 'start_date', 'start_time']
-    list_filter = ['start_date']
-    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'start_date']
+    list_display = ['user', 'timestamp', 'first_day', 'level', 'color', 'clots']
+    list_filter = ['timestamp', 'first_day', 'level', 'color', 'clots']
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'timestamp', 'level',
+                     'color', 'clots', 'comment']
 
 
 class StatisticsAdmin(admin.ModelAdmin):
@@ -31,6 +32,6 @@ class UserAdmin(EmailUserAdmin):
     search_fields = ['email', 'first_name', 'last_name']
 
 
-admin.site.register(models.Period, PeriodAdmin)
+admin.site.register(models.FlowEvent, FlowAdmin)
 admin.site.register(models.Statistics, StatisticsAdmin)
 admin.site.register(models.User, UserAdmin)

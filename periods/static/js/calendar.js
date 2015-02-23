@@ -26,7 +26,7 @@ makeEvents = function(moment, data) {
             title: 'period',
             itemId: item.id,
             itemType: item.type,
-            start: item.start_date,
+            start: item.timestamp,
             color: '#0f76ed',
             // Maybe someday allow dragging of period events
             editable: false
@@ -34,19 +34,14 @@ makeEvents = function(moment, data) {
 
         var eventType = item.type;
         if (eventType == 'projected period') {
-            periodStartDates.push(moment(item.start_date));
+            periodStartDates.push(moment(item.timestamp));
             event.title = eventType;
             event.color = 'darkred';
         } else if (eventType == 'projected ovulation') {
             event.title = eventType;
             event.color = 'purple';
         } else {
-            periodStartDates.push(moment(item.start_date));
-            var startTime = item.start_time;
-            if (!startTime) {
-                startTime = '00:00:00';
-            }
-            event.start = makeDateTimeString(item.start_date, startTime);
+            periodStartDates.push(moment(item.timestamp));
         }
 
         events.push(event);
@@ -150,11 +145,8 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
         label: action,
         cssClass: 'btn-primary',
         action: function(dialogRef) {
-            var data = {start_date: $('#id_start_date').val()};
-            var startTime = $('#id_start_time').val();
-            if (startTime) {
-                data.start_time  = startTime;
-            }
+            var data = {timestamp: makeDateTimeString($('#id_start_date').val(),
+                $('#id_start_time').val())};
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
         }
@@ -185,8 +177,8 @@ var initializeCalendar = function(periodsUrl) {
                 url: periodsUrl,
                 dataType: 'json',
                 data: {
-                    start_date__gte: startDate,
-                    start_date__lte: endDate
+                    timestamp__gte: startDate,
+                    timestamp__lte: endDate
                 },
                 success: function(doc) {
                     var newUrl = window.location.protocol + "//" + window.location.host +

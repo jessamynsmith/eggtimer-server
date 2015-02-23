@@ -3,7 +3,7 @@
 {% block title %}Statistics for {{ user.get_full_name }}{% endblock %}
 
 {% block head %}
-    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js'></script>
+    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js'></script>
     <script type='text/javascript' src='{{ STATIC_URL }}js/statistics.js'></script>
 {% endblock %}
 
@@ -11,21 +11,18 @@
     <h3>Statistics for {{ user.get_full_name }}</h3>
 
     <table class="table-condensed">
+        <tr><th>Number of Cycles:</th><td>{{ num_cycles }}</td></tr>
         <tr><th>Average Cycle Length:</th><td>{{ user.statistics.average_cycle_length }}</td></tr>
     </table>
 
     {% if bins %}
 
-        <h4>Cycle Length Frequency</h4>
-
         <script type="text/javascript">
             cycle_length_frequency({{ bins }}, {{ cycle_lengths|safe }});
         </script>
 
-        <h4>Cycle Length History</h4>
-
         <script type="text/javascript">
-            cycle_length_history('{{ periods_url }}');
+            cycle_length_history({{ cycles|safe }});
         </script>
 
     {% else %}

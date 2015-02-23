@@ -1,10 +1,11 @@
 from custom_user.models import AbstractEmailUser
+import datetime
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
-import datetime
+from django_enumfield import enum
 from tastypie.models import create_api_key
 
 
@@ -20,6 +21,36 @@ class User(AbstractEmailUser):
     send_emails = models.BooleanField(_('send emails'), default=True)
     birth_date = models.DateTimeField(_('birth date'), null=True, blank=True)
     luteal_phase_length = models.IntegerField(_('luteal phase length'), default=14)
+
+    def first_days(self):
+        return self.flow_events.filter(first_day=True).order_by('timestamp')
+
+    def get_previous_period(self, previous_to=None):
+        previous_periods = self.first_days()
+        if previous_to:
+            previous_periods = previous_periods.filter(timestamp__lte=previous_to)
+        previous_periods = previous_periods.order_by('-timestamp')
+        if previous_periods.exists():
+            return previous_periods[0]
+        return None
+
+    def get_next_period(self, after=None):
+        next_periods = self.first_days()
+        if after:
+            next_periods = next_periods.filter(timestamp__gte=after)
+        next_periods = next_periods.order_by('timestamp')
+        if next_periods.exists():
+            return next_periods[0]
+        return None
+
+    def get_cycle_lengths(self):
+        cycle_lengths = []
+        first_days = self.first_days()
+        if first_days.exists():
+            for i in range(1, first_days.count()):
+                duration = first_days[i].timestamp.date() - first_days[i-1].timestamp.date()
+                cycle_lengths.append(duration.days)
+        return cycle_lengths
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
@@ -38,21 +69,40 @@ class User(AbstractEmailUser):
         return u"%s (%s)" % (self.get_full_name(), self.email)
 
 
-class Period(models.Model):
+class FlowLevel(enum.Enum):
+    SPOTTING = 0
+    LIGHT = 1
+    MEDIUM = 2
+    HEAVY = 3
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='periods', null=True)
-    start_date = models.DateField()
-    start_time = models.TimeField(null=True, blank=True)
-    length = models.IntegerField(null=True, blank=True)
 
-    class Meta:
-        unique_together = (("user", "start_date"),)
+class FlowColor(enum.Enum):
+    PINK = 0
+    LIGHT_RED = 1
+    RED = 2
+    DARK_RED = 3
+    BROWN = 4
+    BLACK = 5
+
+
+class ClotSize(enum.Enum):
+    SMALL = 0
+    MEDIUM = 1
+    LARGE = 2
+
+
+class FlowEvent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='flow_events', null=True)
+    timestamp = models.DateTimeField()
+    first_day = models.BooleanField(default=False)
+    level = enum.EnumField(FlowLevel, default=FlowLevel.MEDIUM)
+    color = enum.EnumField(FlowColor, default=FlowColor.RED)
+    clots = enum.EnumField(ClotSize, default=None, null=True, blank=True)
+    comment = models.TextField(max_length=250, null=True, blank=True)
 
     def __str__(self):
-        start_time = ''
-        if self.start_time:
-            start_time = ' %s' % self.start_time
-        return u"%s (%s%s)" % (self.user.get_full_name(), self.start_date, start_time)
+        return u"%s %s (%s)" % (self.user.get_full_name(), FlowLevel.label(self.level),
+                                self.timestamp)
 
 
 class Statistics(models.Model):
@@ -66,29 +116,30 @@ class Statistics(models.Model):
     @property
     def current_cycle_length(self):
         current_cycle = -1
-        if self.user.periods.count() > 0:
-            last_cycle = self.user.periods.order_by('-start_date')[0]
-            current_cycle = (_today() - last_cycle.start_date).days
+        today = _today()
+        previous_period = self.user.get_previous_period(previous_to=today)
+        if previous_period:
+            current_cycle = (today - previous_period.timestamp.date()).days
         return current_cycle
 
     @property
     def next_periods(self):
         next_dates = []
-        if self.user.periods.count():
-            last_period = self.user.periods.order_by('-start_date')[0]
+        previous_period = self.user.get_previous_period()
+        if previous_period:
             for i in range(1, 4):
-                next_dates.append(last_period.start_date + datetime.timedelta(
-                    days=i*self.average_cycle_length))
+                next_dates.append((previous_period.timestamp + datetime.timedelta(
+                    days=i*self.average_cycle_length)).date())
         return next_dates
 
     @property
     def next_ovulations(self):
         next_dates = []
-        if self.user.periods.count():
-            last_period = self.user.periods.order_by('-start_date')[0]
+        previous_period = self.user.get_previous_period()
+        if previous_period:
             for i in range(1, 4):
-                next_dates.append(last_period.start_date + datetime.timedelta(
-                    days=i*self.average_cycle_length - self.user.luteal_phase_length))
+                next_dates.append((previous_period.timestamp + datetime.timedelta(
+                    days=i*self.average_cycle_length - self.user.luteal_phase_length)).date())
         return next_dates
 
     def __str__(self):
@@ -101,7 +152,7 @@ def add_to_permissions_group(sender, instance, **kwargs):
     except Group.DoesNotExist:
         group = Group(name='users')
         group.save()
-        group.permissions.add(*Permission.objects.filter(codename__endswith='_period').all())
+        group.permissions.add(*Permission.objects.filter(codename__endswith='_flowevent').all())
     group.user_set.add(instance)
     group.save()
 
@@ -112,69 +163,14 @@ def create_statistics(sender, instance, **kwargs):
         stats.save()
 
 
-def update_length(sender, instance, **kwargs):
-    previous_periods = instance.user.periods.filter(
-        start_date__lt=instance.start_date).order_by('-start_date')
-    try:
-        previous_period = previous_periods[0]
-        delta = instance.start_date - previous_period.start_date
-        previous_period.length = delta.days
-        signals.pre_save.disconnect(update_length, sender=Period)
-        previous_period.save()
-        signals.pre_save.connect(update_length, sender=Period)
-    except IndexError:
-        # If no previous period, nothing to set
-        pass
-
-    next_periods = instance.user.periods.filter(
-        start_date__gt=instance.start_date).order_by('start_date')
-    try:
-        next_period = next_periods[0]
-        delta = next_period.start_date - instance.start_date
-        instance.length = delta.days
-    except IndexError:
-        # If no next period, nothing to set
-        pass
-
-
-def update_length_delete(sender, instance, **kwargs):
-    next_periods = instance.user.periods.filter(
-        start_date__gt=instance.start_date).order_by('start_date')
-    start_date = None
-    try:
-        start_date = next_periods[0].start_date
-    except IndexError:
-        # If no next period, nothing to set
-        pass
-
-    previous_periods = instance.user.periods.filter(
-        start_date__lt=instance.start_date).order_by('-start_date')
-    try:
-        previous_period = previous_periods[0]
-        if start_date:
-            delta = start_date - previous_period.start_date
-            previous_period.length = delta.days
-        else:
-            previous_period.length = None
-        signals.pre_save.disconnect(update_length, sender=Period)
-        previous_period.save()
-        signals.pre_save.connect(update_length, sender=Period)
-    except IndexError:
-        # If no previous period, nothing to set
-        pass
-
-
 def update_statistics(sender, instance, **kwargs):
-    stats_list = Statistics.objects.filter(user=instance.user)
-    if not stats_list:
+    try:
+        stats = Statistics.objects.get(user=instance.user)
+    except (Statistics.DoesNotExist, User.DoesNotExist):
         # There may not be statistics, for example when deleting a user
         return
 
-    stats = stats_list[0]
-
-    cycle_lengths = [x for x in instance.user.periods.values_list('length', flat=True)
-                     if x is not None]
-
+    cycle_lengths = instance.user.get_cycle_lengths()
     # Calculate average (if possible) and update statistics object
     if len(cycle_lengths) > 0:
         avg = sum(cycle_lengths) / len(cycle_lengths)
@@ -186,7 +182,5 @@ signals.post_save.connect(create_api_key, sender=settings.AUTH_USER_MODEL)
 signals.post_save.connect(add_to_permissions_group, sender=settings.AUTH_USER_MODEL)
 signals.post_save.connect(create_statistics, sender=settings.AUTH_USER_MODEL)
 
-signals.pre_save.connect(update_length, sender=Period)
-signals.pre_delete.connect(update_length_delete, sender=Period)
-signals.post_save.connect(update_statistics, sender=Period)
-signals.post_delete.connect(update_statistics, sender=Period)
+signals.post_save.connect(update_statistics, sender=FlowEvent)
+signals.post_delete.connect(update_statistics, sender=FlowEvent)

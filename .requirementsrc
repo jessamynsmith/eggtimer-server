@@ -20,6 +20,7 @@ oauthlib = 0.7.2
 python3-openid = 3.0.5
 requests-oauthlib = 0.4.2
 requests = 2.5.1
+django-enumfield = 1.2
 
 [production]
 dj-database-url = 0.3.0
@@ -38,4 +39,5 @@ PyYAML = 3.11
 paragres = 0.5
 pipreq = 0.4
 django-coverage-plugin = 0.3.3
+factory-boy = 2.4.1
 

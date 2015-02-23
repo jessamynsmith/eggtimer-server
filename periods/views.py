@@ -9,7 +9,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from api.v1 import DATE_FORMAT
-from periods import forms as period_forms, models as period_models
+from periods import forms as period_forms
 
 
 @login_required
@@ -25,22 +25,21 @@ def calendar(request):
 
 @login_required
 def statistics(request):
-    periods = period_models.Period.objects.filter(
-        user=request.user, length__isnull=False).order_by('length')
-    cycle_lengths = periods.values_list('length', flat=True)
+    first_days = request.user.first_days().values_list('timestamp', flat=True)
+    cycle_lengths = request.user.get_cycle_lengths()
+    cycles = map(list, zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
+    cycle_lengths = sorted(cycle_lengths)
     data = {
         'user': request.user,
-        'cycle_lengths': json.dumps(list(cycle_lengths))
+        'num_cycles': first_days.count(),
+        'cycle_lengths': json.dumps(list(cycle_lengths)),
+        'cycles': list(cycles)
     }
     if len(cycle_lengths) > 0:
         shortest = cycle_lengths[0]
         longest = cycle_lengths[len(cycle_lengths) - 1]
         # +1 each for inclusive, +1 for last bin
         data['bins'] = list(range(shortest, longest + 2))
-
-    url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods', 'api_name': 'v1'})
-    args = {'order_by': '-start_date', 'limit': '0', 'length__isnull': False}
-    data['periods_url'] = url + '?' + urlencode(args)
 
     return render_to_response('periods/statistics.html', data,
                               context_instance=RequestContext(request))

@@ -1,25 +1,24 @@
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from mock import ANY, patch
 
 from periods import models as period_models
 from periods.management.commands import notify_upcoming_period
+from periods.tests.factories import FlowEventFactory
 
 
-class TestModels(TestCase):
+class TestCommand(TestCase):
 
     def setUp(self):
         self.command = notify_upcoming_period.Command()
-        self.user = get_user_model().objects.create_user(
-            password='bogus', email='jessamyn@example.com', first_name=u'Jessamyn')
-        period_models.Period(user=self.user, start_date=datetime.date(2014, 1, 31)).save()
-        period_models.Period(user=self.user, start_date=datetime.date(2014, 2, 28)).save()
+        flow_event = FlowEventFactory()
+        self.user = flow_event.user
+        FlowEventFactory(user=self.user, timestamp=datetime.datetime(2014, 2, 28))
 
     @patch('django.core.mail.EmailMultiAlternatives.send')
     def test_notify_upcoming_period_no_periods(self, mock_send):
-        period_models.Period.objects.all().delete()
+        period_models.FlowEvent.objects.all().delete()
 
         self.command.handle()
 

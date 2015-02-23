@@ -53,9 +53,9 @@ describe('Array', function () {
         });
         it('should return array of items if data', function () {
             var data = Array(
-                {id: '1', type: 'period', start_date: '2015-01-01'},
-                {id: '2', type: 'projected period', start_date: '2015-01-28'},
-                {id: '3', type: 'projected ovulation', start_date: '2015-01-14'}
+                {id: '1', type: 'period', timestamp: '2015-01-01T04:03:00'},
+                {id: '2', type: 'projected period', timestamp: '2015-01-28'},
+                {id: '3', type: 'projected ovulation', timestamp: '2015-01-14'}
             );
             var result = makeEvents(moment, data);
             assert.equal(2, result.periodStartDates.length);
@@ -63,7 +63,7 @@ describe('Array', function () {
             assert.equal('2015-01-28', result.periodStartDates[1].format('YYYY-MM-DD'));
             assert.equal(3, result.events.length);
             var expected = JSON.stringify({title: "period", "itemId": "1", "itemType": "period",
-                start: "2015-01-01T00:00:00", color: "#0f76ed", "editable": false});
+                start: "2015-01-01T04:03:00", color: "#0f76ed", "editable": false});
             assert.equal(JSON.stringify(result.events[0]), expected);
             expected = JSON.stringify({title: "projected period", "itemId": "2", "itemType":
                 "projected period", start: "2015-01-28", color: "darkred", "editable": false});

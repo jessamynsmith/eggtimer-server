@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         users = period_models.User.objects.filter(
-            periods__isnull=False, statistics__isnull=False).exclude(
+            flow_events__isnull=False, statistics__isnull=False).exclude(
             send_emails=False).distinct()
         for user in users:
             expected_in = (user.statistics.average_cycle_length

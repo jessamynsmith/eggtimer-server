@@ -1,24 +1,22 @@
 import datetime
 import pytz
 
-from django.contrib.auth import get_user_model
 from django.http import HttpRequest, QueryDict
 from django.test import TestCase
 from django.utils import timezone
 from tastypie import models as tastypie_models
 
 from periods import models as period_models, views
+from periods.tests.factories import FlowEventFactory
 
 
 class TestViews(TestCase):
 
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            password='bogus', email='jessamyn@example.com', first_name=u'Jessamyn')
-        period_models.Period(user=self.user, start_date=datetime.date(2014, 1, 31)).save()
-        period_models.Period(user=self.user, start_date=datetime.date(2014, 2, 28)).save()
+        period = FlowEventFactory()
+        FlowEventFactory(user=period.user, timestamp=datetime.date(2014, 2, 28))
         self.request = HttpRequest()
-        self.request.user = self.user
+        self.request.user = period.user
         self.request.META['SERVER_NAME'] = 'localhost'
         self.request.META['SERVER_PORT'] = '8000'
 
@@ -29,7 +27,7 @@ class TestViews(TestCase):
         self.assertContains(response, 'div id=\'id_calendar\'></div>')
 
     def test_statistics_no_data(self):
-        period_models.Period.objects.all().delete()
+        period_models.FlowEvent.objects.all().delete()
 
         response = views.statistics(self.request)
 
@@ -106,8 +104,9 @@ class TestViews(TestCase):
         self.assertEqual(expected, user.birth_date)
 
     def test_qigong_cycles(self):
-        self.user.birth_date = pytz.timezone("US/Eastern").localize(timezone.datetime(1981, 3, 31))
-        self.user.save()
+        self.request.user.birth_date = pytz.timezone(
+            "US/Eastern").localize(timezone.datetime(1981, 3, 31))
+        self.request.user.save()
 
         response = views.qigong_cycles(self.request)
 
