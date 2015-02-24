@@ -113,7 +113,7 @@ doAjax = function(url, method, itemId, data) {
     });
 };
 
-editEvent = function(action, periodsUrl, itemId, itemDate) {
+editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
     var method = 'POST';
     var buttons = [];
     if (action === 'Update') {
@@ -145,8 +145,7 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
         label: action,
         cssClass: 'btn-primary',
         action: function(dialogRef) {
-            var data = {timestamp: makeDateTimeString($('#id_start_date').val(),
-                $('#id_start_time').val())};
+            var data = $("#id_period_form").serializeJSON();
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
         }
@@ -154,10 +153,22 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
     BootstrapDialog.show({
         title: action + ' event',
         message: function(dialog) {
-            return $('<label for="id_start_date">Start Date:</label>' +
-            '<input id="id_start_date" type="date" value="' + formatMomentDate(itemDate) + '"><br/>' +
-            '<label for="id_start_time">Start Time:</label>' +
-            '<input id="id_start_time" type="time" value="' + formatMomentTime(itemDate) + '" placeholder="00:00">');
+            var message = '';
+            if (itemId) {
+                periodFormUrl += itemId + '/';
+            }
+            if (itemDate) {
+                periodFormUrl += '?timestamp=' + itemDate.format();
+            }
+            $.ajax({
+                url: periodFormUrl,
+                dataType: 'html',
+                async: false,
+                success: function(doc) {
+                    message = $('<div></div>').append($(doc));
+                }
+            });
+            return message;
         },
         onshown: function(dialog) {
             addFormStyles();
@@ -167,7 +178,7 @@ editEvent = function(action, periodsUrl, itemId, itemDate) {
     });
 };
 
-var initializeCalendar = function(periodsUrl) {
+var initializeCalendar = function(periodsUrl, periodFormUrl) {
     $('#id_calendar').fullCalendar({
         defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
@@ -197,11 +208,11 @@ var initializeCalendar = function(periodsUrl) {
                 // If the entry is for the current day, populate time
                 dayMoment = now;
             }
-            editEvent('Add', periodsUrl, null, dayMoment);
+            editEvent('Add', periodsUrl, periodFormUrl, null, dayMoment);
         },
         eventClick: function(event, jsEvent, view) {
             // Right now, periods do not have a type. This will change when I add spotting.
-            editEvent('Update', periodsUrl, event.itemId, event.start);
+            editEvent('Update', periodsUrl, periodFormUrl, event.itemId, event.start);
         }
     });
 };

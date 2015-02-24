@@ -1,4 +1,5 @@
 import datetime
+from dateutil import parser as dateutil_parser
 import json
 import pytz
 from six.moves.urllib.parse import urlencode
@@ -10,7 +11,25 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 from api.v1 import DATE_FORMAT
-from periods import forms as period_forms
+from periods import forms as period_forms, models as period_models
+
+
+@login_required
+def period_form(request, period_id=None):
+    try:
+        timestamp = dateutil_parser.parse(request.GET.get('timestamp'))
+    except (AttributeError, ValueError):
+        timestamp = None
+    try:
+        flow_event = period_models.FlowEvent.objects.get(pk=int(period_id))
+    except (TypeError, period_models.FlowEvent.DoesNotExist):
+        flow_event = period_models.FlowEvent(timestamp=timestamp)
+    form = period_forms.PeriodForm(instance=flow_event)
+    data = {
+        'form': form,
+    }
+    return render_to_response('periods/period_form.html', data,
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -18,6 +37,7 @@ def calendar(request):
     url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods_detail', 'api_name': 'v1'})
     data = {
         'periods_url': url,
+        'period_form_url': reverse('period_form'),
     }
 
     return render_to_response('periods/calendar.html', data,
