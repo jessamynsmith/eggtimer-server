@@ -16,13 +16,45 @@ TIMEZONE = pytz.timezone("US/Eastern")
 class TestViews(TestCase):
 
     def setUp(self):
-        period = FlowEventFactory()
-        FlowEventFactory(user=period.user,
+        self.period = FlowEventFactory()
+        FlowEventFactory(user=self.period.user,
                          timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
         self.request = HttpRequest()
-        self.request.user = period.user
+        self.request.user = self.period.user
         self.request.META['SERVER_NAME'] = 'localhost'
         self.request.META['SERVER_PORT'] = '8000'
+
+    def test_period_form_no_parameters(self):
+        response = views.period_form(self.request)
+
+        self.assertContains(response, '<form id="id_period_form">')
+        self.assertContains(response, '<input type="datetime" name="timestamp" required')
+        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+
+    def test_period_form_with_timestamp(self):
+        self.request.GET = QueryDict('timestamp=2015-02-25T00:00:00+00:00')
+
+        response = views.period_form(self.request)
+
+        self.assertContains(response, '<form id="id_period_form">')
+        self.assertContains(response, '<input type="datetime" name="timestamp" '
+                                      'value="2015-02-25 00:00:00" required')
+        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+
+    def test_period_form_invalid_period_id(self):
+        response = views.period_form(self.request, 9999)
+
+        self.assertContains(response, '<form id="id_period_form">')
+        self.assertContains(response, '<input type="datetime" name="timestamp" required')
+        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+
+    def test_period_form_existing_period(self):
+        response = views.period_form(self.request, self.period.id)
+
+        self.assertContains(response, '<form id="id_period_form">')
+        self.assertContains(response, '<input type="datetime" name="timestamp" '
+                                      'value="2014-01-31 00:00:00" required ')
+        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_calendar(self):
         response = views.calendar(self.request)
@@ -94,6 +126,14 @@ class TestViews(TestCase):
         response = views.qigong_cycles(self.request)
 
         self.assertContains(response, '<label for="id_birth_date">Birth Date')
+
+    def test_qigong_cycles_post_invalid_data(self):
+        self.request.method = "POST"
+        self.request.POST = QueryDict(u"birth_date=bogus")
+
+        response = views.qigong_cycles(self.request)
+
+        self.assertContains(response, 'Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30')
 
     def test_qigong_cycles_post(self):
         self.request.method = "POST"
