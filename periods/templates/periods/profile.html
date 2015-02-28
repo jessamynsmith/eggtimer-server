@@ -37,19 +37,19 @@
     <form method="post" action="{% url 'regenerate_key' %}">
         {% csrf_token %}
         <label for="id_api_key">API key: </label>
-        <input id="id_api_key" type="text" name="api_key" value="{{ user.api_key.key }}" size="50" readonly>
+        <input id="id_api_key" type="text" name="api_key" value="{{ user.auth_token.key }}" size="43" readonly>
         <button type="submit" class="btn btn-default">Regenerate</button>
     </form>
     </div>
 
     <div>
     To add a period (start_time is optional):<br/>
-        curl -v -k -X POST -H "Content-Type: application/json" --data '{"timestamp": "&lt;YYYY-MM-DD&gt;T&lt;HH:MM:SS&gt;"}' "{{ periods_url }}"
+        curl -v -k -X POST -H "Content-Type: application/json" -H 'Authorization: Token {{ user.auth_token.key }}' --data '{"timestamp": "&lt;YYYY-MM-DD&gt;T&lt;HH:MM:SS&gt;"}' "{{ periods_url }}"
 
     <br/>
     <br/>
     To list periods:<br/>
-    curl -v -k -X GET -H "Content-Type: application/json" "{{ periods_url }}" | python -m json.tool
+    curl -v -k -X GET -H "Content-Type: application/json" -H 'Authorization: Token {{ user.auth_token.key }}' "{{ periods_url }}" | python -m json.tool
     </div>
 
 {% endblock %}

@@ -102,10 +102,10 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
-    'tastypie',
+    'rest_framework',
+    'rest_framework.authtoken',
     'floppyforms',
     'bootstrapform',
-    'api',
     'periods',
 ]
 
@@ -133,3 +133,11 @@ EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
 EMAIL_USE_TLS = True
 
 ACCOUNT_ACTIVATION_DAYS = 14
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
+}

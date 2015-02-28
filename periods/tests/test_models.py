@@ -46,8 +46,6 @@ class TestModels(TestCase):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(u'Jessamyn (', ('%s' % stats)[:10])
-        self.assertEqual([], stats.next_periods)
-        self.assertEqual([], stats.next_ovulations)
 
     def test_statistics_with_average(self):
         FlowEventFactory(user=self.period.user,
@@ -61,21 +59,46 @@ class TestModels(TestCase):
 
         self.assertEqual(u'Jessamyn (', ('%s' % stats)[:10])
         self.assertEqual(23, stats.average_cycle_length)
-        expected_periods = [datetime.date(2014, 5, 3),
-                            datetime.date(2014, 5, 26),
-                            datetime.date(2014, 6, 18)]
-        self.assertEqual(expected_periods, stats.next_periods)
-        expected_ovulations = [datetime.date(2014, 4, 19),
-                               datetime.date(2014, 5, 12),
-                               datetime.date(2014, 6, 4)]
-        self.assertEqual(expected_ovulations, stats.next_ovulations)
+        expected_events = [{'timestamp': datetime.date(2014, 4, 19), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 5, 3), 'type': 'projected period'},
+                           {'timestamp': datetime.date(2014, 5, 12), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 5, 26), 'type': 'projected period'},
+                           {'timestamp': datetime.date(2014, 6, 4), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 6, 18), 'type': 'projected period'}]
+        self.assertEqual(expected_events, stats.predicted_events)
 
     def test_statistics_current_cycle_length_no_periods(self):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(-1, stats.current_cycle_length)
-        self.assertEqual([], stats.next_periods)
-        self.assertEqual([], stats.next_ovulations)
+        self.assertEqual([], stats.predicted_events)
+
+    def test_statistics_set_start_date_and_day_no_periods(self):
+        stats = period_models.Statistics.objects.filter(user=self.user)[0]
+        min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 2, 12))
+
+        stats.set_start_date_and_day(min_timestamp)
+
+        self.assertEqual('', stats.first_date)
+        self.assertEqual('', stats.first_day)
+
+    def test_statistics_set_start_date_and_day_previous_exists(self):
+        stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
+        min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 2, 12))
+
+        stats.set_start_date_and_day(min_timestamp)
+
+        self.assertEqual(datetime.date(2014, 2, 12), stats.first_date)
+        self.assertEqual(13, stats.first_day)
+
+    def test_statistics_set_start_date_and_day_next_exists(self):
+        stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
+        min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 1, 12))
+
+        stats.set_start_date_and_day(min_timestamp)
+
+        self.assertEqual(datetime.date(2014, 1, 31), stats.first_date)
+        self.assertEqual(1, stats.first_day)
 
     def test_add_to_permissions_group_group_does_not_exist(self):
         self.user.groups.all().delete()
@@ -120,12 +143,13 @@ class TestModels(TestCase):
         stats = period_models.Statistics.objects.get(user=self.period.user)
         self.assertEqual(27, stats.average_cycle_length)
         self.assertEqual(36, stats.current_cycle_length)
-        next_periods = [
-            datetime.date(2014, 3, 26),
-            datetime.date(2014, 4, 22),
-            datetime.date(2014, 5, 19)
-        ]
-        self.assertEqual(next_periods, stats.next_periods)
+        expected_events = [{'timestamp': datetime.date(2014, 3, 12), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 3, 26), 'type': 'projected period'},
+                           {'timestamp': datetime.date(2014, 4, 8), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 4, 22), 'type': 'projected period'},
+                           {'timestamp': datetime.date(2014, 5, 5), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 5, 19), 'type': 'projected period'}]
+        self.assertEqual(expected_events, stats.predicted_events)
 
     @patch('periods.models._today')
     def test_update_statistics_periods_exist(self, mock_today):
@@ -142,9 +166,10 @@ class TestModels(TestCase):
         stats = period_models.Statistics.objects.get(user=self.period.user)
         self.assertEqual(14, stats.average_cycle_length)
         self.assertEqual(22, stats.current_cycle_length)
-        next_periods = [
-            datetime.date(2014, 3, 28),
-            datetime.date(2014, 4, 11),
-            datetime.date(2014, 4, 25)
-        ]
-        self.assertEqual(next_periods, stats.next_periods)
+        expected_events = [{'timestamp': datetime.date(2014, 3, 14), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 3, 28), 'type': 'projected period'},
+                           {'timestamp': datetime.date(2014, 3, 28), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 4, 11), 'type': 'projected period'},
+                           {'timestamp': datetime.date(2014, 4, 11), 'type': 'projected ovulation'},
+                           {'timestamp': datetime.date(2014, 4, 25), 'type': 'projected period'}]
+        self.assertEqual(expected_events, stats.predicted_events)

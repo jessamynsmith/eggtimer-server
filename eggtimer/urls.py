@@ -1,19 +1,16 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from tastypie.api import Api
+from rest_framework import routers
 
-from api import v1 as api
 from periods import views as period_views
 
 
 admin.autodiscover()
 
-v1_api = Api(api_name='v1')
-v1_api.register(api.PeriodResource())
-v1_api.register(api.PeriodDetailResource())
-v1_api.register(api.StatisticsResource())
-v1_api.register(api.UserResource())
+router = routers.DefaultRouter()
+router.register(r'periods', period_views.FlowEventViewSet, base_name='periods')
+router.register(r'statistics', period_views.StatisticsViewSet, base_name='statistics')
 
 urlpatterns = patterns(
     '',
@@ -22,7 +19,7 @@ urlpatterns = patterns(
     url(r'^accounts/profile/$', period_views.profile, name='user_profile'),
     url(r'^accounts/profile/regenerate_key/$', period_views.regenerate_key, name='regenerate_key'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/', include(v1_api.urls)),
+    url(r'^api/v2/', include(router.urls)),
 
     url(r'^period_form/$', period_views.period_form, name='period_form'),
     url(r'^period_form/(?P<period_id>[0-9]+)/$', period_views.period_form, name='period_form'),

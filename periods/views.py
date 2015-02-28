@@ -2,16 +2,50 @@ import datetime
 from dateutil import parser as dateutil_parser
 import json
 import pytz
-from six.moves.urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from rest_framework import viewsets
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 
-from api.v1 import DATE_FORMAT
-from periods import forms as period_forms, models as period_models
+from periods import forms as period_forms, models as period_models, serializers
+
+
+DATE_FORMAT = "%Y-%m-%d"
+
+
+class FlowEventViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.FlowEventSerializer
+    filter_class = serializers.FlowEventFilter
+
+    def get_queryset(self):
+        return period_models.FlowEvent.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class StatisticsViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.StatisticsSerializer
+
+    def get_queryset(self):
+        return period_models.Statistics.objects.filter(user=self.request.user)
+
+    def retrieve(self, request, *args, **kwargs):
+        min_timestamp = request.query_params.get('min_timestamp')
+        try:
+            min_timestamp = datetime.datetime.strptime(min_timestamp, DATE_FORMAT)
+            min_timestamp = pytz.timezone("US/Eastern").localize(min_timestamp)
+        except TypeError:
+            min_timestamp = period_models._today()
+        instance = self.get_object()
+        instance.set_start_date_and_day(min_timestamp)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 @login_required
@@ -34,9 +68,9 @@ def period_form(request, period_id=None):
 
 @login_required
 def calendar(request):
-    url = reverse('api_dispatch_list', kwargs={'resource_name': 'periods_detail', 'api_name': 'v1'})
     data = {
-        'periods_url': url,
+        'periods_url': reverse('periods-list'),
+        'statistics_url': reverse('statistics-detail', args=[request.user.statistics.id]),
         'period_form_url': reverse('period_form'),
     }
 
@@ -68,13 +102,6 @@ def statistics(request):
 
 @login_required
 def profile(request):
-    periods_url = reverse('api_dispatch_list',
-                          kwargs={'resource_name': 'periods', 'api_name': 'v1'})
-    params = {
-        'username': request.user.get_username(),
-        'api_key': request.user.api_key.key
-    }
-
     if request.method == 'POST':
         form = period_forms.UserForm(request.POST, instance=request.user)
         if form.is_valid():
@@ -84,7 +111,7 @@ def profile(request):
 
     data = {
         'form': form,
-        'periods_url': request.build_absolute_uri('%s?%s' % (periods_url, urlencode(params)))
+        'periods_url': request.build_absolute_uri(reverse('periods-list'))
     }
 
     return render_to_response('periods/profile.html', data,
@@ -94,8 +121,8 @@ def profile(request):
 @login_required
 def regenerate_key(request):
     if request.method == 'POST':
-        request.user.api_key.key = request.user.api_key.generate_key()
-        request.user.api_key.save()
+        Token.objects.filter(user=request.user).delete()
+        Token.objects.create(user=request.user)
 
     return HttpResponseRedirect(reverse('user_profile'))
 

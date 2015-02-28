@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 from django_enumfield import enum
-from tastypie.models import create_api_key
+from rest_framework.authtoken.models import Token
 
 
 def _today():
@@ -125,27 +125,48 @@ class Statistics(models.Model):
         return current_cycle
 
     @property
-    def next_periods(self):
-        next_dates = []
-        previous_period = self.user.get_previous_period()
-        if previous_period:
-            for i in range(1, 4):
-                next_dates.append((previous_period.timestamp + datetime.timedelta(
-                    days=i*self.average_cycle_length)).date())
-        return next_dates
+    def first_date(self):
+        if not hasattr(self, '_first_date'):
+            self._first_date = ''
+        return self._first_date
 
     @property
-    def next_ovulations(self):
-        next_dates = []
+    def first_day(self):
+        if not hasattr(self, '_first_day'):
+            self._first_day = ''
+        return self._first_day
+
+    def set_start_date_and_day(self, min_timestamp):
+        previous_period = self.user.get_previous_period(min_timestamp)
+        next_period = self.user.get_next_period(min_timestamp)
+        if previous_period:
+            self._first_date = min_timestamp.date()
+            self._first_day = (min_timestamp - previous_period.timestamp).days + 1
+        elif next_period:
+            self._first_date = next_period.timestamp.date()
+            self._first_day = 1
+
+    @property
+    def predicted_events(self):
+        events = []
         previous_period = self.user.get_previous_period()
         if previous_period:
             for i in range(1, 4):
-                next_dates.append((previous_period.timestamp + datetime.timedelta(
-                    days=i*self.average_cycle_length - self.user.luteal_phase_length)).date())
-        return next_dates
+                ovulation_date = (previous_period.timestamp + datetime.timedelta(
+                    days=i*self.average_cycle_length - self.user.luteal_phase_length)).date()
+                events.append({'timestamp': ovulation_date, 'type': 'projected ovulation'})
+                period_date = (previous_period.timestamp + datetime.timedelta(
+                    days=i*self.average_cycle_length)).date()
+                events.append({'timestamp': period_date, 'type': 'projected period'})
+        return events
 
     def __str__(self):
         return "%s (%s)" % (self.user.get_full_name(), self.user.email)
+
+
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 
 def add_to_permissions_group(sender, instance, **kwargs):
@@ -180,7 +201,7 @@ def update_statistics(sender, instance, **kwargs):
     stats.save()
 
 
-signals.post_save.connect(create_api_key, sender=settings.AUTH_USER_MODEL)
+signals.post_save.connect(create_auth_token, sender=settings.AUTH_USER_MODEL)
 signals.post_save.connect(add_to_permissions_group, sender=settings.AUTH_USER_MODEL)
 signals.post_save.connect(create_statistics, sender=settings.AUTH_USER_MODEL)
 

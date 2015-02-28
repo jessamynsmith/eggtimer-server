@@ -41,7 +41,9 @@ makeEvents = function(moment, data) {
             event.title = eventType;
             event.color = 'purple';
         } else {
-            periodStartDates.push(moment(item.timestamp));
+            if (item.first_day) {
+                periodStartDates.push(moment(item.timestamp));
+            }
         }
 
         events.push(event);
@@ -61,7 +63,7 @@ addDayCounts = function(periodStartDates, firstDate, firstDay) {
     $('.fc-day-number').each(function() {
         var currentDate = moment($(this).attr('data-date'));
         if (currentDate >= firstDate) {
-            if (currentDate.isSame(nextPeriodStart)) {
+            if (currentDate.isSame(nextPeriodStart, 'day')) {
                 nextPeriodStart = periodStartDates.shift();
                 currentDay = 1;
             }
@@ -178,7 +180,7 @@ editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
     });
 };
 
-var initializeCalendar = function(periodsUrl, periodFormUrl) {
+var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl) {
     $('#id_calendar').fullCalendar({
         defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
@@ -188,16 +190,26 @@ var initializeCalendar = function(periodsUrl, periodFormUrl) {
                 url: periodsUrl,
                 dataType: 'json',
                 data: {
-                    timestamp__gte: startDate,
-                    timestamp__lte: endDate
+                    min_timestamp: startDate,
+                    max_timestamp: endDate
                 },
-                success: function(doc) {
+                success: function(periodData) {
                     var newUrl = window.location.protocol + "//" + window.location.host +
                         window.location.pathname + "?start=" + startDate + "&end=" + endDate;
                     window.history.pushState({path:newUrl}, '', newUrl);
-                    var events = makeEvents(moment, doc.objects);
-                    addDayCounts(events.periodStartDates, moment(doc.first_date), doc.first_day);
-                    callback(events.events);
+                    $.ajax({
+                        url: statisticsUrl,
+                        dataType: 'json',
+                        data: {
+                            min_timestamp: startDate
+                        },
+                        success: function(statisticsData) {
+                            var events = makeEvents(moment, periodData.concat(statisticsData.predicted_events));
+                            addDayCounts(events.periodStartDates, moment(statisticsData.first_date),
+                                statisticsData.first_day);
+                            callback(events.events);
+                        }
+                    });
                 }
             });
         },

@@ -1,16 +1,95 @@
 import datetime
 import pytz
 
-from django.http import HttpRequest, QueryDict
+from django.http import HttpRequest, QueryDict, Http404
 from django.test import TestCase
 from django.utils import timezone
-from tastypie import models as tastypie_models
+from mock import patch
+from rest_framework.request import Request
+from rest_framework.authtoken.models import Token
 
 from periods import models as period_models, views
+from periods.serializers import FlowEventSerializer
 from periods.tests.factories import FlowEventFactory
 
 
 TIMEZONE = pytz.timezone("US/Eastern")
+
+
+class TestFlowEventViewSet(TestCase):
+
+    def setUp(self):
+        self.view_set = views.FlowEventViewSet()
+        self.view_set.format_kwarg = ''
+
+        self.period = FlowEventFactory()
+        FlowEventFactory(timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
+
+        self.request = Request(HttpRequest())
+        self.request.__setattr__('user', self.period.user)
+        self.view_set.request = self.request
+
+    def test_list(self):
+        response = self.view_set.list(self.request)
+
+        self.assertEqual(1, len(response.data))
+        self.assertEqual(self.period.id, response.data[0]['id'])
+
+    def test_perform_create(self):
+        serializer = FlowEventSerializer(data={'timestamp': datetime.datetime(2015, 1, 1)})
+        serializer.is_valid()
+
+        self.view_set.perform_create(serializer)
+
+        self.assertEqual(self.request.user, serializer.instance.user)
+
+
+class TestStatisticsViewSet(TestCase):
+
+    def setUp(self):
+        self.view_set = views.StatisticsViewSet()
+        self.view_set.format_kwarg = ''
+
+        self.period = FlowEventFactory()
+        self.period2 = FlowEventFactory(timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
+
+        self.request = Request(HttpRequest())
+        self.request.__setattr__('user', self.period.user)
+        self.view_set.request = self.request
+
+    def test_retrieve_other_user(self):
+        self.view_set.kwargs = {'pk': self.period2.user.statistics.pk}
+
+        try:
+            self.view_set.retrieve(self.request)
+            self.fail("Should not be able to retrieve another user's statistics")
+        except Http404:
+            pass
+
+    @patch('periods.models._today')
+    def test_retrieve_no_params(self, mock_today):
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
+        self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
+
+        response = self.view_set.retrieve(self.request)
+
+        self.assertEqual(4, len(response.data))
+        self.assertEqual(28, response.data['average_cycle_length'])
+        self.assertEqual(self.period.timestamp.date(), response.data['first_date'])
+        self.assertEqual(1, response.data['first_day'])
+
+    def test_retrieve_with_min_timestamp(self):
+        http_request = HttpRequest()
+        http_request.GET = QueryDict(u'min_timestamp=2014-01-05')
+        request = Request(http_request)
+        self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
+
+        response = self.view_set.retrieve(request)
+
+        self.assertEqual(4, len(response.data))
+        self.assertEqual(28, response.data['average_cycle_length'])
+        self.assertEqual(self.period.timestamp.date(), response.data['first_date'])
+        self.assertEqual(1, response.data['first_day'])
 
 
 class TestViews(TestCase):
@@ -107,20 +186,20 @@ class TestViews(TestCase):
 
     def test_regenerate_key_post(self):
         self.request.method = 'POST'
-        api_key = tastypie_models.ApiKey.objects.get(user=self.request.user).key
+        api_key = Token.objects.get(user=self.request.user).key
 
         response = views.regenerate_key(self.request)
 
         self.assertContains(response, '', status_code=302)
-        self.assertNotEquals(api_key, self.request.user.api_key.key)
+        self.assertNotEquals(api_key, self.request.user.auth_token.key)
 
     def test_regenerate_key_get(self):
-        api_key = tastypie_models.ApiKey.objects.get(user=self.request.user).key
+        api_key = Token.objects.get(user=self.request.user).key
 
         response = views.regenerate_key(self.request)
 
         self.assertContains(response, '', status_code=302)
-        self.assertEquals(api_key, self.request.user.api_key.key)
+        self.assertEquals(api_key, self.request.user.auth_token.key)
 
     def test_qigong_cycles_no_data(self):
         response = views.qigong_cycles(self.request)
