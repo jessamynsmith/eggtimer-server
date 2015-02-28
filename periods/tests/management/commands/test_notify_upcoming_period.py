@@ -30,9 +30,9 @@ class TestCommand(TestCase):
         self.assertFalse(mock_send.called)
 
     @patch('django.core.mail.EmailMultiAlternatives.send')
-    @patch('periods.models._today')
-    def test_notify_upcoming_period_send_disabled(self, mock_today, mock_send):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 14))
+    @patch('periods.models.today')
+    def test_notify_upcoming_period_send_disabled(self, mocktoday, mock_send):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 14))
         self.user.send_emails = False
         self.user.save()
 
@@ -41,27 +41,27 @@ class TestCommand(TestCase):
         self.assertFalse(mock_send.called)
 
     @patch('periods.email_sender.send')
-    @patch('periods.models._today')
-    def test_notify_upcoming_period_no_events(self, mock_today, mock_send):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 13))
+    @patch('periods.models.today')
+    def test_notify_upcoming_period_no_events(self, mocktoday, mock_send):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 13))
 
         self.command.handle()
 
         self.assertFalse(mock_send.called)
 
     @patch('periods.email_sender.send')
-    @patch('periods.models._today')
-    def test_notify_upcoming_period_ovulation(self, mock_today, mock_send):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 15))
+    @patch('periods.models.today')
+    def test_notify_upcoming_period_ovulation(self, mocktoday, mock_send):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 15))
 
         self.command.handle()
 
         mock_send.assert_called_once_with(self.user, 'Ovulation today!', ANY, None)
 
     @patch('periods.email_sender.send')
-    @patch('periods.models._today')
-    def test_notify_upcoming_period_expected_soon(self, mock_today, mock_send):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 26))
+    @patch('periods.models.today')
+    def test_notify_upcoming_period_expected_soon(self, mocktoday, mock_send):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 26))
 
         self.command.handle()
 
@@ -69,18 +69,18 @@ class TestCommand(TestCase):
                                           ANY, None)
 
     @patch('periods.email_sender.send')
-    @patch('periods.models._today')
-    def test_notify_upcoming_period_expected_today(self, mock_today, mock_send):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 29))
+    @patch('periods.models.today')
+    def test_notify_upcoming_period_expectedtoday(self, mocktoday, mock_send):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 29))
 
         self.command.handle()
 
         mock_send.assert_called_once_with(self.user, 'Period today!', ANY, None)
 
     @patch('periods.email_sender.send')
-    @patch('periods.models._today')
-    def test_notify_upcoming_period_overdue(self, mock_today, mock_send):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 30))
+    @patch('periods.models.today')
+    def test_notify_upcoming_period_overdue(self, mocktoday, mock_send):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 30))
 
         self.command.handle()
 

@@ -41,7 +41,7 @@ class StatisticsViewSet(viewsets.ModelViewSet):
             min_timestamp = datetime.datetime.strptime(min_timestamp, DATE_FORMAT)
             min_timestamp = pytz.timezone("US/Eastern").localize(min_timestamp)
         except TypeError:
-            min_timestamp = period_models._today()
+            min_timestamp = period_models.today()
         instance = self.get_object()
         instance.set_start_date_and_day(min_timestamp)
         serializer = self.get_serializer(instance)

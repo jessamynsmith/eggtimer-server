@@ -132,9 +132,9 @@ class TestModels(TestCase):
 
         self.assertEqual(pre_update_call_count, mock_save.call_count)
 
-    @patch('periods.models._today')
-    def test_update_statistics_none_existing(self, mock_today):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
+    @patch('periods.models.today')
+    def test_update_statistics_none_existing(self, mocktoday):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
         period = FlowEventFactory(user=self.period.user,
                                   timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 27)))
 
@@ -151,9 +151,9 @@ class TestModels(TestCase):
                            {'timestamp': datetime.date(2014, 5, 19), 'type': 'projected period'}]
         self.assertEqual(expected_events, stats.predicted_events)
 
-    @patch('periods.models._today')
-    def test_update_statistics_periods_exist(self, mock_today):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
+    @patch('periods.models.today')
+    def test_update_statistics_periods_exist(self, mocktoday):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
         FlowEventFactory(user=self.period.user,
                          timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 14)))
         period = FlowEventFactory(user=self.period.user,

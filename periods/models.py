@@ -11,7 +11,7 @@ from django_enumfield import enum
 from rest_framework.authtoken.models import Token
 
 
-def _today():
+def today():
     # Create helper method to allow mocking during tests
     return datetime.datetime.now(pytz.utc)
 
@@ -118,10 +118,10 @@ class Statistics(models.Model):
     @property
     def current_cycle_length(self):
         current_cycle = -1
-        today = _today()
-        previous_period = self.user.get_previous_period(previous_to=today)
+        today_date = today()
+        previous_period = self.user.get_previous_period(previous_to=today_date)
         if previous_period:
-            current_cycle = (today - previous_period.timestamp).days
+            current_cycle = (today_date - previous_period.timestamp).days
         return current_cycle
 
     @property

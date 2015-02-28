@@ -66,9 +66,9 @@ class TestStatisticsViewSet(TestCase):
         except Http404:
             pass
 
-    @patch('periods.models._today')
-    def test_retrieve_no_params(self, mock_today):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
+    @patch('periods.models.today')
+    def test_retrieve_no_params(self, mocktoday):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
         self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
 
         response = self.view_set.retrieve(self.request)

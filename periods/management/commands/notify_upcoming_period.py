@@ -19,7 +19,7 @@ class Command(BaseCommand):
             expected_in = (user.statistics.average_cycle_length
                            - user.statistics.current_cycle_length)
             expected_abs = abs(expected_in)
-            expected_date = period_models._today() + datetime.timedelta(
+            expected_date = period_models.today() + datetime.timedelta(
                 days=expected_in)
             formatted_date = expected_date.strftime('%B %d, %Y')
             if expected_abs == 1:
