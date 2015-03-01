@@ -76,6 +76,7 @@ class FlowLevel(enum.Enum):
     LIGHT = 1
     MEDIUM = 2
     HEAVY = 3
+    VERY_HEAVY = 4
 
 
 class FlowColor(enum.Enum):
@@ -100,7 +101,7 @@ class FlowEvent(models.Model):
     level = enum.EnumField(FlowLevel, default=FlowLevel.MEDIUM)
     color = enum.EnumField(FlowColor, default=FlowColor.RED)
     clots = enum.EnumField(ClotSize, default=None, null=True, blank=True)
-    comment = models.TextField(max_length=250, null=True, blank=True)
+    comment = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
         return "%s %s (%s)" % (self.user.get_full_name(), FlowLevel.label(self.level),
