@@ -39,7 +39,7 @@ class TestModels(TestCase):
                                  '%s' % self.basic_user))
 
     def test_flow_event_str(self):
-        self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 00:00:00-0[\d]:00\)',
+        self.assertTrue(re.match(r'Jessamyn Medium \(2014-01-31 00:00:00-0[\d]:00\)',
                                  '%s' % self.period))
 
     def test_statistics_str(self):

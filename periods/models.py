@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group, Permission
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
-from django_enumfield import enum
+from enumfields import Enum, EnumIntegerField
 from rest_framework.authtoken.models import Token
 
 
@@ -71,7 +71,7 @@ class User(AbstractEmailUser):
         return "%s (%s)" % (self.get_full_name(), self.email)
 
 
-class FlowLevel(enum.Enum):
+class FlowLevel(Enum):
     SPOTTING = 0
     LIGHT = 1
     MEDIUM = 2
@@ -79,7 +79,7 @@ class FlowLevel(enum.Enum):
     VERY_HEAVY = 4
 
 
-class FlowColor(enum.Enum):
+class FlowColor(Enum):
     PINK = 0
     LIGHT_RED = 1
     RED = 2
@@ -88,7 +88,7 @@ class FlowColor(enum.Enum):
     BLACK = 5
 
 
-class ClotSize(enum.Enum):
+class ClotSize(Enum):
     SMALL = 0
     MEDIUM = 1
     LARGE = 2
@@ -98,14 +98,13 @@ class FlowEvent(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='flow_events', null=True)
     timestamp = models.DateTimeField()
     first_day = models.BooleanField(default=False)
-    level = enum.EnumField(FlowLevel, default=FlowLevel.MEDIUM)
-    color = enum.EnumField(FlowColor, default=FlowColor.RED)
-    clots = enum.EnumField(ClotSize, default=None, null=True, blank=True)
+    level = EnumIntegerField(FlowLevel, default=FlowLevel.MEDIUM)
+    color = EnumIntegerField(FlowColor, default=FlowColor.RED)
+    clots = EnumIntegerField(ClotSize, default=None, null=True, blank=True)
     comment = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
-        return "%s %s (%s)" % (self.user.get_full_name(), FlowLevel.label(self.level),
-                               self.timestamp)
+        return "%s %s (%s)" % (self.user.get_full_name(), self.level, self.timestamp)
 
 
 class Statistics(models.Model):
