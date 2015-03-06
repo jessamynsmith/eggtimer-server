@@ -15,4 +15,6 @@ class TestFlowEventViewSet(TestCase):
         serializer = FlowEventSerializer(instance=period_models.FlowEvent.objects.all()[0])
         result = JSONRenderer().render(serializer.data)
 
-        self.assertEqual({}, result)
+        expected = (b'{"id":[\d]+,"timestamp":"2014-01-31T05:00:00Z","first_day":true,"level":2,'
+                    b'"color":2,"clots":null,"comment":null}')
+        self.assertRegex(result, expected)
