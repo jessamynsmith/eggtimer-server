@@ -1,3 +1,5 @@
+import re
+
 from django.test import TestCase
 from rest_framework.renderers import JSONRenderer
 
@@ -17,4 +19,4 @@ class TestFlowEventViewSet(TestCase):
 
         expected = (b'{"id":[\d]+,"timestamp":"2014-01-31T05:00:00Z","first_day":true,"level":2,'
                     b'"color":2,"clots":null,"comment":null}')
-        self.assertRegex(result, expected)
+        self.assertTrue(re.match(expected, result))
