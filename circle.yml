@@ -1,4 +1,8 @@
 ---
+dependencies:
+    override:
+        - pip install -r requirements/development.txt
+
 test:
     override:
         - python manage.py test --settings eggtimer.settings.development
