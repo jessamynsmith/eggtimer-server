@@ -17,7 +17,7 @@ describe('String', function () {
             assert.equal('', result);
         });
         it('should return formatted date if moment provided', function () {
-            var result = formatMomentDate(moment("12-28-2014"));
+            var result = formatMomentDate(moment("12-28-2014", "MM-DD-YYYY"));
             assert.equal('2014-12-28', result);
         });
     })
@@ -30,7 +30,7 @@ describe('String', function () {
             assert.equal('', result);
         });
         it('should return formatted date if moment provided', function () {
-            var result = formatMomentTime(moment("12-28-2014 03:33:44"));
+            var result = formatMomentTime(moment("2014-12-28T03:33:44"));
             assert.equal('03:33', result);
         });
     })

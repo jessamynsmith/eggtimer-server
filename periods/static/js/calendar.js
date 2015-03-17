@@ -35,7 +35,7 @@ makeEvents = function(moment, data) {
 
         var eventType = item.type;
         if (eventType == 'projected period') {
-            periodStartDates.push(moment(item.timestamp));
+            periodStartDates.push(start);
             event.title = eventType;
             event.color = 'darkred';
         } else if (eventType == 'projected ovulation') {
