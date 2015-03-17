@@ -11,6 +11,7 @@ SITE_ID = 1
 
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
+# Should switch this to UTC
 TIME_ZONE = 'America/Toronto'
 
 LANGUAGE_CODE = 'en-us'
