@@ -102,6 +102,8 @@ def statistics(request):
 
 @login_required
 def profile(request):
+    # TODO give user option to delete account
+    # TODO allow user to change email address?
     if request.method == 'POST':
         form = period_forms.UserForm(request.POST, instance=request.user)
         if form.is_valid():
