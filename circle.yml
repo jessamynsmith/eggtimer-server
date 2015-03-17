@@ -1,4 +1,8 @@
 ---
+machine:
+    python:
+        version: 3.4.2
+
 dependencies:
     override:
         - pip install -r requirements/development.txt
