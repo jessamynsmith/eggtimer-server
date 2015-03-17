@@ -22,11 +22,12 @@ makeEvents = function(moment, data) {
     periodStartDates = Array();
 
     data.forEach(function(item) {
+        var start = moment(item.timestamp);
         var event = {
             title: 'period',
             itemId: item.id,
             itemType: item.type,
-            start: item.timestamp,
+            start: start,
             color: '#0f76ed',
             // Maybe someday allow dragging of period events
             editable: false
@@ -42,7 +43,7 @@ makeEvents = function(moment, data) {
             event.color = 'purple';
         } else {
             if (item.first_day) {
-                periodStartDates.push(moment(item.timestamp));
+                periodStartDates.push(start);
             }
         }
 
