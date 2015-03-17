@@ -6,7 +6,14 @@ machine:
 dependencies:
     override:
         - pip install -r requirements/development.txt
+        - gem install coveralls-lcov
+        - npm install jshint mocha blanket mocha-lcov-reporter moment
 
 test:
     override:
+        - flake8
+        - jshint */static/js
+        - coverage run manage.py test --settings=eggtimer.settings.development
+        - mocha --reporter mocha-lcov-reporter */tests/static/js/* > coverage.info
+        - coveralls-lcov -v -n coverage.info > coverage.json
         - python manage.py test --settings eggtimer.settings.development
