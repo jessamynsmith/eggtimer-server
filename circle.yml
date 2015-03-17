@@ -1,0 +1,12 @@
+---
+machine:
+    python:
+        version: 3.4.2
+
+dependencies:
+    override:
+        - pip install -r requirements/development.txt
+
+test:
+    override:
+        - python manage.py test --settings eggtimer.settings.development
