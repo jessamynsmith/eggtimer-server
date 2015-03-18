@@ -11,6 +11,9 @@ cycle_length_frequency = function(data) {
         title: {
             text: 'Cycle Length Frequency'
         },
+        xAxis: {
+            allowDecimals: false
+        },
         yAxis: {
             title: {
                 text: 'Number of Cycles'
