@@ -53,10 +53,10 @@ describe('Array', function () {
         });
         it('should return array of items if data', function () {
             var data = Array(
-                {id: '1', type: 'period', first_day: true, timestamp: '2015-01-01T04:03:00'},
-                {id: '2', type: 'projected period', timestamp: '2015-01-28'},
-                {id: '3', type: 'projected ovulation', timestamp: '2015-01-14'},
-                {id: '4', type: 'period', timestamp: '2015-01-02T00:00:00'}
+                {id: '1', type: 'period', first_day: true, timestamp: '2015-01-01T09:03:00.000Z'},
+                {id: '2', type: 'projected period', timestamp: '2015-01-28T05:00:00.000Z'},
+                {id: '3', type: 'projected ovulation', timestamp: '2015-01-14T05:00:00.000Z'},
+                {id: '4', type: 'period', timestamp: '2015-01-02T05:00:00.000Z'}
             );
             var result = makeEvents(moment, data);
             assert.equal(2, result.periodStartDates.length);
