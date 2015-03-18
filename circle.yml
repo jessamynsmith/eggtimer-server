@@ -14,6 +14,6 @@ test:
         - flake8
         - node_modules/.bin/jshint */static/js
         - coverage run manage.py test --settings=eggtimer.settings.development
+        - node_modules/.bin/mocha */tests/static/js/*
         - node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/js/* > coverage.info
         - coveralls-lcov -v -n coverage.info > coverage.json
-        - python manage.py test --settings eggtimer.settings.development

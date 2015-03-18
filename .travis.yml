@@ -13,6 +13,7 @@ before_script:
 script:
     - coverage run manage.py test --settings=eggtimer.settings.development
     - flake8
+    - mocha */tests/static/js/*
     - NODE_ENV=test EGGTIMER_COVERAGE=1 mocha --reporter mocha-lcov-reporter */tests/static/js/* > coverage.info
     - coveralls-lcov -v -n coverage.info > coverage.json
     - jshint */static/js
