@@ -17,3 +17,7 @@ test:
         - node_modules/.bin/mocha */tests/static/js/*
         - node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/js/* > coverage.info
         - coveralls-lcov -v -n coverage.info > coverage.json
+
+test:
+    post:
+        - DJANGO_SETTINGS_MODULE=eggtimer.settings.development PYTHONPATH=. coveralls --merge coverage.json
