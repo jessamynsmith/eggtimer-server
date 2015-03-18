@@ -1,6 +1,6 @@
 -r common.txt
 PyYAML==3.11
--e git://github.com/nedbat/coveragepy.git@cd57713fbccddfc7e375c43165159642236969fd#egg=coverage
+coverage==4.0a5
 coveralls==1.0a2
 django-coverage-plugin==0.3.3
 docopt==0.6.2
