@@ -1,9 +1,11 @@
 import datetime
 import pytz
+import statistics
 
 from custom_user.models import AbstractEmailUser
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
+from django.core.cache import cache
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
@@ -45,14 +47,29 @@ class User(AbstractEmailUser):
             return next_periods[0]
         return None
 
+    def get_cache_key(self, data_type):
+        return 'user-%s-%s' % (self.pk, data_type)
+
     def get_cycle_lengths(self):
-        cycle_lengths = []
-        first_days = self.first_days()
-        if first_days.exists():
-            for i in range(1, first_days.count()):
-                duration = first_days[i].timestamp.date() - first_days[i-1].timestamp.date()
-                cycle_lengths.append(duration.days)
+        key = self.get_cache_key('cycle_lengths')
+        cycle_lengths = cache.get(key)
+        if not cycle_lengths:
+            cycle_lengths = []
+            first_days = self.first_days()
+            if first_days.exists():
+                for i in range(1, first_days.count()):
+                    duration = first_days[i].timestamp.date() - first_days[i-1].timestamp.date()
+                    cycle_lengths.append(duration.days)
+            cache.set(key, cycle_lengths)
         return cycle_lengths
+
+    def get_sorted_cycle_lengths(self):
+        key = self.get_cache_key('sorted_cycle_lengths')
+        sorted_cycle_lengths = cache.get(key)
+        if not sorted_cycle_lengths:
+            sorted_cycle_lengths = sorted(self.get_cycle_lengths())
+            cache.set(key, sorted_cycle_lengths)
+        return sorted_cycle_lengths
 
     def get_full_name(self):
         full_name = '%s %s' % (self.first_name, self.last_name)
@@ -115,6 +132,44 @@ class Statistics(models.Model):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='statistics', null=True)
     average_cycle_length = models.IntegerField(default=28)
+
+    def _get_ordinal_value(self, index):
+        value = None
+        sorted_cycle_lengths = self.user.get_sorted_cycle_lengths()
+        if len(sorted_cycle_lengths) >= 1:
+            value = sorted_cycle_lengths[index]
+        return value
+
+    @property
+    def cycle_length_minimum(self):
+        return self._get_ordinal_value(0)
+
+    @property
+    def cycle_length_maximum(self):
+        return self._get_ordinal_value(-1)
+
+    def _get_statistics_value(self, method_name, num_values_required=1):
+        value = None
+        cycle_lengths = self.user.get_cycle_lengths()
+        if len(cycle_lengths) >= num_values_required:
+            value = method_name(cycle_lengths)
+        return value
+
+    @property
+    def cycle_length_mean(self):
+        return round(self._get_statistics_value(statistics.mean), 1)
+
+    @property
+    def cycle_length_median(self):
+        return self._get_statistics_value(statistics.median)
+
+    @property
+    def cycle_length_mode(self):
+        return self._get_statistics_value(statistics.mode)
+
+    @property
+    def cycle_length_standard_deviation(self):
+        return round(self._get_statistics_value(statistics.stdev, 2), 3)
 
     @property
     def current_cycle_length(self):
@@ -193,6 +248,9 @@ def update_statistics(sender, instance, **kwargs):
     except (Statistics.DoesNotExist, User.DoesNotExist):
         # There may not be statistics, for example when deleting a user
         return
+
+    cache.delete(instance.user.get_cache_key('cycle_lengths'))
+    cache.delete(instance.user.get_cache_key('sorted_cycle_lengths'))
 
     cycle_lengths = instance.user.get_cycle_lengths()
     # Calculate average (if possible) and update statistics object

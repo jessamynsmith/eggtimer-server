@@ -151,7 +151,7 @@ class TestViews(TestCase):
     def test_statistics(self):
         response = views.statistics(self.request)
 
-        self.assertContains(response, '<th>Average Cycle Length:</th><td>28</td>')
+        self.assertContains(response, '<td>Average (rounded):</td><td>28</td>')
         self.assertContains(response, 'cycle_length_frequency([28, 29], [28]);')
         self.assertContains(response, 'cycle_length_history(')
 

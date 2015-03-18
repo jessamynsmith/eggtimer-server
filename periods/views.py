@@ -83,16 +83,15 @@ def statistics(request):
     first_days = request.user.first_days().values_list('timestamp', flat=True)
     cycle_lengths = request.user.get_cycle_lengths()
     cycles = map(list, zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
-    cycle_lengths = sorted(cycle_lengths)
     data = {
         'user': request.user,
         'num_cycles': first_days.count(),
-        'cycle_lengths': json.dumps(list(cycle_lengths)),
+        'cycle_lengths': json.dumps(list(request.user.get_sorted_cycle_lengths())),
         'cycles': list(cycles)
     }
     if len(cycle_lengths) > 0:
-        shortest = cycle_lengths[0]
-        longest = cycle_lengths[len(cycle_lengths) - 1]
+        shortest = request.user.statistics.cycle_length_minimum
+        longest = request.user.statistics.cycle_length_maximum
         # +1 each for inclusive, +1 for last bin
         data['bins'] = list(range(shortest, longest + 2))
 

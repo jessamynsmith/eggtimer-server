@@ -14,7 +14,7 @@ Fork the project on github and git clone your fork, e.g.:
 
     git clone https://github.com/<username>/quotations.git
 
-Create a virtualenv and install dependencies:
+Create a virtualenv using Python 3 and install dependencies:
 
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt

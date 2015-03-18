@@ -110,6 +110,12 @@ INSTALLED_APPS = [
     'periods',
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 # auth and allauth settings
 AUTH_USER_MODEL = 'periods.User'
 LOGIN_REDIRECT_URL = '/calendar/'
