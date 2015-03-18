@@ -11,8 +11,9 @@
     <div>
     <select id="id_select_statistics">
     <option value="statistics">Statistics</option>
-    <option value="cycle_length_frequency">Cycle length Frequency</option>
-    <option value="cycle_length_history">Cycle length History</option>
+        {% for graph_type in graph_types %}
+            <option value="{{ graph_type.0 }}">{{ graph_type.1 }}</option>
+        {% endfor %}
     </select>
     </div>
 
@@ -38,8 +39,17 @@
         </table>
     </div>
 
-    <div id="id_cycle_length_frequency" class="statistics"></div>
+    {% for graph_type in graph_types %}
+        <div id="id_{{ graph_type.0 }}" class="statistics"></div>
+    {% endfor %}
 
-    <div id="id_cycle_length_history" class="statistics"></div>
+    <div class="statistics cycle_length_frequency_error cycle_length_history_error">
+        Cycle Graphs require menstrual data to calculate.
+        Would you like to <a href="{% url 'calendar' %}">enter some periods</a>?
+    </div>
+    <div class="statistics qigong_cycles_error">
+        Qigong Cycles require a birth date to calculate.
+        Would you like to <a href="{% url 'user_profile' %}">add a birth date</a> to your profile?
+    </div>
 
 {% endblock %}

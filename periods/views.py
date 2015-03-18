@@ -1,7 +1,7 @@
 from collections import Counter
 import datetime
 from dateutil import parser as dateutil_parser
-import json
+import itertools
 import pytz
 
 from django.contrib.auth.decorators import login_required
@@ -82,26 +82,66 @@ def calendar(request):
 @login_required
 def cycle_length_frequency(request):
     cycle_lengths = request.user.get_cycle_lengths()
-    cycle_counter = Counter(cycle_lengths)
-    cycle_frequency = list(zip(cycle_counter.keys(), cycle_counter.values()))
-    return JsonResponse(cycle_frequency, safe=False)
+    data = {}
+    if cycle_lengths:
+        cycle_counter = Counter(cycle_lengths)
+        data = {
+            'cycles': list(zip(cycle_counter.keys(), cycle_counter.values()))
+        }
+    return JsonResponse(data)
 
 
 @login_required
 def cycle_length_history(request):
-    first_days = list(request.user.first_days().values_list('timestamp', flat=True))
     cycle_lengths = request.user.get_cycle_lengths()
-    cycle_history = list(zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
-    return JsonResponse(cycle_history, safe=False)
+    data = {}
+    if cycle_lengths:
+        first_days = list(request.user.first_days().values_list('timestamp', flat=True))
+        data = {
+            'cycles': list(zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
+        }
+    return JsonResponse(data)
+
+
+def _generate_cycles(start_date, end_date, cycle_length):
+    current_date = start_date
+    increment = datetime.timedelta(days=(cycle_length/2.0))
+    values = itertools.cycle([0, 100])
+    cycles = []
+    while current_date < end_date:
+        cycles.append([current_date, next(values)])
+        current_date += increment
+    day = (end_date - cycles[-1][0]).days % cycle_length
+    cycles.append([end_date, round(100 * day / cycle_length)])
+    return cycles
+
+
+@login_required
+def qigong_cycles(request):
+    end_date = period_models.today() + datetime.timedelta(days=14)
+    data = {}
+    if request.user.birth_date:
+        data = {
+            'physical': _generate_cycles(request.user.birth_date, end_date, 23),
+            'emotional': _generate_cycles(request.user.birth_date, end_date, 28),
+            'intellectual': _generate_cycles(request.user.birth_date, end_date, 33)
+        }
+    return JsonResponse(data)
 
 
 @login_required
 def statistics(request):
     first_days = list(request.user.first_days().values_list('timestamp', flat=True))
+    graph_types = [
+        ['cycle_length_frequency', 'Cycle Length Frequency'],
+        ['cycle_length_history', 'Cycle Length History'],
+        ['qigong_cycles', 'Qigong Cycles']
+    ]
     data = {
         'user': request.user,
         'first_days': first_days,
         # TODO days of bleeding, what else?
+        'graph_types': graph_types
     }
     return render_to_response('periods/statistics.html', data,
                               context_instance=RequestContext(request))
@@ -134,108 +174,3 @@ def regenerate_key(request):
         Token.objects.create(user=request.user)
 
     return HttpResponseRedirect(reverse('user_profile'))
-
-
-def _get_level(cycle_length, days):
-    day = days % cycle_length
-    half_cycle = cycle_length / 2.0
-    half_day = day
-    if day > half_cycle:
-        half_day = cycle_length - day
-
-    return round(100 * half_day / half_cycle, 2)
-
-
-def _get_phase(cycle_length, day):
-    phase = 'waxing'
-    if day > cycle_length / 2.0:
-        phase = 'waning'
-    return phase
-
-
-def _format_date(date):
-    return date.strftime("%a %b %d")
-
-
-def qigong_cycles(request):
-    cycles = {
-        'physical': {
-            'length': 23,
-            'waning': 'decreasing endurance, increasing tendency to fatigue',
-            'waxing': 'increasing physical strength and endurance',
-        },
-        'emotional': {
-            'length': 28,
-            'waning': 'increasing pessimism, moodiness, irritability',
-            'waxing': 'increasing optimism, cheerfulness, cooperativeness',
-        },
-        'intellectual': {
-            'length': 33,
-            'waning': 'time to review old material, not learn new concepts',
-            'waxing': 'time to learn new material and pursue creative and intellectual activities',
-        },
-    }
-    data = {}
-    birth_date = None
-
-    # TODO deal with birth time and time zones
-    # TODO add vertical lines at peaks
-    # TODO add labels on vertical (and horizontal?) lines
-    # TODO birthdate date picker
-    # TODO specify date for calculation (does not have to be today)
-    # TODO allow user to select their current timezone
-    birth_date_string = request.POST.get('birth_date')
-    if birth_date_string:
-        try:
-            birth_date = datetime.datetime.strptime(birth_date_string, DATE_FORMAT)
-            request.user.birth_date = pytz.timezone("US/Eastern").localize(birth_date)
-            request.user.save()
-        except ValueError:
-            data['error'] = "Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30"
-
-    if request.user and not request.user.is_anonymous():
-        if request.user.birth_date:
-            birth_date = request.user.birth_date
-
-    if birth_date:
-        data['birth_date'] = str(birth_date.date())
-        data['cycles'] = {}
-        today = datetime.date.today()
-        days_elapsed = (today - birth_date.date()).days
-        for cycle_type in cycles:
-            cycle_length = cycles[cycle_type]['length']
-            current_day = days_elapsed % cycle_length
-            description = cycles[cycle_type][_get_phase(cycle_length, current_day)]
-            data['cycles'][cycle_type] = {
-                'length': cycle_length,
-                'day': current_day,
-                'level': "%.0f" % _get_level(cycle_length, days_elapsed),
-                'phase': description,
-                'data': []
-            }
-
-        start = today - datetime.timedelta(days=7)
-        start_days = (start - birth_date.date()).days
-        data['start'] = _format_date(start)
-        data['today'] = _format_date(today)
-        data['today_with_year'] = str(today)
-
-        tick_values = []
-        for i in range(0, 43):
-            current_date = _format_date(start + datetime.timedelta(days=i/2.0))
-            # Hack to deal with half day cycle midpoints
-            if i % 2 == 1:
-                current_date = "%s-0.5" % current_date
-            else:
-                tick_values.append(current_date)
-            current_days = start_days + (i/2.0)
-            for cycle_type in cycles:
-                cycle_length = cycles[cycle_type]['length']
-                level = _get_level(cycle_length, current_days)
-                data['cycles'][cycle_type]['data'].append([current_date, level])
-        data['tick_values'] = json.dumps(tick_values)
-        for cycle_type in cycles:
-            data['cycles'][cycle_type]['data'] = json.dumps(data['cycles'][cycle_type]['data'])
-
-    return render_to_response('periods/qigong_cycles.html', data,
-                              context_instance=RequestContext(request))

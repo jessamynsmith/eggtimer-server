@@ -11,6 +11,7 @@ class UserFactory(factory.DjangoModelFactory):
         model = get_user_model()
 
     first_name = u'Jessamyn'
+    birth_date = pytz.timezone("US/Eastern").localize(datetime.datetime(1995, 3, 1))
     email = factory.Sequence(lambda n: "user_%d@example.com" % n)
 
 

@@ -1,9 +1,9 @@
 import datetime
+import json
 import pytz
 
 from django.http import HttpRequest, QueryDict, Http404
 from django.test import TestCase
-from django.utils import timezone
 from mock import patch
 from rest_framework.request import Request
 from rest_framework.authtoken.models import Token
@@ -93,6 +93,7 @@ class TestStatisticsViewSet(TestCase):
 
 
 class TestViews(TestCase):
+    maxDiff = None
 
     def setUp(self):
         self.period = FlowEventFactory()
@@ -141,6 +142,71 @@ class TestViews(TestCase):
         self.assertContains(response, 'initializeCalendar(')
         self.assertContains(response, 'div id=\'id_calendar\'></div>')
 
+    def test_cycle_length_frequency_no_data(self):
+        period_models.FlowEvent.objects.all().delete()
+
+        response = views.cycle_length_frequency(self.request)
+
+        result = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual({}, result)
+
+    def test_cycle_length_frequency(self):
+        response = views.cycle_length_frequency(self.request)
+
+        result = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual({'cycles': [[28, 1]]}, result)
+
+    def test_cycle_length_history_no_data(self):
+        period_models.FlowEvent.objects.all().delete()
+
+        response = views.cycle_length_history(self.request)
+
+        result = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual({}, result)
+
+    def test_cycle_length_history(self):
+        response = views.cycle_length_history(self.request)
+
+        result = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual({'cycles': [['2014-01-31', 28]]}, result)
+
+    def test_qigong_cycles_no_birth_date(self):
+        self.request.user.birth_date = None
+        self.request.user.save()
+
+        response = views.qigong_cycles(self.request)
+
+        result = json.loads(response.content.decode('utf-8'))
+
+        self.assertEqual({}, result)
+
+    @patch('periods.models.today')
+    def test_qigong_cycles(self, mocktoday):
+        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(1995, 3, 20))
+
+        response = views.qigong_cycles(self.request)
+
+        result = json.loads(response.content.decode('utf-8'))
+
+        expected = {
+            'physical': [['1995-03-01T00:00:00-05:00', 0],
+                         ['1995-03-12T12:00:00-05:00', 100],
+                         ['1995-03-24T00:00:00-05:00', 0],
+                         ['1995-04-03T00:00:00-05:00', 43]],
+            'emotional': [['1995-03-01T00:00:00-05:00', 0],
+                          ['1995-03-15T00:00:00-05:00', 100],
+                          ['1995-03-29T00:00:00-05:00', 0],
+                          ['1995-04-03T00:00:00-05:00', 18]],
+            'intellectual': [['1995-03-01T00:00:00-05:00', 0],
+                             ['1995-03-17T12:00:00-05:00', 100],
+                             ['1995-04-03T00:00:00-05:00', 48]],
+        }
+        self.assertEqual(expected, result)
+
     def test_statistics_no_data(self):
         period_models.FlowEvent.objects.all().delete()
 
@@ -163,8 +229,7 @@ class TestViews(TestCase):
         response = views.profile(self.request)
 
         user = period_models.User.objects.get(pk=self.request.user.pk)
-        self.assertEqual(None, user.birth_date)
-        self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')
+        self.assertEqual(TIMEZONE.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
         self.assertContains(response, '<h4>API Information</h4>')
 
     def test_profile_post_valid_data(self):
@@ -176,13 +241,11 @@ class TestViews(TestCase):
         user = period_models.User.objects.get(pk=self.request.user.pk)
         self.assertEqual(u'Jess', user.first_name)
         self.assertEqual(12, user.luteal_phase_length)
-        self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')
         self.assertContains(response, '<h4>API Information</h4>')
 
     def test_profile_get(self):
         response = views.profile(self.request)
 
-        self.assertContains(response, '<a href="/qigong/cycles/">Medical Qigong Cycles</a>')
         self.assertContains(response, '<h4>API Information</h4>')
 
     def test_regenerate_key_post(self):
@@ -201,38 +264,3 @@ class TestViews(TestCase):
 
         self.assertContains(response, '', status_code=302)
         self.assertEquals(api_key, self.request.user.auth_token.key)
-
-    def test_qigong_cycles_no_data(self):
-        response = views.qigong_cycles(self.request)
-
-        self.assertContains(response, '<label for="id_birth_date">Birth Date')
-
-    def test_qigong_cycles_post_invalid_data(self):
-        self.request.method = "POST"
-        self.request.POST = QueryDict(u"birth_date=bogus")
-
-        response = views.qigong_cycles(self.request)
-
-        self.assertContains(response, 'Please enter a date in the form YYYY-MM-DD, e.g. 1975-11-30')
-
-    def test_qigong_cycles_post(self):
-        self.request.method = "POST"
-        self.request.POST = QueryDict(u"birth_date=1980-02-28")
-
-        response = views.qigong_cycles(self.request)
-
-        self.assertContains(response, '<td class="intellectual">Intellectual</td>')
-        self.assertContains(response, 'qigong_cycles(["')
-        user = period_models.User.objects.get(pk=self.request.user.pk)
-        expected = pytz.timezone("US/Eastern").localize(timezone.datetime(1980, 2, 28))
-        self.assertEqual(expected, user.birth_date)
-
-    def test_qigong_cycles(self):
-        self.request.user.birth_date = pytz.timezone(
-            "US/Eastern").localize(timezone.datetime(1981, 3, 31))
-        self.request.user.save()
-
-        response = views.qigong_cycles(self.request)
-
-        self.assertContains(response, '<td class="intellectual">Intellectual</td>')
-        self.assertContains(response, 'qigong_cycles(["')
