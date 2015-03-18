@@ -25,5 +25,7 @@ urlpatterns = patterns(
     url(r'^period_form/(?P<period_id>[0-9]+)/$', period_views.period_form, name='period_form'),
     url(r'^calendar/$', period_views.calendar, name='calendar'),
     url(r'^statistics/$', period_views.statistics, name='statistics'),
+    url(r'^statistics/cycle_length_frequency$', period_views.cycle_length_frequency),
+    url(r'^statistics/cycle_length_history$', period_views.cycle_length_history),
     url(r'^qigong/cycles/$', period_views.qigong_cycles, name='qigong_cycles'),
 )

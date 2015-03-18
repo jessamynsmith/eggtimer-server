@@ -1,3 +1,4 @@
+from collections import Counter
 import datetime
 from dateutil import parser as dateutil_parser
 import json
@@ -5,7 +6,7 @@ import pytz
 
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from rest_framework import viewsets
@@ -79,22 +80,29 @@ def calendar(request):
 
 
 @login_required
-def statistics(request):
-    first_days = request.user.first_days().values_list('timestamp', flat=True)
+def cycle_length_frequency(request):
     cycle_lengths = request.user.get_cycle_lengths()
-    cycles = map(list, zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
+    cycle_counter = Counter(cycle_lengths)
+    cycle_frequency = list(zip(cycle_counter.keys(), cycle_counter.values()))
+    return JsonResponse(cycle_frequency, safe=False)
+
+
+@login_required
+def cycle_length_history(request):
+    first_days = list(request.user.first_days().values_list('timestamp', flat=True))
+    cycle_lengths = request.user.get_cycle_lengths()
+    cycle_history = list(zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
+    return JsonResponse(cycle_history, safe=False)
+
+
+@login_required
+def statistics(request):
+    first_days = list(request.user.first_days().values_list('timestamp', flat=True))
     data = {
         'user': request.user,
-        'num_cycles': first_days.count(),
-        'cycle_lengths': json.dumps(list(request.user.get_sorted_cycle_lengths())),
-        'cycles': list(cycles)
+        'first_days': first_days,
+        # TODO days of bleeding, what else?
     }
-    if len(cycle_lengths) > 0:
-        shortest = request.user.statistics.cycle_length_minimum
-        longest = request.user.statistics.cycle_length_maximum
-        # +1 each for inclusive, +1 for last bin
-        data['bins'] = list(range(shortest, longest + 2))
-
     return render_to_response('periods/statistics.html', data,
                               context_instance=RequestContext(request))
 

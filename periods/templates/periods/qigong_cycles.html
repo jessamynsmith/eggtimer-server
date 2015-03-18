@@ -71,6 +71,15 @@
 
     {% endif %}
 
+{#    tickValues, physicalData, emotionalData, intellectualData,#}
+{#physicalLevel, emotionalLevel, intellectualLevel, startDate, todayDate#}
+
+    <div id="id_dates" class="hidden">{{ dates|safe }}</div>
+    <div id="id_physical_data" class="hidden">{{ physical_data|safe }}</div>
+    <div id="id_emotional_data" class="hidden">{{ emotional_data|safe }}</div>
+    <div id="id_intellectual_data" class="hidden">{{ intellectual_data|safe }}</div>
+    <div id="id_qigong_cycles" class="statistics"></div>
+
     <br/>
     <br/>
     <p>This information is based on the description in the excellent textbook <a href="http://bookstore.qigongmedicine.com/product/volume-1-chinese-medical-qigong-therapy-energetic-anatomy-and-physiology/">"Chinese Medical Qigong Therapy, Volume 1"</a>, by Professor Jerry Alan Johnson, Ph.D., D.T.C.M, D.M.Q. (China)</p>

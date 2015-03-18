@@ -111,7 +111,7 @@ doAjax = function(url, method, itemId, data) {
         },
         success: function(data, textStatus, jqXHR) {
             console.log(method + " on " + itemId + " succeeded");
-            $('#id_calendar').fullCalendar( 'refetchEvents' );
+            $('#id_calendar').fullCalendar('refetchEvents');
         }
     });
 };

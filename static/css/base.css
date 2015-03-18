@@ -46,23 +46,7 @@ p.error_message {
   line-height: 1.33;
 }
 
-/* d3 graph formatting */
-.bar rect {
-    fill: #0f76ed;
-    shape-rendering: crispEdges;
-}
-
-.bar text {
-    fill: #fff;
-    font-size: 10pt;
-}
-
-.axis path, .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-.tick text {
-    font-size: 10pt;
+.statistics {
+    padding-top: 10px;
+    width: 90%;
 }

@@ -1,5 +1,6 @@
-qigong_cycles = function(tickValues, physicalData, emotionalData, intellectualData,
+qigong_cycles_old = function(tickValues, physicalData, emotionalData, intellectualData,
 physicalLevel, emotionalLevel, intellectualLevel, startDate, todayDate) {
+    // TODO change to highcharts
 
     var width = $(window).width() - 110;
     var height = 300;
@@ -150,3 +151,40 @@ physicalLevel, emotionalLevel, intellectualLevel, startDate, todayDate) {
             );
 
 };
+
+qigong_cycles = function() {
+    $('#id_cycle_length_history').highcharts({
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Qigong Cycles'
+        },
+        xAxis: {
+            categories: JSON.parse($('#id_cycle_starts').text())
+        },
+        yAxis: {
+            title: {
+                text: 'Cycle Length'
+            }
+        },
+        plotOptions: {
+            column: {
+                color: '#0f76ed',
+                pointPadding: 0,
+                borderWidth: 0,
+                groupPadding: 0,
+                shadow: false
+            }
+        },
+        series: [{
+            name: 'Cycle length',
+            data: JSON.parse($('#id_cycle_lengths').text())
+        }
+        ]
+    });
+};
+
+$(document).ready(function () {
+    qigong_cycles();
+});

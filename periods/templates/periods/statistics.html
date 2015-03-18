@@ -3,38 +3,43 @@
 {% block title %}Statistics for {{ user.get_full_name }}{% endblock %}
 
 {% block head %}
-    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.js'></script>
+    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/highstock/2.1.4/highstock.js'></script>
     <script type='text/javascript' src='{{ STATIC_URL }}js/statistics.js'></script>
 {% endblock %}
 
 {% block content %}
-    <h3>Statistics for {{ user.get_full_name }}</h3>
+    <div>
+    <select id="id_select_statistics">
+    <option value="statistics">Statistics</option>
+    <option value="cycle_length_frequency">Cycle length Frequency</option>
+    <option value="cycle_length_history">Cycle length History</option>
+    </select>
+    </div>
 
-    <table class="table-condensed">
-        <tr><th>Number of Cycles:</th><td>{{ num_cycles }}</td></tr>
-        <tr><th colspan="2">Cycle Length Statistics</th></tr>
-        <tr><td>Average (rounded):</td><td>{{ user.statistics.average_cycle_length }}</td></tr>
-        <tr><td>Minimum:</td><td>{{ user.statistics.cycle_length_minimum|default:"" }}</td></tr>
-        <tr><td>Maximum:</td><td>{{ user.statistics.cycle_length_maximum|default:"" }}</td></tr>
-        <tr><td>Mean:</td><td>{{ user.statistics.cycle_length_mean|default:"" }}</td></tr>
-        <tr><td>Median:</td><td>{{ user.statistics.cycle_length_median|default:"" }}</td></tr>
-        <tr><td>Mode:</td><td>{{ user.statistics.cycle_length_mode|default:"" }}</td></tr>
-        <tr><td>Standard Deviation:</th><td>{{ user.statistics.cycle_length_standard_deviation|default:"" }}</td></tr>
-    </table>
+    <div id="id_statistics" class="statistics">
+        <h3>Statistics for {{ user.get_full_name }}</h3>
 
-    {% if bins %}
+        <table class="table-condensed">
+            <tr><th colspan="2">Cycle Statistics</th></tr>
+            <tr><td>Total Number:</td><td>{{ first_days|length }}</td></tr>
+            <tr><td>First:</td><td>{{ first_days|first }}</td></tr>
+            <tr><td>Most Recent:</td><td>{{ first_days|last }}</td></tr>
+        </table>
 
-        <script type="text/javascript">
-            cycle_length_frequency({{ bins }}, {{ cycle_lengths|safe }});
-        </script>
+        <table class="table-condensed">
+            <tr><th colspan="2">Cycle Length Statistics</th></tr>
+            <tr><td>Average (rounded):</td><td>{{ user.statistics.average_cycle_length }}</td></tr>
+            <tr><td>Minimum:</td><td>{{ user.statistics.cycle_length_minimum|default:"" }}</td></tr>
+            <tr><td>Maximum:</td><td>{{ user.statistics.cycle_length_maximum|default:"" }}</td></tr>
+            <tr><td>Mean:</td><td>{{ user.statistics.cycle_length_mean|default:"" }}</td></tr>
+            <tr><td>Median:</td><td>{{ user.statistics.cycle_length_median|default:"" }}</td></tr>
+            <tr><td>Mode:</td><td>{{ user.statistics.cycle_length_mode|default:"" }}</td></tr>
+            <tr><td>Standard Deviation:</td><td>{{ user.statistics.cycle_length_standard_deviation|default:"" }}</td></tr>
+        </table>
+    </div>
 
-        <script type="text/javascript">
-            cycle_length_history({{ cycles|safe }});
-        </script>
+    <div id="id_cycle_length_frequency" class="statistics"></div>
 
-    {% else %}
+    <div id="id_cycle_length_history" class="statistics"></div>
 
-        Not enough cycle information has been entered to calculate statistics. :(
-
-    {% endif %}
 {% endblock %}
