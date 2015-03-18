@@ -12,11 +12,26 @@ class TestFlowEventViewSet(TestCase):
 
     def setUp(self):
         FlowEventFactory()
+        self.serializer = FlowEventSerializer(instance=period_models.FlowEvent.objects.all()[0])
 
     def test_serialization(self):
-        serializer = FlowEventSerializer(instance=period_models.FlowEvent.objects.all()[0])
-        result = JSONRenderer().render(serializer.data)
+        result = JSONRenderer().render(self.serializer.data)
 
         expected = (b'{"id":[\d]+,"timestamp":"2014-01-31T05:00:00Z","first_day":true,"level":2,'
                     b'"color":2,"clots":null,"comment":null}')
         self.assertTrue(re.match(expected, result))
+
+    def test_validate_clots_no_value(self):
+        result = self.serializer.validate_clots(None)
+
+        self.assertEqual(None, result)
+
+    def test_validate_clots_empty_value(self):
+        result = self.serializer.validate_clots('')
+
+        self.assertEqual(None, result)
+
+    def test_validate_clots_valid_value(self):
+        result = self.serializer.validate_clots(1)
+
+        self.assertEqual(1, result)
