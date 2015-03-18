@@ -146,12 +146,16 @@ class TestViews(TestCase):
 
         response = views.statistics(self.request)
 
+        self.assertContains(response, '<td>Average (rounded):</td><td>28</td>')
+        self.assertContains(response, '<td>Mean:</td><td></td>')
         self.assertContains(response, 'Not enough cycle information has been entered to calculate')
 
     def test_statistics(self):
         response = views.statistics(self.request)
 
         self.assertContains(response, '<td>Average (rounded):</td><td>28</td>')
+        self.assertContains(response, '<td>Mean:</td><td>28.0</td>')
+        self.assertContains(response, '<td>Mode:</td><td>28</td>')
         self.assertContains(response, 'cycle_length_frequency([28, 29], [28]);')
         self.assertContains(response, 'cycle_length_history(')
 

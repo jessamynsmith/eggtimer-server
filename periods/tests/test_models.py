@@ -13,41 +13,70 @@ from periods.tests.factories import FlowEventFactory, UserFactory
 TIMEZONE = pytz.timezone("US/Eastern")
 
 
-class TestModels(TestCase):
+class TestUser(TestCase):
 
     def setUp(self):
         self.user = UserFactory()
         self.basic_user = UserFactory.build(first_name='')
 
         self.period = FlowEventFactory()
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 27)))
+        FlowEventFactory(user=self.period.user,
+                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 3, 24)))
 
-    def test_user_get_full_name_email(self):
+    def test_get_cycle_lengths_no_data(self):
+        self.assertEqual([], self.basic_user.get_cycle_lengths())
+
+    def test_get_cycle_lengths(self):
+        self.assertEqual([27, 25], self.period.user.get_cycle_lengths())
+
+    def test_get_sorted_cycle_lengths_no_data(self):
+        self.assertEqual([], self.basic_user.get_sorted_cycle_lengths())
+
+    def test_get_sorted_cycle_lengths(self):
+        self.assertEqual([25, 27], self.period.user.get_sorted_cycle_lengths())
+
+    def test_get_full_name_email(self):
         self.assertTrue(re.match(r'user_[\d]+@example.com', '%s' % self.basic_user.get_full_name()))
 
-    def test_user_get_full_name(self):
+    def test_get_full_name(self):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_full_name())
 
-    def test_user_get_short_name_email(self):
+    def test_get_short_name_email(self):
         self.assertTrue(re.match(r'user_[\d]+@example.com',
                                  '%s' % self.basic_user.get_short_name()))
 
-    def test_user_get_short_name(self):
+    def test_get_short_name(self):
         self.assertEqual(u'Jessamyn', '%s' % self.user.get_short_name())
 
-    def test_user_str(self):
+    def test_str(self):
         self.assertTrue(re.match(r'user_[\d]+@example.com \(user_[\d]+@example.com\)',
                                  '%s' % self.basic_user))
 
-    def test_flow_event_str(self):
+
+class TestFlowEvent(TestCase):
+
+    def setUp(self):
+        self.period = FlowEventFactory()
+
+    def test_str(self):
         self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 00:00:00-0[\d]:00\)',
                                  '%s' % self.period))
 
-    def test_statistics_str(self):
+
+class TestStatistics(TestCase):
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.period = FlowEventFactory()
+
+    def test_str(self):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(u'Jessamyn (', ('%s' % stats)[:10])
 
-    def test_statistics_with_average(self):
+    def test_with_average(self):
         FlowEventFactory(user=self.period.user,
                          timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 15)))
         FlowEventFactory(user=self.period.user,
@@ -59,6 +88,12 @@ class TestModels(TestCase):
 
         self.assertEqual(u'Jessamyn (', ('%s' % stats)[:10])
         self.assertEqual(23, stats.average_cycle_length)
+        self.assertEqual(15, stats.cycle_length_minimum)
+        self.assertEqual(28, stats.cycle_length_maximum)
+        self.assertEqual(23, stats.cycle_length_mean)
+        self.assertEqual(26, stats.cycle_length_median)
+        self.assertEqual(None, stats.cycle_length_mode)
+        self.assertEqual(7.0, stats.cycle_length_standard_deviation)
         expected_events = [{'timestamp': datetime.date(2014, 4, 19), 'type': 'projected ovulation'},
                            {'timestamp': datetime.date(2014, 5, 3), 'type': 'projected period'},
                            {'timestamp': datetime.date(2014, 5, 12), 'type': 'projected ovulation'},
@@ -67,13 +102,20 @@ class TestModels(TestCase):
                            {'timestamp': datetime.date(2014, 6, 18), 'type': 'projected period'}]
         self.assertEqual(expected_events, stats.predicted_events)
 
-    def test_statistics_current_cycle_length_no_periods(self):
+    def test_current_cycle_length_no_periods(self):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
 
         self.assertEqual(-1, stats.current_cycle_length)
+        self.assertEqual(28, stats.average_cycle_length)
+        self.assertEqual(None, stats.cycle_length_minimum)
+        self.assertEqual(None, stats.cycle_length_maximum)
+        self.assertEqual(None, stats.cycle_length_mean)
+        self.assertEqual(None, stats.cycle_length_median)
+        self.assertEqual(None, stats.cycle_length_mode)
+        self.assertEqual(None, stats.cycle_length_standard_deviation)
         self.assertEqual([], stats.predicted_events)
 
-    def test_statistics_set_start_date_and_day_no_periods(self):
+    def test_set_start_date_and_day_no_periods(self):
         stats = period_models.Statistics.objects.filter(user=self.user)[0]
         min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 2, 12))
 
@@ -82,7 +124,7 @@ class TestModels(TestCase):
         self.assertEqual('', stats.first_date)
         self.assertEqual('', stats.first_day)
 
-    def test_statistics_set_start_date_and_day_previous_exists(self):
+    def test_set_start_date_and_day_previous_exists(self):
         stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
         min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 2, 12))
 
@@ -91,7 +133,7 @@ class TestModels(TestCase):
         self.assertEqual(datetime.date(2014, 2, 12), stats.first_date)
         self.assertEqual(13, stats.first_day)
 
-    def test_statistics_set_start_date_and_day_next_exists(self):
+    def test_set_start_date_and_day_next_exists(self):
         stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
         min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 1, 12))
 
@@ -99,6 +141,13 @@ class TestModels(TestCase):
 
         self.assertEqual(datetime.date(2014, 1, 31), stats.first_date)
         self.assertEqual(1, stats.first_day)
+
+
+class TestSignals(TestCase):
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.period = FlowEventFactory()
 
     def test_add_to_permissions_group_group_does_not_exist(self):
         self.user.groups.all().delete()

@@ -157,7 +157,10 @@ class Statistics(models.Model):
 
     @property
     def cycle_length_mean(self):
-        return round(self._get_statistics_value(statistics.mean), 1)
+        mean = self._get_statistics_value(statistics.mean)
+        if mean:
+            mean = round(mean, 1)
+        return mean
 
     @property
     def cycle_length_median(self):
@@ -165,11 +168,17 @@ class Statistics(models.Model):
 
     @property
     def cycle_length_mode(self):
-        return self._get_statistics_value(statistics.mode)
+        try:
+            return self._get_statistics_value(statistics.mode)
+        except statistics.StatisticsError:
+            return None
 
     @property
     def cycle_length_standard_deviation(self):
-        return round(self._get_statistics_value(statistics.stdev, 2), 3)
+        std_dev = self._get_statistics_value(statistics.stdev, 2)
+        if std_dev:
+            std_dev = round(std_dev, 3)
+        return std_dev
 
     @property
     def current_cycle_length(self):

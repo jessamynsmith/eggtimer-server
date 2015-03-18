@@ -14,12 +14,12 @@
         <tr><th>Number of Cycles:</th><td>{{ num_cycles }}</td></tr>
         <tr><th colspan="2">Cycle Length Statistics</th></tr>
         <tr><td>Average (rounded):</td><td>{{ user.statistics.average_cycle_length }}</td></tr>
-        <tr><td>Minimum:</td><td>{{ user.statistics.cycle_length_minimum }}</td></tr>
-        <tr><td>Maximum:</td><td>{{ user.statistics.cycle_length_maximum }}</td></tr>
-        <tr><td>Mean:</td><td>{{ user.statistics.cycle_length_mean }}</td></tr>
-        <tr><td>Median:</td><td>{{ user.statistics.cycle_length_median }}</td></tr>
-        <tr><td>Mode:</td><td>{{ user.statistics.cycle_length_mode }}</td></tr>
-        <tr><td>Standard Deviation:</th><td>{{ user.statistics.cycle_length_standard_deviation }}</td></tr>
+        <tr><td>Minimum:</td><td>{{ user.statistics.cycle_length_minimum|default:"" }}</td></tr>
+        <tr><td>Maximum:</td><td>{{ user.statistics.cycle_length_maximum|default:"" }}</td></tr>
+        <tr><td>Mean:</td><td>{{ user.statistics.cycle_length_mean|default:"" }}</td></tr>
+        <tr><td>Median:</td><td>{{ user.statistics.cycle_length_median|default:"" }}</td></tr>
+        <tr><td>Mode:</td><td>{{ user.statistics.cycle_length_mode|default:"" }}</td></tr>
+        <tr><td>Standard Deviation:</th><td>{{ user.statistics.cycle_length_standard_deviation|default:"" }}</td></tr>
     </table>
 
     {% if bins %}
