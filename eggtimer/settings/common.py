@@ -64,6 +64,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
+    "settings_context_processor.context_processors.settings",
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
 )
@@ -99,6 +100,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'custom_user',
+    'settings_context_processor',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -148,3 +150,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
+
+VERSION = '0.5'
+
+TEMPLATE_VISIBLE_SETTINGS = ['VERSION']
