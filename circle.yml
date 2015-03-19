@@ -18,3 +18,12 @@ test:
         - node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/js/* > coverage.info
         - coveralls-lcov -v -n coverage.info > coverage.json
         - DJANGO_SETTINGS_MODULE=eggtimer.settings.development PYTHONPATH=. coveralls --merge coverage.json
+
+deployment:
+    production:
+        branch: master
+        commands:
+            - paragres -c -s eggtimer
+            - git push git@heroku.com:eggtimer.git $CIRCLE_SHA1:refs/heads/master
+            - heroku run python manage.py syncdb --noinput --app eggtimer
+            - heroku run python manage.py migrate --noinput --app eggtimer
