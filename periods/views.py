@@ -2,6 +2,7 @@ from collections import Counter
 import datetime
 from dateutil import parser as dateutil_parser
 import itertools
+import math
 import pytz
 
 from django.contrib.auth.decorators import login_required
@@ -103,28 +104,43 @@ def cycle_length_history(request):
     return JsonResponse(data)
 
 
-def _generate_cycles(start_date, end_date, cycle_length):
+def _get_level(start_date, today, cycle_length):
+    cycle_length_seconds = datetime.timedelta(days=cycle_length).total_seconds()
+    current_phase = (today - start_date).total_seconds() / cycle_length_seconds
+    # Standard sine starts at 0, with maximum of 1, minimum of -1, and period of 2pi
+    # Our graph starts at 0, with maximum of 100, minimum of 0, and period of cycle_length
+    # -0.5 radians shifts the graph 1/4 period to the right
+    # +1 shifts the graph up 1 unit
+    # *50 takes the max from 2 to 100
+    return round(50 * (math.sin(math.pi * (2 * current_phase - 0.5)) + 1))
+
+
+def _generate_cycles(start_date, today, end_date, cycle_length):
     current_date = start_date
     increment = datetime.timedelta(days=(cycle_length/2.0))
     values = itertools.cycle([0, 100])
     cycles = []
+    while current_date < today:
+        cycles.append([current_date, next(values)])
+        current_date += increment
+    cycles.append([today, _get_level(start_date, today, cycle_length)])
     while current_date < end_date:
         cycles.append([current_date, next(values)])
         current_date += increment
-    day = (end_date - cycles[-1][0]).days % cycle_length
-    cycles.append([end_date, round(100 * day / cycle_length)])
+    cycles.append([end_date, _get_level(start_date, end_date, cycle_length)])
     return cycles
 
 
 @login_required
 def qigong_cycles(request):
+    today = period_models.today()
     end_date = period_models.today() + datetime.timedelta(days=14)
     data = {}
     if request.user.birth_date:
         data = {
-            'physical': _generate_cycles(request.user.birth_date, end_date, 23),
-            'emotional': _generate_cycles(request.user.birth_date, end_date, 28),
-            'intellectual': _generate_cycles(request.user.birth_date, end_date, 33)
+            'physical': _generate_cycles(request.user.birth_date, today, end_date, 23),
+            'emotional': _generate_cycles(request.user.birth_date, today, end_date, 28),
+            'intellectual': _generate_cycles(request.user.birth_date, today, end_date, 33)
         }
     return JsonResponse(data)
 
