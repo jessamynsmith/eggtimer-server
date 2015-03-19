@@ -230,7 +230,7 @@ class TestViews(TestCase):
 
         user = period_models.User.objects.get(pk=self.request.user.pk)
         self.assertEqual(TIMEZONE.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
-        self.assertContains(response, '<h4>API Information</h4>')
+        self.assertContains(response, '<h4>Account Info for user_86@example.com</h4>')
 
     def test_profile_post_valid_data(self):
         self.request.method = 'POST'
@@ -241,12 +241,17 @@ class TestViews(TestCase):
         user = period_models.User.objects.get(pk=self.request.user.pk)
         self.assertEqual(u'Jess', user.first_name)
         self.assertEqual(12, user.luteal_phase_length)
-        self.assertContains(response, '<h4>API Information</h4>')
+        self.assertContains(response, '<h4>Account Info for Jess</h4>')
 
     def test_profile_get(self):
         response = views.profile(self.request)
 
-        self.assertContains(response, '<h4>API Information</h4>')
+        self.assertContains(response, '<h4>Account Info for Jessamyn</h4>')
+
+    def test_api_info(self):
+        response = views.api_info(self.request)
+
+        self.assertContains(response, '<h4>API Info for Jessamyn</h4>')
 
     def test_regenerate_key_post(self):
         self.request.method = 'POST'

@@ -168,9 +168,14 @@ def profile(request):
 
 
 @login_required
+def api_info(request):
+    return render_to_response('periods/api_info.html', context_instance=RequestContext(request))
+
+
+@login_required
 def regenerate_key(request):
     if request.method == 'POST':
         Token.objects.filter(user=request.user).delete()
         Token.objects.create(user=request.user)
 
-    return HttpResponseRedirect(reverse('user_profile'))
+    return HttpResponseRedirect(reverse('api_info'))
