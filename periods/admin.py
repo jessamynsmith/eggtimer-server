@@ -7,10 +7,10 @@ from periods import models
 
 class FlowAdmin(admin.ModelAdmin):
 
-    list_display = ['user', 'timestamp', 'first_day', 'level', 'color', 'clots']
-    list_filter = ['timestamp', 'first_day', 'level', 'color', 'clots']
+    list_display = ['user', 'timestamp', 'first_day', 'level', 'color', 'clots', 'cramps']
+    list_filter = ['timestamp', 'first_day', 'level', 'color', 'clots', 'cramps']
     search_fields = ['user__email', 'user__first_name', 'user__last_name', 'timestamp', 'level',
-                     'color', 'clots', 'comment']
+                     'color', 'clots', 'cramps', 'comment']
 
 
 class StatisticsAdmin(admin.ModelAdmin):

@@ -10,12 +10,18 @@ class FlowEventSerializer(serializers.ModelSerializer):
         model = period_models.FlowEvent
         exclude = ('user',)
 
-    def validate_clots(self, value):
+    def _validate_nullable_choice_field(self, value, choices):
         # TODO submit patch to drf to handle nullable fields and coerce like Django does?
         # Coerce empty values to None
-        if not value:
+        if not value and value not in choices:
             value = None
         return value
+
+    def validate_clots(self, value):
+        return self._validate_nullable_choice_field(value, self.fields['clots'].choices)
+
+    def validate_cramps(self, value):
+        return self._validate_nullable_choice_field(value, self.fields['cramps'].choices)
 
 
 class FlowEventFilter(django_filters.FilterSet):

@@ -113,6 +113,12 @@ class ClotSize(enum.Enum):
     LARGE = 2
 
 
+class CrampLevel(enum.Enum):
+    SLIGHT = 0
+    MODERATE = 1
+    SEVERE = 2
+
+
 class FlowEvent(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='flow_events', null=True)
     timestamp = models.DateTimeField()
@@ -120,6 +126,7 @@ class FlowEvent(models.Model):
     level = enum.EnumField(FlowLevel, default=FlowLevel.MEDIUM)
     color = enum.EnumField(FlowColor, default=FlowColor.RED)
     clots = enum.EnumField(ClotSize, default=None, null=True, blank=True)
+    cramps = enum.EnumField(CrampLevel, default=None, null=True, blank=True)
     comment = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
