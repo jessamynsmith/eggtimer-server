@@ -63,7 +63,7 @@ describe('Array', function () {
             assert.equal('2015-01-01', result.periodStartDates[0].format('YYYY-MM-DD'));
             assert.equal('2015-01-28', result.periodStartDates[1].format('YYYY-MM-DD'));
             assert.equal(4, result.events.length);
-            var expected = JSON.stringify({title: "period", "itemId": "1", "itemType": "period",
+            var expected = JSON.stringify({title: "*period", "itemId": "1", "itemType": "period",
                 start: "2015-01-01T09:03:00.000Z", color: "#0f76ed", "editable": false});
             assert.equal(JSON.stringify(result.events[0]), expected);
             expected = JSON.stringify({title: "projected period", "itemId": "2", "itemType":

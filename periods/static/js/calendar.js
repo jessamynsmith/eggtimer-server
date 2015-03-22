@@ -43,6 +43,7 @@ makeEvents = function(moment, data) {
             event.color = 'purple';
         } else {
             if (item.first_day) {
+                event.title = '*' + event.title;
                 periodStartDates.push(start);
             }
         }
@@ -149,6 +150,10 @@ editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
         cssClass: 'btn-primary',
         action: function(dialogRef) {
             var data = $("#id_period_form").serializeJSON();
+            // drf doesn't recognize 'on'
+            if (data.first_day == 'on') {
+                data.first_day = true;
+            }
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
         }
