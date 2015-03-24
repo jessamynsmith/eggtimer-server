@@ -25,7 +25,6 @@ deployment:
         commands:
             - paragres -c -s eggtimer
             - git push git@heroku.com:eggtimer.git $CIRCLE_SHA1:refs/heads/master
-            - export DEPLOY_DATE=`date +'%Y/%m/%d %H:%M:%S %Z'`
-            - heroku config:set --app=eggtimer DEPLOY_DATE="$DEPLOY_DATE"
+            - DEPLOY_DATE=`date +'%Y/%m/%d %H:%M:%S %Z'` heroku config:set --app=eggtimer DEPLOY_DATE="DEPLOY_DATE"
             - heroku run python manage.py syncdb --noinput --app eggtimer
             - heroku run python manage.py migrate --noinput --app eggtimer
