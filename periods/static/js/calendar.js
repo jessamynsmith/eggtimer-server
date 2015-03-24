@@ -151,9 +151,7 @@ editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
         action: function(dialogRef) {
             var data = $("#id_period_form").serializeJSON();
             // drf doesn't recognize 'on'
-            if (data.first_day == 'on') {
-                data.first_day = true;
-            }
+            data.first_day = data.first_day == 'on';
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
         }
