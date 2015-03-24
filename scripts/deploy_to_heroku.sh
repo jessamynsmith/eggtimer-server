@@ -6,11 +6,14 @@ set -e
 # Runs piplint, flake8, tests
 sh .git/hooks/pre-commit
 
+DEPLOY_DATE=`date +'%Y/%m/%d %H:%M:%S %Z'`
+
 heroku config:set \
 ADMIN_EMAIL="egg.timer.app@gmail.com" \
 ADMIN_NAME="the egg timer" \
 DJANGO_SETTINGS_MODULE=eggtimer.settings.production \
 DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY \
+DEPLOY_DATE="$DEPLOY_DATE" \
 > /dev/null
 
 git push heroku master
