@@ -1,7 +1,7 @@
 eggtimer
 ==============
 
-[![Build Status](https://travis-ci.org/jessamynsmith/eggtimer.svg?branch=master)](https://travis-ci.org/jessamynsmith/eggtimer)
+[![Build Status](https://circleci.com/gh/:owner/:repo.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/jessamynsmith/eggtimer)
 [![Coverage Status](https://coveralls.io/repos/jessamynsmith/eggtimer/badge.svg?branch=master)](https://coveralls.io/r/jessamynsmith/eggtimer?branch=master)
 
 A simple tracker for menstrual periods. Check out the live app:
