@@ -21,7 +21,7 @@ class Command(BaseCommand):
             expected_abs = abs(expected_in)
             expected_date = period_models.today() + datetime.timedelta(
                 days=expected_in)
-            formatted_date = expected_date.strftime('%B %d, %Y')
+            formatted_date = expected_date.strftime('%A %B %d, %Y')
             if expected_abs == 1:
                 day = 'day'
             else:

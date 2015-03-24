@@ -1,5 +1,5 @@
 {% extends "email/base.txt" %}
 
 {% block content %}
-You should be getting your period today!
+You should be getting your period today, {{ expected_date}}!
 {% endblock %}

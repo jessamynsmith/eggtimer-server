@@ -1,5 +1,5 @@
 {% extends "email/base.txt" %}
 
 {% block content %}
-You are probably ovulating today!
+You are probably ovulating today, {{ expected_date}}!
 {% endblock %}
