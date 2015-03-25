@@ -5,7 +5,7 @@ set -e
 
 CIRCLE=$1
 
-DEPLOY_DATE=`date "+%Y/%m/%d %H:%M:%S %Z"`
+DEPLOY_DATE=`date "+%FT%T%z"`
 
 heroku config:set --app=eggtimer \
 ADMIN_EMAIL="egg.timer.app@gmail.com" \
