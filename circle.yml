@@ -23,4 +23,4 @@ deployment:
     production:
         branch: master
         commands:
-            - sh scripts/deploy_to_heroku.sh
+            - sh scripts/deploy_to_heroku.sh circle
