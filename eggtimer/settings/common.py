@@ -152,7 +152,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
 
-DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE'))
+DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
 VERSION = '0.5'
 
 TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION']
