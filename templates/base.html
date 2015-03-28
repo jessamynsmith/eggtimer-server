@@ -38,23 +38,9 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+
     <nav class="navbar navbar-default navbar-fixed-top my-navbar">
-        <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-            <a class="brand" href="{% url 'calendar' %}">
-                <img src="{{ STATIC_URL }}img/logo.png" alt="calendar logo">
-                <span>egg timer</span><br>
-    {#            TODO too much space between these two lines#}
-                <span class="small">know your cycles</span>
-            </a>
-        </div>
         {% if not user.is_anonymous %}
-        <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'calendar' %}">
                     <span class="glyphicon-lg glyphicon glyphicon-calendar"></span>
@@ -68,10 +54,16 @@
                 <li><a href="{% url 'account_logout' %}">
                     <span class="glyphicon-lg glyphicon glyphicon-log-out"></span>
                 </a></li>
-    {#            TODO needs more right-padding here#}
             </ul>
-        </div>
         {% endif %}
+
+        <div class="navbar-header">
+            <a class="brand" href="{% url 'calendar' %}">
+                <img src="{{ STATIC_URL }}img/logo.png" alt="calendar logo">
+                <span>egg timer</span><br>
+                <span class="small">know your cycles</span>
+            </a>
+        </div>
     </nav>
 
     <div class="spacing_top">

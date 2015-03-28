@@ -1,5 +1,5 @@
 body {
-    padding-top: 45px;
+    padding-top: 50px;
     margin: 10px;
 }
 
@@ -64,6 +64,18 @@ p.error_message {
 .brand img {
     float: left;
     margin-right: 4px;
+}
+
+.navbar-nav > li, .navbar-nav {
+    float: left !important;
+}
+
+.navbar-right > li:last-child {
+    margin-right: 10px !important;
+}
+
+.navbar-right {
+    float: right !important;
 }
 
 .footer {
