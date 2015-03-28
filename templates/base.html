@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ STATIC_URL }}img/favicon.ico">
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -37,22 +38,45 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+    <nav class="navbar navbar-default navbar-fixed-top my-navbar">
+        <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            <a class="brand" href="{% url 'calendar' %}">
+                <img src="{{ STATIC_URL }}img/logo.png" alt="calendar logo">
+                <span>egg timer</span><br>
+    {#            TODO too much space between these two lines#}
+                <span class="small">know your cycles</span>
+            </a>
+        </div>
+        {% if not user.is_anonymous %}
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'calendar' %}">
+                    <span class="glyphicon-lg glyphicon glyphicon-calendar"></span>
+                </a></li>
+                <li><a href="{% url 'statistics' %}">
+                    <span class="glyphicon-lg glyphicon glyphicon-stats"></span>
+                </a></li>
+                <li><a href="{% url 'user_profile' %}">
+                    <span class="glyphicon-lg glyphicon glyphicon-user"></span>
+                </a></li>
+                <li><a href="{% url 'account_logout' %}">
+                    <span class="glyphicon-lg glyphicon glyphicon-log-out"></span>
+                </a></li>
+    {#            TODO needs more right-padding here#}
+            </ul>
+        </div>
+        {% endif %}
+    </nav>
 
-{% if not user.is_anonymous %}
-    <span class="right spacing_top">
-        <a href="{% url 'calendar' %}"><span class="glyphicon-lg glyphicon glyphicon-calendar"></span></a>&nbsp;&nbsp;
-        <a href="{% url 'statistics' %}"><span class="glyphicon-lg glyphicon glyphicon-stats"></span></a>&nbsp;&nbsp;
-        <a href="{% url 'user_profile' %}"><span class="glyphicon-lg glyphicon glyphicon-user"></span></a>&nbsp;&nbsp;
-        &nbsp;&nbsp;<a href="{% url 'account_logout' %}"><span class="glyphicon-lg glyphicon glyphicon-log-out"></span></a>
-    </span>
-{% endif %}
-
-<h1 class="logo"><a href="{% url 'calendar' %}">the egg timer</a></h1>
-<span class="small">keep track of your cycles</span>
-
-<div class="spacing_top">
-{% block content %}{% endblock %}
-</div>
+    <div class="spacing_top">
+    {% block content %}{% endblock %}
+    </div>
 
 {% block footer %}
     <div class="small center footer">Version {{ VERSION }}, Deployed {{ DEPLOY_DATE }}</div>

@@ -1,15 +1,6 @@
 body {
+    padding-top: 45px;
     margin: 10px;
-}
-
-h1 {
-    margin-top: 0px;
-    font-size: 24pt;
-    font-weight: bold;
-}
-
-h1 a:link, h1 a:visited, h1 a:hover, h1 a:active {
-    color: black;
 }
 
 .my-form-control {
@@ -22,12 +13,9 @@ h1 a:link, h1 a:visited, h1 a:hover, h1 a:active {
     display: inline;
 }
 
-.logo {
-    margin-bottom: 0px;
-}
-
 .small {
-    font-size: 12pt;
+    font-size: 12px;
+    line-height: 10px;
 }
 
 .center {
@@ -57,8 +45,28 @@ p.error_message {
     width: 90%;
 }
 
+.my-navbar a, .navbar-default .navbar-nav > li > a {
+    color: #700a0a;
+    text-decoration: none;
+}
+
+.brand {
+    float: left;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 18px;
+    height: 50px;
+    padding-top: 8px;
+    padding-left: 10px;
+    white-space: nowrap;
+}
+
+.brand img {
+    float: left;
+    margin-right: 4px;
+}
+
 .footer {
-    padding-top: 6px;
-    font-size: 10pt;
+    padding-top: 12px;
     color: grey;
 }

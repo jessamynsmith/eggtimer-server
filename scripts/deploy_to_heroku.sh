@@ -9,7 +9,7 @@ DEPLOY_DATE=`date "+%FT%T%z"`
 
 heroku config:set --app=eggtimer \
 ADMIN_EMAIL="egg.timer.app@gmail.com" \
-ADMIN_NAME="the egg timer" \
+ADMIN_NAME="egg timer" \
 DJANGO_SETTINGS_MODULE=eggtimer.settings.production \
 DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY \
 DEPLOY_DATE="$DEPLOY_DATE" \
