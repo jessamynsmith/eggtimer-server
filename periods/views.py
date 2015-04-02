@@ -60,6 +60,13 @@ def period_form(request, period_id=None):
         flow_event = period_models.FlowEvent.objects.get(pk=int(period_id))
     except (TypeError, period_models.FlowEvent.DoesNotExist):
         flow_event = period_models.FlowEvent(timestamp=timestamp)
+        if timestamp:
+            yesterday = timestamp - datetime.timedelta(days=1)
+            yesterday_start = yesterday.replace(hour=0, minute=0, second=0)
+            yesterday_events = period_models.FlowEvent.objects.filter(
+                timestamp__gte=yesterday_start, timestamp__lte=timestamp)
+            if not yesterday_events.count():
+                flow_event.first_day = True
     form = period_forms.PeriodForm(instance=flow_event)
     data = {
         'form': form,

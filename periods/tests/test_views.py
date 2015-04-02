@@ -109,6 +109,7 @@ class TestViews(TestCase):
 
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" required')
+        self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day"')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_period_form_with_timestamp(self):
@@ -119,6 +120,7 @@ class TestViews(TestCase):
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2015-02-25 00:00:00" required')
+        self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_period_form_invalid_period_id(self):
@@ -126,6 +128,7 @@ class TestViews(TestCase):
 
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" required')
+        self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day"')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_period_form_existing_period(self):
@@ -134,6 +137,7 @@ class TestViews(TestCase):
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2014-01-31 00:00:00" required ')
+        self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_calendar(self):
