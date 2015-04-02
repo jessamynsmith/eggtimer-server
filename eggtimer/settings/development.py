@@ -28,6 +28,7 @@ MEDIA_ROOT = '/tmp/media'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
 
+SSLIFY_DISABLE = True
 ALLOWED_HOSTS = ['*']
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
