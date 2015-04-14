@@ -45,7 +45,7 @@ class Command(BaseCommand):
             elif expected_in < 4:
                 subject = "Period expected in %s %s" % (expected_in, day)
                 template_name = 'expected_in'
-            elif expected_in == 14:
+            elif expected_in == user.luteal_phase_length:
                 subject = "Ovulation today!"
                 template_name = 'ovulating'
             if subject:

@@ -192,7 +192,11 @@ def profile(request):
 
 @login_required
 def api_info(request):
-    return render_to_response('periods/api_info.html', context_instance=RequestContext(request))
+    data = {
+        'periods_url': request.build_absolute_uri(reverse('periods-list'))
+    }
+    return render_to_response('periods/api_info.html', data,
+                              context_instance=RequestContext(request))
 
 
 @login_required
