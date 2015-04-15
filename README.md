@@ -7,12 +7,14 @@ eggtimer
 Open-source tracker for menstrual periods. Check out the live app:
 https://eggtimer.herokuapp.com/
 
+Note: the front end for this app is being ported to Ionic (see https://github.com/jessamynsmith/eggtimer-ui)
+
 Development
 -----------
 
 Fork the project on github and git clone your fork, e.g.:
 
-    git clone https://github.com/<username>/quotations.git
+    git clone https://github.com/<username>/eggtimer-server.git
 
 Create a virtualenv using Python 3 and install dependencies:
 
