@@ -30,5 +30,6 @@ EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
 
 SSLIFY_DISABLE = True
 ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'

@@ -80,6 +80,7 @@ AUTHENTICATION_BACKENDS = (
 MIDDLEWARE_CLASSES = (
     'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -105,6 +106,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'custom_user',
     'settings_context_processor',
+    'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',

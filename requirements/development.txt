@@ -8,7 +8,7 @@ factory-boy==2.4.1
 flake8==2.3.0
 mccabe==0.3
 mock==1.0.1
-paragres==0.5
+paragres==0.6
 pep8==1.6.1
 pipreq==0.4
 pyflakes==0.8.1

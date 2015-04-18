@@ -3,6 +3,7 @@ defusedxml==0.4.1
 dj-static==0.0.6
 django-allauth==0.19.1
 django-bootstrap-form==3.1
+django-cors-headers==1.0.0
 django-custom-user==0.5
 -e git://github.com/jessamynsmith/django-enumfield.git@9048ede96ab9af597da6dd70ee9c36f757b99bb4#egg=django-enumfield
 django-filter==0.9.2
