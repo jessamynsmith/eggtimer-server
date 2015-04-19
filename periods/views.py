@@ -2,14 +2,17 @@ from collections import Counter
 import datetime
 from dateutil import parser as dateutil_parser
 import itertools
+import json
 import math
 import pytz
 
+from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -48,6 +51,17 @@ class StatisticsViewSet(viewsets.ModelViewSet):
         instance.set_start_date_and_day(min_timestamp)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+@csrf_exempt
+def api_authenticate(request):
+    data = json.loads(request.body.decode())
+    email = data.get('email')
+    password = data.get('password')
+    user = auth.authenticate(username=email, password=password)
+    if not user:
+        return HttpResponse('Unauthorized', status=401)
+    return JsonResponse({'token': user.auth_token.key})
 
 
 @login_required

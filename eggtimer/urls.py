@@ -21,6 +21,7 @@ urlpatterns = patterns(
     url(r'^accounts/profile/regenerate_key/$', period_views.regenerate_key, name='regenerate_key'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v2/', include(router.urls)),
+    url(r'^api/v2/authenticate/', period_views.api_authenticate, name='authenticate'),
 
     url(r'^period_form/$', period_views.period_form, name='period_form'),
     url(r'^period_form/(?P<period_id>[0-9]+)/$', period_views.period_form, name='period_form'),

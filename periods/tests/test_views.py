@@ -4,13 +4,13 @@ import pytz
 
 from django.http import HttpRequest, QueryDict, Http404
 from django.test import TestCase
-from mock import patch
+from mock import patch, MagicMock
 from rest_framework.request import Request
 from rest_framework.authtoken.models import Token
 
 from periods import models as period_models, views
 from periods.serializers import FlowEventSerializer
-from periods.tests.factories import FlowEventFactory
+from periods.tests.factories import FlowEventFactory, UserFactory
 
 
 TIMEZONE = pytz.timezone("US/Eastern")
@@ -90,6 +90,26 @@ class TestStatisticsViewSet(TestCase):
         self.assertEqual(28, response.data['average_cycle_length'])
         self.assertEqual(self.period.timestamp.date(), response.data['first_date'])
         self.assertEqual(1, response.data['first_day'])
+
+
+class TestApiAuthenticate(TestCase):
+
+    def setUp(self):
+        self.request = MagicMock(body=b'{"email": "jane@jane.com", "password": "somepass"}')
+
+    def test_api_authenticate_failure(self):
+        response = views.api_authenticate(self.request)
+
+        self.assertEqual(401, response.status_code)
+
+    @patch('django.contrib.auth.authenticate')
+    def test_api_authenticate_success(self, mock_authenticate):
+        user = UserFactory()
+        mock_authenticate.return_value = user
+
+        response = views.api_authenticate(self.request)
+
+        self.assertContains(response, user.auth_token.key)
 
 
 class TestViews(TestCase):
@@ -237,7 +257,7 @@ class TestViews(TestCase):
 
         user = period_models.User.objects.get(pk=self.request.user.pk)
         self.assertEqual(TIMEZONE.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
-        self.assertContains(response, '<h4>Account Info for user_86@example.com</h4>')
+        self.assertContains(response, '<h4>Account Info for %s</h4>' % self.request.user.email)
 
     def test_profile_post_valid_data(self):
         self.request.method = 'POST'
