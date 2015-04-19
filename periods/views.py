@@ -40,14 +40,16 @@ class StatisticsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return period_models.Statistics.objects.filter(user=self.request.user)
 
-    def retrieve(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
+        # Only return a single statistics object, for the authenticated user
         min_timestamp = request.query_params.get('min_timestamp')
         try:
             min_timestamp = datetime.datetime.strptime(min_timestamp, DATE_FORMAT)
             min_timestamp = pytz.timezone("US/Eastern").localize(min_timestamp)
         except TypeError:
             min_timestamp = period_models.today()
-        instance = self.get_object()
+        queryset = self.filter_queryset(self.get_queryset())
+        instance = queryset[0]
         instance.set_start_date_and_day(min_timestamp)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)

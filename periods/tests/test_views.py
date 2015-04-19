@@ -67,24 +67,24 @@ class TestStatisticsViewSet(TestCase):
             pass
 
     @patch('periods.models.today')
-    def test_retrieve_no_params(self, mocktoday):
+    def test_list_no_params(self, mocktoday):
         mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
         self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
 
-        response = self.view_set.retrieve(self.request)
+        response = self.view_set.list(self.request)
 
         self.assertEqual(4, len(response.data))
         self.assertEqual(28, response.data['average_cycle_length'])
         self.assertEqual(self.period.timestamp.date(), response.data['first_date'])
         self.assertEqual(1, response.data['first_day'])
 
-    def test_retrieve_with_min_timestamp(self):
+    def test_list_with_min_timestamp(self):
         http_request = HttpRequest()
         http_request.GET = QueryDict(u'min_timestamp=2014-01-05')
         request = Request(http_request)
         self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
 
-        response = self.view_set.retrieve(request)
+        response = self.view_set.list(request)
 
         self.assertEqual(4, len(response.data))
         self.assertEqual(28, response.data['average_cycle_length'])
