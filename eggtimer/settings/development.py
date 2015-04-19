@@ -20,10 +20,10 @@ DATABASES = {
     }
 }
 
-STATIC_ROOT = '/tmp/static'
+STATIC_ROOT = '/tmp/eggtimer/static'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-MEDIA_ROOT = '/tmp/media'
+MEDIA_ROOT = '/tmp/eggtimer/media'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
