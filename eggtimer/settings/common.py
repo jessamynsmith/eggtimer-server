@@ -149,6 +149,7 @@ EMAIL_USE_TLS = True
 
 ACCOUNT_ACTIVATION_DAYS = 14
 
+# TODO Once Ionic app is done, perhaps remove session authentication?
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
