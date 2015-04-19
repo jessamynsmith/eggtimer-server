@@ -96,6 +96,14 @@ class TestApiAuthenticate(TestCase):
 
     def setUp(self):
         self.request = MagicMock(body=b'{"email": "jane@jane.com", "password": "somepass"}')
+        self.request.method = "POST"
+
+    def test_api_authenticate_get(self):
+        self.request.method = "GET"
+
+        response = views.api_authenticate(self.request)
+
+        self.assertEqual(401, response.status_code)
 
     def test_api_authenticate_failure(self):
         response = views.api_authenticate(self.request)

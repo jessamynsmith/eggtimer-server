@@ -57,13 +57,14 @@ class StatisticsViewSet(viewsets.ModelViewSet):
 
 @csrf_exempt
 def api_authenticate(request):
-    data = json.loads(request.body.decode())
-    email = data.get('email')
-    password = data.get('password')
-    user = auth.authenticate(username=email, password=password)
-    if not user:
-        return HttpResponse('Unauthorized', status=401)
-    return JsonResponse({'token': user.auth_token.key})
+    if request.method == 'POST':
+        data = json.loads(request.body.decode())
+        email = data.get('email')
+        password = data.get('password')
+        user = auth.authenticate(username=email, password=password)
+        if user:
+            return JsonResponse({'token': user.auth_token.key})
+    return HttpResponse('Unauthorized', status=401)
 
 
 @login_required
