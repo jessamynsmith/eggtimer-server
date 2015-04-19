@@ -1,4 +1,4 @@
-Django==1.7.4
+Django==1.7.7
 defusedxml==0.4.1
 dj-static==0.0.6
 django-allauth==0.19.1
