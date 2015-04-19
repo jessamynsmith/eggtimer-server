@@ -8,11 +8,9 @@ ADMINS = (
     (os.environ.get('ADMIN_NAME', 'admin'), os.environ.get('ADMIN_EMAIL', 'example@example.com')),
 )
 
-SITE_ID = 1
-
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
-# Should switch this to UTC
+# TODO: Switch this to UTC
 TIME_ZONE = 'America/Toronto'
 
 LANGUAGE_CODE = 'en-us'
@@ -48,12 +46,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     APP_PATH + '/templates/',
-)
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
