@@ -20,9 +20,7 @@ STATIC_ROOT = 'staticfiles'
 MEDIA_ROOT = 'media'
 
 ALLOWED_HOSTS = ['eggtimer.herokuapp.com']
-CORS_ORIGIN_WHITELIST = (
-    'eggtimer-ui.herokuapp.com'
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 INSTALLED_APPS.extend([
     'gunicorn',
