@@ -161,7 +161,8 @@ class TestSignals(TestCase):
             self.assertEqual('_flowevent', permission.codename[-10:])
 
     def test_add_to_permissions_group_group_exists(self):
-        user = period_models.User(email='jane@jane.com')
+        user = period_models.User(email='jane@jane.com',
+                                  last_login=TIMEZONE.localize(datetime.datetime(2015, 2, 27)))
         user.save()
         user.groups.all().delete()
         auth_models.Group(name='users').save()

@@ -70,7 +70,8 @@ def api_authenticate(request):
 @login_required
 def period_form(request, period_id=None):
     try:
-        timestamp = dateutil_parser.parse(request.GET.get('timestamp'))
+        timestamp = pytz.timezone("US/Eastern").localize(
+            dateutil_parser.parse(request.GET.get('timestamp')))
     except (AttributeError, ValueError):
         timestamp = None
     try:

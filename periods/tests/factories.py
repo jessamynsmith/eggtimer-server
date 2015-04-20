@@ -13,6 +13,7 @@ class UserFactory(factory.DjangoModelFactory):
     first_name = u'Jessamyn'
     birth_date = pytz.timezone("US/Eastern").localize(datetime.datetime(1995, 3, 1))
     email = factory.Sequence(lambda n: "user_%d@example.com" % n)
+    last_login = pytz.timezone("US/Eastern").localize(datetime.datetime(2015, 3, 1))
 
 
 class FlowEventFactory(factory.DjangoModelFactory):

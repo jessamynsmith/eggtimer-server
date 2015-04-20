@@ -1,4 +1,4 @@
 -r common.txt
 dj-database-url==0.3.0
-gunicorn==19.2.1
+gunicorn==19.3.0
 newrelic==2.50.0.39

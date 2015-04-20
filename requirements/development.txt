@@ -4,11 +4,11 @@ coverage==4.0a5
 coveralls==1.0a2
 -e git://github.com/jessamynsmith/django_coverage_plugin.git@f03bdc0981ceface4bfea6aa3544e519a2b908aa#egg=django-coverage-plugin
 docopt==0.6.2
-factory-boy==2.4.1
-flake8==2.3.0
+factory-boy==2.5.1
+flake8==2.4.0
 mccabe==0.3
 mock==1.0.1
 paragres==0.6
-pep8==1.6.1
+pep8==1.5.7
 pipreq==0.4
 pyflakes==0.8.1
