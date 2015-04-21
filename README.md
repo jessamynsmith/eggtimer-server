@@ -1,8 +1,8 @@
-eggtimer
-==============
+eggtimer-server
+===============
 
 [![Build Status](https://circleci.com/gh/jessamynsmith/eggtimer-server.svg?style=shield)](https://circleci.com/gh/jessamynsmith/eggtimer-server)
-[![Coverage Status](https://coveralls.io/repos/jessamynsmith/eggtimer/badge.svg?branch=master)](https://coveralls.io/r/jessamynsmith/eggtimer?branch=master)
+[![Coverage Status](https://coveralls.io/repos/jessamynsmith/eggtimer-server/badge.svg?branch=master)](https://coveralls.io/r/jessamynsmith/eggtimer?branch=master)
 
 Open-source tracker for menstrual periods. Check out the live app:
 https://eggtimer.herokuapp.com/
