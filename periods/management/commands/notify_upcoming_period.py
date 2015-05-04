@@ -11,6 +11,9 @@ from periods import models as period_models, email_sender
 class Command(BaseCommand):
     help = 'Notify users of upcoming periods'
 
+    def _format_date(self, date_value):
+        return date_value.strftime('%A %B %d, %Y')
+
     def handle(self, *args, **options):
         users = period_models.User.objects.filter(
             flow_events__isnull=False, statistics__isnull=False).exclude(
@@ -19,9 +22,9 @@ class Command(BaseCommand):
             expected_in = (user.statistics.average_cycle_length
                            - user.statistics.current_cycle_length)
             expected_abs = abs(expected_in)
-            expected_date = period_models.today() + datetime.timedelta(
+            today = period_models.today()
+            expected_date = today + datetime.timedelta(
                 days=expected_in)
-            formatted_date = expected_date.strftime('%A %B %d, %Y')
             if expected_abs == 1:
                 day = 'day'
             else:
@@ -29,9 +32,10 @@ class Command(BaseCommand):
 
             context = Context({
                 'full_name': user.get_full_name(),
+                'today': self._format_date(today),
                 'expected_in': expected_abs,
                 'day': day,
-                'expected_date': formatted_date,
+                'expected_date': self._format_date(expected_date),
                 'site_name': settings.ADMINS[0][0]
             })
 

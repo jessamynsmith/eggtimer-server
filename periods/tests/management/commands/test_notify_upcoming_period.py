@@ -2,7 +2,7 @@ import datetime
 import pytz
 
 from django.test import TestCase
-from mock import ANY, patch
+from mock import patch
 
 from periods import models as period_models
 from periods.management.commands import notify_upcoming_period
@@ -56,7 +56,9 @@ class TestCommand(TestCase):
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user, 'Ovulation today!', ANY, None)
+        email_text = ('Hello Jessamyn,\n\nYou are probably ovulating today, '
+                      'Saturday March 15, 2014!\n\nCheers!\n\n')
+        mock_send.assert_called_once_with(self.user, 'Ovulation today!', email_text, None)
 
     @patch('periods.email_sender.send')
     @patch('periods.models.today')
@@ -65,17 +67,20 @@ class TestCommand(TestCase):
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user, 'Period expected in 3 days',
-                                          ANY, None)
+        email_text = ('Hello Jessamyn,\n\nYou should be getting your period in 3 days, on Saturday '
+                      'March 29, 2014.\n\nCheers!\n\n')
+        mock_send.assert_called_once_with(self.user, 'Period expected in 3 days', email_text, None)
 
     @patch('periods.email_sender.send')
     @patch('periods.models.today')
-    def test_notify_upcoming_period_expectedtoday(self, mocktoday, mock_send):
+    def test_notify_upcoming_period_expected_today(self, mocktoday, mock_send):
         mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 29))
 
         self.command.handle()
 
-        mock_send.assert_called_once_with(self.user, 'Period today!', ANY, None)
+        email_text = ('Hello Jessamyn,\n\nYou should be getting your period today, Saturday March '
+                      '29, 2014!\n\nCheers!\n\n')
+        mock_send.assert_called_once_with(self.user, 'Period today!', email_text, None)
 
     @patch('periods.email_sender.send')
     @patch('periods.models.today')
@@ -84,5 +89,8 @@ class TestCommand(TestCase):
 
         self.command.handle()
 
+        email_text = ('Hello Jessamyn,\n\nYou should have gotten your period 1 day ago, on '
+                      'Saturday March 29, 2014.\nDid you forget to add your last period?\n\n'
+                      'Cheers!\n\n')
         mock_send.assert_called_once_with(self.user, 'Period was expected 1 day ago',
-                                          ANY, None)
+                                          email_text, None)
