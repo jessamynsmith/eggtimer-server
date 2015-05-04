@@ -31,6 +31,9 @@ class User(AbstractEmailUser):
     def first_days(self):
         return self.flow_events.filter(first_day=True).order_by('timestamp')
 
+    def cycle_count(self):
+        return self.first_days().count()
+
     def get_previous_period(self, previous_to=None):
         previous_periods = self.first_days()
         if previous_to:
@@ -59,7 +62,7 @@ class User(AbstractEmailUser):
             cycle_lengths = []
             first_days = self.first_days()
             if first_days.exists():
-                for i in range(1, first_days.count()):
+                for i in range(1, self.cycle_count()):
                     duration = first_days[i].timestamp.date() - first_days[i-1].timestamp.date()
                     cycle_lengths.append(duration.days)
             cache.set(key, cycle_lengths)

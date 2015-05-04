@@ -21,11 +21,12 @@ class StatisticsAdmin(admin.ModelAdmin):
 
 class UserAdmin(EmailUserAdmin):
 
-    list_display = ['email', 'first_name', 'last_name', 'is_active', 'send_emails']
+    list_display = ['email', 'first_name', 'last_name', 'cycle_count', 'date_joined', 'is_active',
+                    'send_emails']
     fieldsets = (
         (None, {'fields': ('first_name', 'last_name', 'email', 'password')}),
         (_('Settings'), {'fields': ('send_emails', 'luteal_phase_length', 'birth_date')}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (_('General Information'), {'fields': ('last_login', 'date_joined', 'cycle_count')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
     )
