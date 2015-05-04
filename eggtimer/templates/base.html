@@ -71,7 +71,11 @@
     </div>
 
 {% block footer %}
-    <div class="small center footer">Version {{ VERSION }}, Deployed {{ DEPLOY_DATE }}</div>
+  <div class="footer">
+    <p class="small center">Issues? Please
+      <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">let us know</a>.</p>
+    <p class="small center grey">Version {{ VERSION }}, Deployed {{ DEPLOY_DATE }}</p>
+  </div>
 {% endblock %}
 
 </body>

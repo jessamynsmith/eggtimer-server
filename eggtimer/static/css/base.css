@@ -81,5 +81,8 @@ p.error_message {
 
 .footer {
     padding-top: 12px;
+}
+
+.grey {
     color: grey;
 }
