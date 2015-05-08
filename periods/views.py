@@ -97,7 +97,7 @@ def period_form(request, period_id=None):
 def calendar(request):
     data = {
         'periods_url': reverse('periods-list'),
-        'statistics_url': reverse('statistics-detail', args=[request.user.statistics.id]),
+        'statistics_url': reverse('statistics-list'),
         'period_form_url': reverse('period_form'),
     }
 
