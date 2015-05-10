@@ -6,18 +6,20 @@ set -e
 CIRCLE=$1
 
 DEPLOY_DATE=`date "+%FT%T%z"`
+SECRET=$(openssl rand -base64 58 | tr '\n' '_')
 
 heroku config:set --app=eggtimer \
 NEW_RELIC_APP_NAME='eggtimer' \
 ADMIN_EMAIL="egg.timer.app@gmail.com" \
 ADMIN_NAME="egg timer" \
 DJANGO_SETTINGS_MODULE=eggtimer.settings.production \
-DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY \
+DJANGO_SECRET_KEY="$SECRET" \
 DEPLOY_DATE="$DEPLOY_DATE" \
 > /dev/null
 
 if [ $CIRCLE ]
 then
+    git fetch origin --unshallow
     git push git@heroku.com:eggtimer.git $CIRCLE_SHA1:refs/heads/master
 else
     git push heroku master

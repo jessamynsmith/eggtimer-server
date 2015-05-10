@@ -53,14 +53,43 @@ Set up your environment to know about node. NOTE! You must change 'path/to/node_
 the actual path to node modules on your system.
 
     export NODE_PATH=/path/to/node_modules/
-    
-Run JavaScript tests:
-
-    mocha -R html-cov */tests/static/js/* > ~/eggtimer_javascript_coverage.html
 
 Lint JavaScript:
 
     jshint */static/js
+    
+Run JavaScript tests:
+
+    mocha -R html-cov */tests/static/js/* > ~/eggtimer_javascript_coverage.html
+    
+    
+Continuous Integration and Deployment
+-------------------------------------
+
+This project is already set up for continuous integration and deployment using circleci, coveralls,
+and Heroku.
+
+Make a new Heroku app, and add the following addons:
+
+    Heroku Postgres
+	Mailgun
+	New Relic APM
+	Papertrail
+	Heroku Scheduler
+
+Enable the project on coveralls.io, and copy the repo token
+
+Enable the project on circleci.io, and under Project Settings -> Environment variables, add:
+
+    COVERALLS_REPO_TOKEN <value_copied_from_coveralls>
+    
+On circleci.io, under Project Settings -> Heroku Deployment, follow the steps to enable
+Heroku builds. At this point, you may need to cancel any currently running builds, then run
+a new build.
+
+Once your app is deployed successfully, you can add the Scheduler task on Heroku:
+
+    python manage.py notify_upcoming_period --settings=eggtimer.settings.production
 
 
 Thank you to:
