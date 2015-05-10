@@ -16,7 +16,8 @@ Fork the project on github and git clone your fork, e.g.:
 
     git clone https://github.com/<username>/eggtimer-server.git
 
-Create a virtualenv using Python 3 and install dependencies:
+Create a virtualenv using Python 3 and install dependencies. NOTE! You must change 'path/to/python3'
+to be the actual path to python3 on your system.
 
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
@@ -48,7 +49,8 @@ The javascript linter and tests require you to install node, then:
 
     npm install -g jshint mocha blanket moment
 
-Set up your environment to know about node:
+Set up your environment to know about node. NOTE! You must change 'path/to/node_modules' to be
+the actual path to node modules on your system.
 
     export NODE_PATH=/path/to/node_modules/
     
