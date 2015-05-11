@@ -218,7 +218,7 @@ class Statistics(models.Model):
         next_period = self.user.get_next_period(min_timestamp)
         if previous_period:
             self._first_date = min_timestamp.date()
-            self._first_day = (min_timestamp - previous_period.timestamp).days + 1
+            self._first_day = (self._first_date - previous_period.timestamp.date()).days + 1
         elif next_period:
             self._first_date = next_period.timestamp.date()
             self._first_day = 1

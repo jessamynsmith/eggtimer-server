@@ -21,5 +21,5 @@ class FlowEventFactory(factory.DjangoModelFactory):
         model = period_models.FlowEvent
 
     user = factory.SubFactory(UserFactory)
-    timestamp = pytz.timezone("US/Eastern").localize(datetime.datetime(2014, 1, 31))
+    timestamp = pytz.timezone("US/Eastern").localize(datetime.datetime(2014, 1, 31, 17, 0, 0))
     first_day = True

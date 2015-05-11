@@ -164,7 +164,7 @@ class TestViews(TestCase):
 
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2014-01-31 00:00:00" required ')
+                                      'value="2014-01-31 17:00:00" required ')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 

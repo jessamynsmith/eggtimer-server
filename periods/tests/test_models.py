@@ -61,7 +61,7 @@ class TestFlowEvent(TestCase):
         self.period = FlowEventFactory()
 
     def test_str(self):
-        self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 00:00:00-0[\d]:00\)',
+        self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 17:00:00-0[\d]:00\)',
                                  '%s' % self.period))
 
 
@@ -144,6 +144,7 @@ class TestStatistics(TestCase):
 
 
 class TestSignals(TestCase):
+    maxDiff = None
 
     def setUp(self):
         self.user = UserFactory()
