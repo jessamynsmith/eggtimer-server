@@ -16,6 +16,7 @@ oauthlib==0.7.2
 psycopg2==2.6
 python-dateutil==2.4.2
 python-mimeparse==0.1.4
+python-openid==2.2.5
 python3-openid==3.0.5
 pytz==2015.2
 requests==2.6.0
