@@ -23,6 +23,7 @@ makeEvents = function(moment, data) {
 
     data.forEach(function(item) {
         var start = moment(item.timestamp);
+        // TODO say "spotting for spotting events"
         var event = {
             title: 'period',
             itemId: item.id,

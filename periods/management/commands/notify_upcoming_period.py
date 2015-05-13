@@ -22,6 +22,7 @@ class Command(BaseCommand):
             expected_in = (user.statistics.average_cycle_length
                            - user.statistics.current_cycle_length)
             expected_abs = abs(expected_in)
+            # TODO This logic may be duplicated from statistics
             today = period_models.today()
             expected_date = today + datetime.timedelta(
                 days=expected_in)
