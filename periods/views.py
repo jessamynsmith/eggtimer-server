@@ -142,7 +142,7 @@ def _get_level(start_date, today, cycle_length):
 
 def _generate_cycles(start_date, today, end_date, cycle_length):
     current_date = start_date
-    increment = datetime.timedelta(days=(cycle_length/2.0))
+    increment = datetime.timedelta(days=(cycle_length / 2.0))
     values = itertools.cycle([0, 100])
     cycles = []
     while current_date < today:
