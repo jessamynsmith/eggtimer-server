@@ -18,7 +18,7 @@ class Command(BaseCommand):
     # Maybe related to timezone issue
     def handle(self, *args, **options):
         users = period_models.User.objects.filter(
-            flow_events__isnull=False, statistics__isnull=False).exclude(
+            is_active=True, flow_events__isnull=False, statistics__isnull=False).exclude(
             send_emails=False).distinct()
         for user in users:
             expected_in = (user.statistics.average_cycle_length
