@@ -69,11 +69,13 @@ def api_authenticate(request):
 
 @login_required
 def period_form(request, period_id=None):
+    timestamp = None
     try:
-        timestamp = pytz.timezone("US/Eastern").localize(
-            dateutil_parser.parse(request.GET.get('timestamp')))
+        # Parse date separately from localizing it, as localization will fail on a value with tz
+        timestamp = dateutil_parser.parse(request.GET.get('timestamp'))
+        timestamp = pytz.timezone("US/Eastern").localize(timestamp)
     except (AttributeError, ValueError):
-        timestamp = None
+        pass
     try:
         flow_event = period_models.FlowEvent.objects.get(pk=int(period_id))
     except (TypeError, period_models.FlowEvent.DoesNotExist):
