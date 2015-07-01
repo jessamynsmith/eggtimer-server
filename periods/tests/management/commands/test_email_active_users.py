@@ -52,8 +52,9 @@ class TestCommand(TestCase):
                       'stored in UTC. This may affect your data!\n\nIf you are in Eastern time, '
                       'your data will be migrated correctly, and you need do nothing.\n\nIf you '
                       'have been using eggtimer from another timezone, you have two options:\n1) '
-                      'Notify me of your timezone before July 14, 2015 and I will ensure that your '
-                      'data is migrated\ncorrectly.\n2) Do nothing, and your data will be migrated '
+                      'Before July 14, edit your user profile to select your timezone. When the '
+                      'data migration is\nperformed, I will use the timezone on your profile.\n2) '
+                      'Do nothing, and your data will be migrated '
                       'as if it is in Eastern time. This will likely\nresult in a time shift when '
                       'you view your events. If desired, you can then edit events yourself.\n\nI '
                       'apologize for the inconvenience.\n\nSincerely,\n\n')
