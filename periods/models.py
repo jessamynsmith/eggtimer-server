@@ -11,6 +11,7 @@ from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 from django_enumfield import enum
 from rest_framework.authtoken.models import Token
+from timezone_field import TimeZoneField
 
 
 def today():
@@ -22,8 +23,9 @@ class User(AbstractEmailUser):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
 
-    # TODO allow user to select their current timezone, enter birth_date in that timezone
+    # TODO enter birth_date in user-specified timezone
     # TODO store all data in UTC
+    timezone = TimeZoneField(default='America/New_York')
     send_emails = models.BooleanField(_('send emails'), default=True)
     birth_date = models.DateTimeField(_('birth date'), null=True, blank=True)
     luteal_phase_length = models.IntegerField(_('luteal phase length'), default=14)

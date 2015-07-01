@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'floppyforms',
     'bootstrapform',
+    'timezone_field',
     'periods',
 ]
 

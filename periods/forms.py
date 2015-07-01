@@ -7,7 +7,8 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = period_models.User
-        fields = ['first_name', 'last_name', 'send_emails', 'birth_date', 'luteal_phase_length']
+        fields = ['first_name', 'last_name', 'send_emails', 'timezone', 'birth_date',
+                  'luteal_phase_length']
 
 
 class PeriodForm(forms.ModelForm):

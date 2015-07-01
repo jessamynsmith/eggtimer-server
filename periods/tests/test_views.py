@@ -269,7 +269,8 @@ class TestViews(TestCase):
 
     def test_profile_post_valid_data(self):
         self.request.method = 'POST'
-        self.request.POST = QueryDict(u'first_name=Jess&luteal_phase_length=12')
+        self.request.POST = QueryDict(u'first_name=Jess&luteal_phase_length=12&'
+                                      u'timezone=America/New_York')
 
         response = views.profile(self.request)
 
