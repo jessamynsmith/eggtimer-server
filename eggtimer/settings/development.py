@@ -33,3 +33,7 @@ ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+INSTALLED_APPS.extend([
+    'django_extensions',
+])

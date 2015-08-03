@@ -2,6 +2,7 @@
 PyYAML==3.11
 coverage==4.0a5
 coveralls==1.0a2
+django-extensions==1.5.5
 -e git://github.com/jessamynsmith/django_coverage_plugin.git@f03bdc0981ceface4bfea6aa3544e519a2b908aa#egg=django_coverage_plugin-0.3.4
 docopt==0.6.2
 factory-boy==2.5.1
@@ -11,3 +12,4 @@ mock==1.0.1
 paragres==0.6
 pep8==1.5.7
 pyflakes==0.8.1
+pygraphviz==1.3rc1

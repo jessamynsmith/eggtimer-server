@@ -40,6 +40,11 @@ Run tests and view coverage:
 Check code style:
 
     flake8
+    
+Generate graph of data models, e.g.:
+
+    python manage.py graph_models --pygraphviz -a -g -o all_models.png  # all models
+    python manage.py graph_models periods --pygraphviz -g -o period_models.png  # period models
 
 Run server:
 
