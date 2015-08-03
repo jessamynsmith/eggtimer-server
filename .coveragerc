@@ -1,5 +1,5 @@
 [run]
-source = eggtimer, periods, templates
+source = eggtimer, periods
 # When new version of coverage is out, enable branch
 #branch = True
 omit = *tests*
