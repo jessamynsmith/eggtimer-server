@@ -3,8 +3,8 @@ import json
 import pytz
 
 from django.http import HttpRequest, QueryDict, Http404
-from django.test import TestCase
-from mock import patch, MagicMock
+from django.test import Client, TestCase
+from mock import patch
 from rest_framework.request import Request
 from rest_framework.authtoken.models import Token
 
@@ -95,27 +95,42 @@ class TestStatisticsViewSet(TestCase):
 class TestApiAuthenticate(TestCase):
 
     def setUp(self):
-        self.request = MagicMock(body=b'{"email": "jane@jane.com", "password": "somepass"}')
-        self.request.method = "POST"
+        self.client = Client()
+        self.url_path = '/api/v2/authenticate/'
+        self.data = {"email": "jane@jane.com", "password": "somepass"}
 
     def test_api_authenticate_get(self):
-        self.request.method = "GET"
+        response = self.client.get(self.url_path)
 
-        response = views.api_authenticate(self.request)
+        self.assertEqual(405, response.status_code)
 
-        self.assertEqual(401, response.status_code)
+    def test_api_authenticate_not_json(self):
+        response = self.client.post(self.url_path, data='', content_type='application/json')
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(b'{"error": "Could not parse body as JSON"}', response.content)
+
+    def test_api_authenticate_missing_fields(self):
+        response = self.client.post(self.url_path, data=json.dumps({}),
+                                    content_type='application/json')
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(b'{"error": "Missing required field \'email\'"}', response.content)
 
     def test_api_authenticate_failure(self):
-        response = views.api_authenticate(self.request)
+        response = self.client.post(self.url_path, data=json.dumps(self.data),
+                                    content_type='application/json')
 
         self.assertEqual(401, response.status_code)
+        self.assertEqual(b'{"error": "Invalid credentials"}', response.content)
 
     @patch('django.contrib.auth.authenticate')
     def test_api_authenticate_success(self, mock_authenticate):
         user = UserFactory()
         mock_authenticate.return_value = user
 
-        response = views.api_authenticate(self.request)
+        response = self.client.post(self.url_path, data=json.dumps(self.data),
+                                    content_type='application/json')
 
         self.assertContains(response, user.auth_token.key)
 

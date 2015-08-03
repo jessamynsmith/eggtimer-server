@@ -9,13 +9,14 @@ import pytz
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from periods import forms as period_forms, models as period_models, serializers
 
@@ -56,15 +57,28 @@ class StatisticsViewSet(viewsets.ModelViewSet):
 
 
 @csrf_exempt
+@api_view(['POST'])
 def api_authenticate(request):
-    if request.method == 'POST':
+    error = None
+    try:
         data = json.loads(request.body.decode())
-        email = data.get('email')
-        password = data.get('password')
-        user = auth.authenticate(username=email, password=password)
-        if user:
-            return JsonResponse({'token': user.auth_token.key})
-    return HttpResponse('Unauthorized', status=401)
+    except ValueError:
+        error = "Could not parse body as JSON"
+
+    if not error:
+        try:
+            email = data['email']
+            password = data['password']
+        except KeyError as e:
+            error = "Missing required field '%s'" % e.args[0]
+
+    if error:
+        return JsonResponse({'error': error}, status=400)
+
+    user = auth.authenticate(username=email, password=password)
+    if user:
+        return JsonResponse({'token': user.auth_token.key})
+    return JsonResponse({'error': "Invalid credentials"}, status=401)
 
 
 @login_required
