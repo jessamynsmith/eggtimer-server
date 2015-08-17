@@ -59,7 +59,11 @@ class StatisticsViewSet(viewsets.ModelViewSet):
 @csrf_exempt
 @api_view(['POST'])
 def api_authenticate(request):
+    user = None
+    data = None
+    status_code = 400
     error = None
+
     try:
         data = json.loads(request.body.decode())
     except ValueError:
@@ -69,16 +73,17 @@ def api_authenticate(request):
         try:
             email = data['email']
             password = data['password']
+            user = auth.authenticate(username=email, password=password)
+            if not user:
+                status_code = 401
+                error = "Invalid credentials"
         except KeyError as e:
             error = "Missing required field '%s'" % e.args[0]
 
-    if error:
-        return JsonResponse({'error': error}, status=400)
-
-    user = auth.authenticate(username=email, password=password)
     if user:
         return JsonResponse({'token': user.auth_token.key})
-    return JsonResponse({'error': "Invalid credentials"}, status=401)
+
+    return JsonResponse({'error': error}, status=status_code)
 
 
 @login_required
