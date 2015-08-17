@@ -146,9 +146,11 @@ class Statistics(models.Model):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='statistics', null=True)
     average_cycle_length = models.IntegerField(default=28)
+    all_time_average_cycle_length = models.IntegerField(default=28)
 
     def _get_ordinal_value(self, index):
         value = None
+        # Could cache this as performance optimization
         sorted_cycle_lengths = self.user.get_sorted_cycle_lengths()
         if len(sorted_cycle_lengths) >= 1:
             value = sorted_cycle_lengths[index]
@@ -278,8 +280,11 @@ def update_statistics(sender, instance, **kwargs):
     cycle_lengths = instance.user.get_cycle_lengths()
     # Calculate average (if possible) and update statistics object
     if len(cycle_lengths) > 0:
-        avg = sum(cycle_lengths) / len(cycle_lengths)
+        recent_cycle_lengths = cycle_lengths[-6:]
+        avg = sum(recent_cycle_lengths) / len(recent_cycle_lengths)
         stats.average_cycle_length = int(round(avg))
+        avg = sum(cycle_lengths) / len(cycle_lengths)
+        stats.all_time_average_cycle_length = int(round(avg))
     stats.save()
 
 

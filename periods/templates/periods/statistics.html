@@ -29,7 +29,8 @@
 
         <table class="table-condensed">
             <tr><th colspan="2">Cycle Length Statistics</th></tr>
-            <tr><td>Average (rounded):</td><td>{{ user.statistics.average_cycle_length }}</td></tr>
+            <tr><td>Average (Last 6 Months):</td><td>{{ user.statistics.average_cycle_length }}</td></tr>
+            <tr><td>Average (All Time):</td><td>{{ user.statistics.all_time_average_cycle_length }}</td></tr>
             <tr><td>Minimum:</td><td>{{ user.statistics.cycle_length_minimum|default:"" }}</td></tr>
             <tr><td>Maximum:</td><td>{{ user.statistics.cycle_length_maximum|default:"" }}</td></tr>
             <tr><td>Mean:</td><td>{{ user.statistics.cycle_length_mean|default:"" }}</td></tr>

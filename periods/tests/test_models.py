@@ -193,6 +193,7 @@ class TestSignals(TestCase):
 
         stats = period_models.Statistics.objects.get(user=self.period.user)
         self.assertEqual(27, stats.average_cycle_length)
+        self.assertEqual(27, stats.all_time_average_cycle_length)
         self.assertEqual(36, stats.current_cycle_length)
         expected_events = [{'timestamp': datetime.date(2014, 3, 12), 'type': 'projected ovulation'},
                            {'timestamp': datetime.date(2014, 3, 26), 'type': 'projected period'},
@@ -216,6 +217,7 @@ class TestSignals(TestCase):
 
         stats = period_models.Statistics.objects.get(user=self.period.user)
         self.assertEqual(14, stats.average_cycle_length)
+        self.assertEqual(14, stats.all_time_average_cycle_length)
         self.assertEqual(22, stats.current_cycle_length)
         expected_events = [{'timestamp': datetime.date(2014, 3, 14), 'type': 'projected ovulation'},
                            {'timestamp': datetime.date(2014, 3, 28), 'type': 'projected period'},

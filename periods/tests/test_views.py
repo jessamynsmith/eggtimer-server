@@ -262,13 +262,15 @@ class TestViews(TestCase):
 
         response = views.statistics(self.request)
 
-        self.assertContains(response, '<td>Average (rounded):</td><td>28</td>')
+        self.assertContains(response, '<td>Average (Last 6 Months):</td><td>28</td>')
+        self.assertContains(response, '<td>Average (All Time):</td><td>28</td>')
         self.assertContains(response, '<td>Mean:</td><td></td>')
 
     def test_statistics(self):
         response = views.statistics(self.request)
 
-        self.assertContains(response, '<td>Average (rounded):</td><td>28</td>')
+        self.assertContains(response, '<td>Average (Last 6 Months):</td><td>28</td>')
+        self.assertContains(response, '<td>Average (All Time):</td><td>28</td>')
         self.assertContains(response, '<td>Mean:</td><td>28.0</td>')
         self.assertContains(response, '<td>Mode:</td><td>28</td>')
 

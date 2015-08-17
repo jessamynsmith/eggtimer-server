@@ -7,7 +7,7 @@ dependencies:
     override:
         - pip install -r requirements/development.txt
         - gem install coveralls-lcov
-        - npm install jshint mocha blanket mocha-lcov-reporter moment
+        - npm install -g jshint mocha blanket mocha-lcov-reporter moment
 
 test:
     override:
