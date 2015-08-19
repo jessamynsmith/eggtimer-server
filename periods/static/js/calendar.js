@@ -9,26 +9,17 @@ formatMomentDate = function(instance) {
     return formatMoment(instance, 'YYYY-MM-DD');
 };
 
-formatMomentTime = function(instance) {
-    return formatMoment(instance, 'HH:mm');
-};
-
-makeDateTimeString = function(date, time) {
-    return date + 'T' + time;
-};
-
-makeEvents = function(moment, data) {
+makeEvents = function(moment, timezone, data) {
     events = Array();
     periodStartDates = Array();
 
     data.forEach(function(item) {
-        var start = moment(item.timestamp);
-        // TODO say "spotting for spotting events"
+        // TODO say "spotting" for spotting events
         var event = {
             title: 'period',
             itemId: item.id,
             itemType: item.type,
-            start: start,
+            start: moment.tz(item.timestamp, timezone),
             color: '#0f76ed',
             // Maybe someday allow dragging of period events
             editable: false
@@ -36,7 +27,7 @@ makeEvents = function(moment, data) {
 
         var eventType = item.type;
         if (eventType == 'projected period') {
-            periodStartDates.push(start);
+            periodStartDates.push(event.start);
             event.title = eventType;
             event.color = 'darkred';
         } else if (eventType == 'projected ovulation') {
@@ -45,7 +36,7 @@ makeEvents = function(moment, data) {
         } else {
             if (item.first_day) {
                 event.title = '*' + event.title;
-                periodStartDates.push(start);
+                periodStartDates.push(event.start);
             }
         }
 
@@ -118,7 +109,7 @@ doAjax = function(url, method, itemId, data) {
     });
 };
 
-editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
+editEvent = function(action, timezone, periodsUrl, periodFormUrl, itemId, itemDate) {
     var method = 'POST';
     var buttons = [];
     if (action === 'Update') {
@@ -153,6 +144,9 @@ editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
             var data = $("#id_period_form").serializeJSON();
             // drf doesn't recognize 'on'
             data.first_day = data.first_day == 'on';
+            // Must convert timestamp to UTC since that is what server is expecting
+            var localTimestamp = moment.tz(data.timestamp, timezone);
+            data.timestamp = localTimestamp.tz('UTC').format();
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
         }
@@ -167,6 +161,7 @@ editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
             if (itemDate) {
                 periodFormUrl += '?timestamp=' + itemDate.format();
             }
+            console.log("Getting period form from url: " + periodFormUrl);
             $.ajax({
                 url: periodFormUrl,
                 dataType: 'html',
@@ -185,8 +180,9 @@ editEvent = function(action, periodsUrl, periodFormUrl, itemId, itemDate) {
     });
 };
 
-var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl) {
+var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, timezone) {
     $('#id_calendar').fullCalendar({
+        timezone: timezone,
         defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
             var startDate = formatMomentDate(start);
@@ -209,7 +205,7 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl) {
                             min_timestamp: startDate
                         },
                         success: function(statisticsData) {
-                            var events = makeEvents(moment, periodData.concat(statisticsData.predicted_events));
+                            var events = makeEvents(moment, timezone, periodData.concat(statisticsData.predicted_events));
                             addDayCounts(events.periodStartDates, moment(statisticsData.first_date),
                                 statisticsData.first_day);
                             callback(events.events);
@@ -219,17 +215,16 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl) {
             });
         },
         dayClick: function(date, jsEvent, view) {
-            var dayMoment = moment(date);
-            var now = moment();
+            var dayMoment = moment(date, timezone);
+            var now = moment.tz(moment(), timezone);
             if (dayMoment.date() == now.date()) {
                 // If the entry is for the current day, populate time
                 dayMoment = now;
             }
-            editEvent('Add', periodsUrl, periodFormUrl, null, dayMoment);
+            editEvent('Add', timezone, periodsUrl, periodFormUrl, null, dayMoment);
         },
         eventClick: function(event, jsEvent, view) {
-            // Right now, periods do not have a type. This will change when I add spotting.
-            editEvent('Update', periodsUrl, periodFormUrl, event.itemId, event.start);
+            editEvent('Update', timezone, periodsUrl, periodFormUrl, event.itemId, null);
         }
     });
 };

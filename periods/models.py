@@ -24,7 +24,6 @@ class User(AbstractEmailUser):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
 
     # TODO enter birth_date in user-specified timezone
-    # TODO store all data in UTC
     timezone = TimeZoneField(default='America/New_York')
     send_emails = models.BooleanField(_('send emails'), default=True)
     birth_date = models.DateTimeField(_('birth date'), null=True, blank=True)

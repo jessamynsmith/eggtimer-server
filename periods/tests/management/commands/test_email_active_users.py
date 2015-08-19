@@ -29,8 +29,8 @@ class TestCommand(TestCase):
 
     @patch('django.core.mail.EmailMultiAlternatives.send')
     @patch('periods.models.today')
-    def test_email_active_users_send_disabled(self, mocktoday, mock_send):
-        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 14))
+    def test_email_active_users_send_disabled(self, mock_today, mock_send):
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 14))
         self.user.send_emails = False
         self.user.save()
 
@@ -40,8 +40,8 @@ class TestCommand(TestCase):
 
     @patch('periods.email_sender.send')
     @patch('periods.models.today')
-    def test_email_active_users(self, mocktoday, mock_send):
-        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 15))
+    def test_email_active_users(self, mock_today, mock_send):
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 3, 15))
 
         self.command.handle()
 

@@ -6,6 +6,7 @@ require('blanket')({
 
 var assert = require("assert");
 var moment = require('moment');
+var moment = require('moment-timezone');
 
 var calendar = require("../../../static/js/calendar.js");
 
@@ -23,32 +24,10 @@ describe('String', function () {
     })
 });
 
-describe('String', function () {
-    describe('#formatMomentTime()', function () {
-        it('should return empty string if no moment provided', function () {
-            var result = formatMomentTime(null);
-            assert.equal('', result);
-        });
-        it('should return formatted date if moment provided', function () {
-            var result = formatMomentTime(moment("2014-12-28T03:33:44"));
-            assert.equal('03:33', result);
-        });
-    })
-});
-
-describe('String', function () {
-    describe('#makeDateTimeString()', function () {
-        it('should return formatted date time string', function () {
-            var result = makeDateTimeString("2014-12-28", "03:33");
-            assert.equal('2014-12-28T03:33', result);
-        });
-    })
-});
-
 describe('Array', function () {
     describe('#makeEvents()', function () {
         it('should return empty array if no data', function () {
-            var result = makeEvents(moment, Array());
+            var result = makeEvents(moment, 'America/Toronto', Array());
             assert.equal(0, result.events.length);
         });
         it('should return array of items if data', function () {
@@ -58,7 +37,7 @@ describe('Array', function () {
                 {id: '3', type: 'projected ovulation', timestamp: '2015-01-14T05:00:00.000Z'},
                 {id: '4', type: 'period', timestamp: '2015-01-02T05:00:00.000Z'}
             );
-            var result = makeEvents(moment, data);
+            var result = makeEvents(moment, 'America/Toronto', data);
             assert.equal(2, result.periodStartDates.length);
             assert.equal('2015-01-01', result.periodStartDates[0].format('YYYY-MM-DD'));
             assert.equal('2015-01-28', result.periodStartDates[1].format('YYYY-MM-DD'));

@@ -46,7 +46,7 @@ class StatisticsViewSet(viewsets.ModelViewSet):
         min_timestamp = request.query_params.get('min_timestamp')
         try:
             min_timestamp = datetime.datetime.strptime(min_timestamp, DATE_FORMAT)
-            min_timestamp = pytz.timezone("US/Eastern").localize(min_timestamp)
+            min_timestamp = pytz.timezone(request.user.timezone.zone).localize(min_timestamp)
         except TypeError:
             min_timestamp = period_models.today()
         queryset = self.filter_queryset(self.get_queryset())
@@ -88,16 +88,17 @@ def api_authenticate(request):
 
 @login_required
 def period_form(request, period_id=None):
-    timestamp = None
-    try:
-        # Parse date separately from localizing it, as localization will fail on a value with tz
-        timestamp = dateutil_parser.parse(request.GET.get('timestamp'))
-        timestamp = pytz.timezone("US/Eastern").localize(timestamp)
-    except (AttributeError, ValueError):
-        pass
+    # e.g. /period_form/?timestamp=2015-08-19T08:31:24-07:00
+    user_timezone = pytz.timezone(request.user.timezone.zone)
     try:
         flow_event = period_models.FlowEvent.objects.get(pk=int(period_id))
+        flow_event.timestamp = flow_event.timestamp.astimezone(user_timezone)
     except (TypeError, period_models.FlowEvent.DoesNotExist):
+        timestamp = request.GET.get('timestamp')
+        try:
+            timestamp = dateutil_parser.parse(timestamp)
+        except AttributeError:
+            timestamp = period_models.today().astimezone(user_timezone)
         flow_event = period_models.FlowEvent(timestamp=timestamp)
         if timestamp:
             yesterday = timestamp - datetime.timedelta(days=1)
@@ -106,6 +107,7 @@ def period_form(request, period_id=None):
                 timestamp__gte=yesterday_start, timestamp__lte=timestamp)
             if not yesterday_events.count():
                 flow_event.first_day = True
+    flow_event.timestamp = flow_event.timestamp.replace(tzinfo=pytz.utc)
     form = period_forms.PeriodForm(instance=flow_event)
     data = {
         'form': form,

@@ -52,7 +52,7 @@ Run server:
     
 The javascript linter and tests require you to install node, then:
 
-    npm install -g jshint mocha blanket moment
+    npm install -g jshint mocha blanket moment moment-timezone
 
 Set up your environment to know about node. NOTE! You must change 'path/to/node_modules' to be
 the actual path to node modules on your system.
@@ -77,10 +77,10 @@ and Heroku.
 Make a new Heroku app, and add the following addons:
 
     Heroku Postgres
-	Mailgun
-	New Relic APM
-	Papertrail
-	Heroku Scheduler
+	  Mailgun
+	  New Relic APM
+	  Papertrail
+	  Heroku Scheduler
 
 Enable the project on coveralls.io, and copy the repo token
 

@@ -67,8 +67,8 @@ class TestStatisticsViewSet(TestCase):
             pass
 
     @patch('periods.models.today')
-    def test_list_no_params(self, mocktoday):
-        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
+    def test_list_no_params(self, mock_today):
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
         self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
 
         response = self.view_set.list(self.request)
@@ -82,6 +82,7 @@ class TestStatisticsViewSet(TestCase):
         http_request = HttpRequest()
         http_request.GET = QueryDict(u'min_timestamp=2014-01-05')
         request = Request(http_request)
+        request.__setattr__('user', self.period.user)
         self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
 
         response = self.view_set.list(request)
@@ -147,12 +148,16 @@ class TestViews(TestCase):
         self.request.META['SERVER_NAME'] = 'localhost'
         self.request.META['SERVER_PORT'] = '8000'
 
-    def test_period_form_no_parameters(self):
-        response = views.period_form(self.request)
+    @patch('periods.models.today')
+    def test_period_form_no_parameters(self, mock_today):
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2015, 7, 7))
+
+        response = views.period_form(self.request, mock_today)
 
         self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" required')
-        self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day"')
+        self.assertContains(response, '<input type="datetime" name="timestamp" '
+                                      'value="2015-07-06 20:00:00" required')
+        self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_period_form_with_timestamp(self):
@@ -166,12 +171,16 @@ class TestViews(TestCase):
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_period_form_invalid_period_id(self):
+    @patch('periods.models.today')
+    def test_period_form_invalid_period_id(self, mock_today):
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2015, 7, 7))
+
         response = views.period_form(self.request, 9999)
 
         self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" required')
-        self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day"')
+        self.assertContains(response, '<input type="datetime" name="timestamp" '
+                                      'value="2015-07-06 20:00:00" required')
+        self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_period_form_existing_period(self):
@@ -232,8 +241,8 @@ class TestViews(TestCase):
         self.assertEqual({}, result)
 
     @patch('periods.models.today')
-    def test_qigong_cycles(self, mocktoday):
-        mocktoday.return_value = TIMEZONE.localize(datetime.datetime(1995, 3, 20))
+    def test_qigong_cycles(self, mock_today):
+        mock_today.return_value = TIMEZONE.localize(datetime.datetime(1995, 3, 20))
 
         response = views.qigong_cycles(self.request)
 
