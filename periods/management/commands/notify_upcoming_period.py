@@ -1,5 +1,3 @@
-import datetime
-
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
@@ -19,13 +17,12 @@ class Command(BaseCommand):
             is_active=True, flow_events__isnull=False, statistics__isnull=False).exclude(
             send_emails=False).distinct()
         for user in users:
-            expected_in = (user.statistics.average_cycle_length
-                           - user.statistics.current_cycle_length)
-            expected_abs = abs(expected_in)
-            # TODO This logic may be duplicated from statistics
             today = period_models.today()
-            expected_date = today + datetime.timedelta(
-                days=expected_in)
+            upcoming_events = user.statistics.predicted_events
+            # The upcoming events are in date order, ovulation/period/ovulation/...
+            expected_date = upcoming_events[1]['timestamp']
+            expected_in = (expected_date - today.date()).days
+            expected_abs = abs(expected_in)
             if expected_abs == 1:
                 day = 'day'
             else:
