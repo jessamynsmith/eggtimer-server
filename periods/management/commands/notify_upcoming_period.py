@@ -14,8 +14,6 @@ class Command(BaseCommand):
     def _format_date(self, date_value):
         return date_value.strftime('%A %B %d, %Y')
 
-    # TODO are the day counts wrong somewhere? Says I'm due Sunday rather than Saturday
-    # Maybe related to timezone issue
     def handle(self, *args, **options):
         users = period_models.User.objects.filter(
             is_active=True, flow_events__isnull=False, statistics__isnull=False).exclude(

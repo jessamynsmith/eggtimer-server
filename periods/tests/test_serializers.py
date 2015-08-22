@@ -15,7 +15,7 @@ class TestFlowEventViewSet(TestCase):
     def test_serialization(self):
         result = JSONRenderer().render(self.serializer.data)
 
-        expected = (b'{"id":[\d]+,"timestamp":"2014-01-31T22:00:00Z","first_day":true,"level":2,'
+        expected = (b'{"id":[\d]+,"timestamp":"2014-01-31T17:00:00Z","first_day":true,"level":2,'
                     b'"color":2,"clots":null,"cramps":null,"comment":null}')
         self.assertRegex(result, expected)
 

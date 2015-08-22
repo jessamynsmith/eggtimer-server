@@ -201,7 +201,7 @@ class Statistics(models.Model):
         today_date = today()
         previous_period = self.user.get_previous_period(previous_to=today_date)
         if previous_period:
-            current_cycle = (today_date - previous_period.timestamp).days
+            current_cycle = (today_date.date() - previous_period.timestamp.date()).days
         return current_cycle
 
     @property

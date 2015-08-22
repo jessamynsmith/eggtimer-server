@@ -11,9 +11,9 @@ class UserFactory(factory.DjangoModelFactory):
         model = get_user_model()
 
     first_name = u'Jessamyn'
-    birth_date = pytz.timezone("US/Eastern").localize(datetime.datetime(1995, 3, 1))
+    birth_date = pytz.utc.localize(datetime.datetime(1995, 3, 1))
     email = factory.Sequence(lambda n: "user_%d@example.com" % n)
-    last_login = pytz.timezone("US/Eastern").localize(datetime.datetime(2015, 3, 1))
+    last_login = pytz.utc.localize(datetime.datetime(2015, 3, 1))
 
 
 class FlowEventFactory(factory.DjangoModelFactory):
@@ -21,5 +21,5 @@ class FlowEventFactory(factory.DjangoModelFactory):
         model = period_models.FlowEvent
 
     user = factory.SubFactory(UserFactory)
-    timestamp = pytz.timezone("US/Eastern").localize(datetime.datetime(2014, 1, 31, 17, 0, 0))
+    timestamp = pytz.utc.localize(datetime.datetime(2014, 1, 31, 17, 0, 0))
     first_day = True

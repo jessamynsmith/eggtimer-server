@@ -61,8 +61,7 @@ class TestFlowEvent(TestCase):
         self.period = FlowEventFactory()
 
     def test_str(self):
-        self.assertTrue(re.match(r'Jessamyn MEDIUM \(2014-01-31 17:00:00-0[\d]:00\)',
-                                 '%s' % self.period))
+        self.assertEqual('Jessamyn MEDIUM (2014-01-31 17:00:00+00:00)', '%s' % self.period)
 
 
 class TestStatistics(TestCase):
@@ -185,7 +184,7 @@ class TestSignals(TestCase):
 
     @patch('periods.models.today')
     def test_update_statistics_none_existing(self, mock_today):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 4, 5))
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 4, 5))
         period = FlowEventFactory(user=self.period.user,
                                   timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 27)))
 
@@ -194,7 +193,7 @@ class TestSignals(TestCase):
         stats = period_models.Statistics.objects.get(user=self.period.user)
         self.assertEqual(27, stats.average_cycle_length)
         self.assertEqual(27, stats.all_time_average_cycle_length)
-        self.assertEqual(36, stats.current_cycle_length)
+        self.assertEqual(37, stats.current_cycle_length)
         expected_events = [{'timestamp': datetime.date(2014, 3, 12), 'type': 'projected ovulation'},
                            {'timestamp': datetime.date(2014, 3, 26), 'type': 'projected period'},
                            {'timestamp': datetime.date(2014, 4, 8), 'type': 'projected ovulation'},

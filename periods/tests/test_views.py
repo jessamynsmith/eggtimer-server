@@ -13,9 +13,6 @@ from periods.serializers import FlowEventSerializer
 from periods.tests.factories import FlowEventFactory, UserFactory
 
 
-TIMEZONE = pytz.timezone("US/Eastern")
-
-
 class TestFlowEventViewSet(TestCase):
 
     def setUp(self):
@@ -23,7 +20,7 @@ class TestFlowEventViewSet(TestCase):
         self.view_set.format_kwarg = ''
 
         self.period = FlowEventFactory()
-        FlowEventFactory(timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
+        FlowEventFactory(timestamp=pytz.utc.localize(datetime.datetime(2014, 2, 28)))
 
         self.request = Request(HttpRequest())
         self.request.__setattr__('user', self.period.user)
@@ -51,7 +48,7 @@ class TestStatisticsViewSet(TestCase):
         self.view_set.format_kwarg = ''
 
         self.period = FlowEventFactory()
-        self.period2 = FlowEventFactory(timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
+        self.period2 = FlowEventFactory(timestamp=pytz.utc.localize(datetime.datetime(2014, 2, 28)))
 
         self.request = Request(HttpRequest())
         self.request.__setattr__('user', self.period.user)
@@ -68,7 +65,7 @@ class TestStatisticsViewSet(TestCase):
 
     @patch('periods.models.today')
     def test_list_no_params(self, mock_today):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(2014, 1, 5))
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 1, 5))
         self.view_set.kwargs = {'pk': self.request.user.statistics.pk}
 
         response = self.view_set.list(self.request)
@@ -142,7 +139,7 @@ class TestViews(TestCase):
     def setUp(self):
         self.period = FlowEventFactory()
         FlowEventFactory(user=self.period.user,
-                         timestamp=TIMEZONE.localize(datetime.datetime(2014, 2, 28)))
+                         timestamp=pytz.utc.localize(datetime.datetime(2014, 2, 28)))
         self.request = HttpRequest()
         self.request.user = self.period.user
         self.request.META['SERVER_NAME'] = 'localhost'
@@ -188,7 +185,7 @@ class TestViews(TestCase):
 
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2014-01-31 17:00:00" required ')
+                                      'value="2014-01-31 12:00:00" required ')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
@@ -242,27 +239,27 @@ class TestViews(TestCase):
 
     @patch('periods.models.today')
     def test_qigong_cycles(self, mock_today):
-        mock_today.return_value = TIMEZONE.localize(datetime.datetime(1995, 3, 20))
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(1995, 3, 20))
 
         response = views.qigong_cycles(self.request)
 
         result = json.loads(response.content.decode('utf-8'))
 
         expected = {
-            'physical': [['1995-03-01T00:00:00-05:00', 0],
-                         ['1995-03-12T12:00:00-05:00', 100],
-                         ['1995-03-20T00:00:00-05:00', 27],
-                         ['1995-03-24T00:00:00-05:00', 0],
-                         ['1995-04-03T00:00:00-05:00', 96]],
-            'emotional': [['1995-03-01T00:00:00-05:00', 0],
-                          ['1995-03-15T00:00:00-05:00', 100],
-                          ['1995-03-20T00:00:00-05:00', 72],
-                          ['1995-03-29T00:00:00-05:00', 0],
-                          ['1995-04-03T00:00:00-05:00', 28]],
-            'intellectual': [['1995-03-01T00:00:00-05:00', 0],
-                             ['1995-03-17T12:00:00-05:00', 100],
-                             ['1995-03-20T00:00:00-05:00', 94],
-                             ['1995-04-03T00:00:00-05:00', 0]],
+            'physical': [['1995-03-01T00:00:00Z', 0],
+                         ['1995-03-12T12:00:00Z', 100],
+                         ['1995-03-20T00:00:00Z', 27],
+                         ['1995-03-24T00:00:00Z', 0],
+                         ['1995-04-03T00:00:00Z', 96]],
+            'emotional': [['1995-03-01T00:00:00Z', 0],
+                          ['1995-03-15T00:00:00Z', 100],
+                          ['1995-03-20T00:00:00Z', 72],
+                          ['1995-03-29T00:00:00Z', 0],
+                          ['1995-04-03T00:00:00Z', 28]],
+            'intellectual': [['1995-03-01T00:00:00Z', 0],
+                             ['1995-03-17T12:00:00Z', 100],
+                             ['1995-03-20T00:00:00Z', 94],
+                             ['1995-04-03T00:00:00Z', 0]],
         }
         self.assertEqual(expected, result)
 
@@ -290,7 +287,7 @@ class TestViews(TestCase):
         response = views.profile(self.request)
 
         user = period_models.User.objects.get(pk=self.request.user.pk)
-        self.assertEqual(TIMEZONE.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
+        self.assertEqual(pytz.utc.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
         self.assertContains(response, '<h4>Account Info for %s</h4>' % self.request.user.email)
 
     def test_profile_post_valid_data(self):

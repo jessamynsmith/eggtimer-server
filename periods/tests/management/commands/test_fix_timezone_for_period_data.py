@@ -13,7 +13,8 @@ TIMEZONE = pytz.timezone("US/Eastern")
 class TestCommand(TestCase):
     def setUp(self):
         self.command = fix_timezone_for_period_data.Command()
-        flow_event = FlowEventFactory()
+        flow_event = FlowEventFactory(timestamp=TIMEZONE.localize(
+            datetime.datetime(2014, 1, 31, 17, 0, 0)))
         self.user = flow_event.user
         FlowEventFactory(user=self.user,
                          timestamp=TIMEZONE.localize(datetime.datetime(2014, 8, 28)))
