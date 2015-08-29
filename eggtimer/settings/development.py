@@ -26,7 +26,7 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 MEDIA_ROOT = '/tmp/eggtimer/media'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '%s/Development/Django/eggtimer/emails' % HOME_DIR
+EMAIL_FILE_PATH = '%s/Development/django_emails/eggtimer/emails' % HOME_DIR
 
 SSLIFY_DISABLE = True
 ALLOWED_HOSTS = ['*']
