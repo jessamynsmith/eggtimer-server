@@ -3,54 +3,92 @@
 {% block title %}Statistics for {{ user.get_full_name }}{% endblock %}
 
 {% block head %}
-    <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/highstock/2.1.4/highstock.js'></script>
-    <script type='text/javascript' src='{{ STATIC_URL }}js/statistics.js'></script>
+  <script type='text/javascript'
+          src='//cdnjs.cloudflare.com/ajax/libs/highstock/2.1.4/highstock.js'></script>
+  <script type='text/javascript' src='{{ STATIC_URL }}js/statistics.js'></script>
 {% endblock %}
 
 {% block content %}
-    <div>
+  <div>
     <select id="id_select_statistics">
-    <option value="statistics">Statistics</option>
-        {% for graph_type in graph_types %}
-            <option value="{{ graph_type.0 }}">{{ graph_type.1 }}</option>
-        {% endfor %}
-    </select>
-    </div>
-
-    <div id="id_statistics" class="statistics">
-        <h4>Statistics for {{ user.get_full_name }}</h4>
-
-        <table class="table-condensed">
-            <tr><th colspan="2">Cycle Statistics</th></tr>
-            <tr><td>Total Number:</td><td>{{ first_days|length }}</td></tr>
-            <tr><td>First:</td><td>{{ first_days|first }}</td></tr>
-            <tr><td>Most Recent:</td><td>{{ first_days|last }}</td></tr>
-        </table>
-
-        <table class="table-condensed">
-            <tr><th colspan="2">Cycle Length Statistics</th></tr>
-            <tr><td>Average (Last 6 Months):</td><td>{{ user.statistics.average_cycle_length }}</td></tr>
-            <tr><td>Average (All Time):</td><td>{{ user.statistics.all_time_average_cycle_length }}</td></tr>
-            <tr><td>Minimum:</td><td>{{ user.statistics.cycle_length_minimum|default:"" }}</td></tr>
-            <tr><td>Maximum:</td><td>{{ user.statistics.cycle_length_maximum|default:"" }}</td></tr>
-            <tr><td>Mean:</td><td>{{ user.statistics.cycle_length_mean|default:"" }}</td></tr>
-            <tr><td>Median:</td><td>{{ user.statistics.cycle_length_median|default:"" }}</td></tr>
-            <tr><td>Mode:</td><td>{{ user.statistics.cycle_length_mode|default:"" }}</td></tr>
-            <tr><td>Standard Deviation:</td><td>{{ user.statistics.cycle_length_standard_deviation|default:"" }}</td></tr>
-        </table>
-    </div>
-
+      <option value="statistics">Statistics</option>
     {% for graph_type in graph_types %}
-        <div id="id_{{ graph_type.0 }}" class="statistics"></div>
+      <option value="{{ graph_type.0 }}">{{ graph_type.1 }}</option>
     {% endfor %}
+  </select>
+  </div>
 
-    <div class="statistics cycle_length_frequency_error cycle_length_history_error">
-        Cycle Graphs require menstrual data to calculate.
-        Would you like to <a href="{% url 'calendar' %}">enter some periods</a>?
-    </div>
-    <div class="statistics qigong_cycles_error">
-        Qigong Cycles require a birth date to calculate.
-        Would you like to <a href="{% url 'user_profile' %}">add a birth date</a> to your profile?
-    </div>
+  <div id="id_statistics" class="statistics">
+    <h4>Statistics for {{ user.get_full_name }}</h4>
+
+    <table class="table-condensed">
+      <tr>
+        <th colspan="2">Cycle Statistics</th>
+      </tr>
+      <tr>
+        <td>Total Number:</td>
+        <td>{{ first_days|length }}</td>
+      </tr>
+      <tr>
+        <td>First:</td>
+        <td>{{ first_days|first }}</td>
+      </tr>
+      <tr>
+        <td>Most Recent:</td>
+        <td>{{ first_days|last }}</td>
+      </tr>
+    </table>
+
+    <table class="table-condensed">
+      <tr>
+        <th colspan="2">Cycle Length Statistics</th>
+      </tr>
+      <tr>
+        <td>Average (Last 6 Months):</td>
+        <td>{{ user.statistics.average_cycle_length }}</td>
+      </tr>
+      <tr>
+        <td>Average (All Time):</td>
+        <td>{{ user.statistics.all_time_average_cycle_length }}</td>
+      </tr>
+      <tr>
+        <td>Minimum:</td>
+        <td>{{ user.statistics.cycle_length_minimum|default:"" }}</td>
+      </tr>
+      <tr>
+        <td>Maximum:</td>
+        <td>{{ user.statistics.cycle_length_maximum|default:"" }}</td>
+      </tr>
+      <tr>
+        <td>Mean:</td>
+        <td>{{ user.statistics.cycle_length_mean|default:"" }}</td>
+      </tr>
+      <tr>
+        <td>Median:</td>
+        <td>{{ user.statistics.cycle_length_median|default:"" }}</td>
+      </tr>
+      <tr>
+        <td>Mode:</td>
+        <td>{{ user.statistics.cycle_length_mode|default:"" }}</td>
+      </tr>
+      <tr>
+        <td>Standard Deviation:</td>
+        <td>{{ user.statistics.cycle_length_standard_deviation|default:"" }}</td>
+      </tr>
+    </table>
+  </div>
+
+  {% for graph_type in graph_types %}
+    <div id="id_{{ graph_type.0 }}" class="statistics"></div>
+  {% endfor %}
+
+  <div class="statistics cycle_length_frequency_error cycle_length_history_error">
+    Cycle Graphs require menstrual data to calculate.
+    Would you like to <a href="{% url 'calendar' %}">enter some periods</a>?
+  </div>
+  <div class="statistics qigong_cycles_error">
+    Qigong Cycles require a birth date to calculate.
+    Would you like to <a href="{% url 'user_profile' %}">add a birth date</a> to your profile?
+  </div>
 
 {% endblock %}
