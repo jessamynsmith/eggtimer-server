@@ -158,7 +158,7 @@ class TestViews(TestCase):
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_period_form_with_timestamp(self):
-        self.request.GET = QueryDict('timestamp=2015-02-25T00:00:00+00:00')
+        self.request.GET = QueryDict('timestamp=2015-02-25T00:00:00%2B00:00')
 
         response = views.period_form(self.request)
 
@@ -268,17 +268,17 @@ class TestViews(TestCase):
 
         response = views.statistics(self.request)
 
-        self.assertContains(response, '<td>Average (Last 6 Months):</td><td>28</td>')
-        self.assertContains(response, '<td>Average (All Time):</td><td>28</td>')
-        self.assertContains(response, '<td>Mean:</td><td></td>')
+        self.assertContains(response, '<td>Average (Last 6 Months):</td>\n        <td>28</td>')
+        self.assertContains(response, '<td>Average (All Time):</td>\n        <td>28</td>')
+        self.assertContains(response, '<td>Mean:</td>\n        <td></td>')
 
     def test_statistics(self):
         response = views.statistics(self.request)
 
-        self.assertContains(response, '<td>Average (Last 6 Months):</td><td>28</td>')
-        self.assertContains(response, '<td>Average (All Time):</td><td>28</td>')
-        self.assertContains(response, '<td>Mean:</td><td>28.0</td>')
-        self.assertContains(response, '<td>Mode:</td><td>28</td>')
+        self.assertContains(response, '<td>Average (Last 6 Months):</td>\n        <td>28</td>')
+        self.assertContains(response, '<td>Average (All Time):</td>\n        <td>28</td>')
+        self.assertContains(response, '<td>Mean:</td>\n        <td>28.0</td>')
+        self.assertContains(response, '<td>Mode:</td>\n        <td>28</td>')
 
     def test_profile_post_invalid_data(self):
         self.request.method = 'POST'
