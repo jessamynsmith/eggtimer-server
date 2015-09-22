@@ -16,11 +16,11 @@ class TestEmailSender(TestCase):
         result = email_sender.send(self.user, 'Hi!', 'good day', None)
 
         self.assertEqual(True, result)
-        mock_send.assert_called_once()
+        mock_send.assert_called_once_with()
 
     @patch('django.core.mail.EmailMultiAlternatives.send')
     def test_send_with_html(self, mock_send):
         result = email_sender.send(self.user, 'Hi!', 'good day', '<p>good day</p>')
 
         self.assertEqual(True, result)
-        mock_send.assert_called_once()
+        mock_send.assert_called_once_with()
