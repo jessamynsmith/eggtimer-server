@@ -1,2 +1,3 @@
 # Default to installing production dependencies automatically
--r requirements/production.txt
+# TODO update pipwrap to behave correctly for multiple requirements files, get rid of requirements dir
+-r requirements/common.txt
