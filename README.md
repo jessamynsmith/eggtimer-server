@@ -22,10 +22,7 @@ to be the actual path to python3 on your system.
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
-Edit development settings as needed to match your environment (check DATABASES in particular),
-and ensure those settings will be used automatically:
-
-    export DJANGO_SETTINGS_MODULE=eggtimer.settings.development
+Set environment variables as needed (check settings.py for values).
 
 Set up db:
 
@@ -94,7 +91,7 @@ a new build.
 
 Once your app is deployed successfully, you can add the Scheduler task on Heroku:
 
-    python manage.py notify_upcoming_period --settings=eggtimer.settings.production
+    python manage.py notify_upcoming_period --settings=eggtimer.settings
 
 
 Thank you to:

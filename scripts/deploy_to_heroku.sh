@@ -12,7 +12,7 @@ heroku config:set --app=eggtimer \
 NEW_RELIC_APP_NAME='eggtimer' \
 ADMIN_EMAIL="egg.timer.app@gmail.com" \
 ADMIN_NAME="egg timer" \
-DJANGO_SETTINGS_MODULE=eggtimer.settings.production \
+DJANGO_SETTINGS_MODULE=eggtimer.settings \
 DJANGO_SECRET_KEY="$SECRET" \
 DEPLOY_DATE="$DEPLOY_DATE" \
 > /dev/null

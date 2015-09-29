@@ -18,7 +18,7 @@ import os
 from django.core.wsgi import get_wsgi_application
 from dj_static import Cling, MediaCling
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eggtimer.settings.production")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eggtimer.settings")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
