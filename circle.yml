@@ -2,6 +2,8 @@
 machine:
     python:
         version: 3.4.2
+    environment:
+        DATABASE_URL: "postgres://ubuntu:@localhost/circle_test"
 
 dependencies:
     override:
