@@ -1,4 +1,4 @@
-{% extends "email/base.txt" %}
+{% extends "periods/email/base.txt" %}
 
 {% block content %}
 You should be getting your period today, {{ expected_date}}!

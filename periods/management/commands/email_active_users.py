@@ -39,7 +39,7 @@ Are you sure you want to do this?
             subject = 'Important information about the data in your eggtimer account'
             template_name = 'notification'
             context = Context({})
-            plaintext = get_template('email/%s.txt' % template_name)
+            plaintext = get_template('periods/email/%s.txt' % template_name)
             for user in active_users:
                 email_sender.send(user, subject, plaintext.render(context), None)
         else:

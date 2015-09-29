@@ -1,4 +1,4 @@
-{% extends "email/base.txt" %}
+{% extends "periods/email/base.txt" %}
 
 {% block content %}
 You are probably ovulating today, {{ today }}!

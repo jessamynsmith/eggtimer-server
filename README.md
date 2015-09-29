@@ -61,11 +61,11 @@ the actual path to node modules on your system.
 
 Lint JavaScript:
 
-    jshint */static/js
+    jshint */static/*/js
     
 Run JavaScript tests:
 
-    mocha -R html-cov */tests/static/js/* > ~/eggtimer_javascript_coverage.html
+    mocha -R html-cov */tests/static/*/js/* > ~/eggtimer_javascript_coverage.html
     
     
 Continuous Integration and Deployment

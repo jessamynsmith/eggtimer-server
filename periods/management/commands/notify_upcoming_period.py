@@ -51,5 +51,5 @@ class Command(BaseCommand):
                 subject = "Ovulation today!"
                 template_name = 'ovulating'
             if subject:
-                plaintext = get_template('email/%s.txt' % template_name)
+                plaintext = get_template('periods/email/%s.txt' % template_name)
                 email_sender.send(user, subject, plaintext.render(context), None)

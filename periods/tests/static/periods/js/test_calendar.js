@@ -8,7 +8,7 @@ var assert = require("assert");
 var moment = require('moment');
 var moment = require('moment-timezone');
 
-var calendar = require("../../../static/js/calendar.js");
+var calendar = require("../../../../static/periods/js/calendar.js");
 
 
 describe('String', function () {
