@@ -1,79 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{{ STATIC_URL }}img/favicon.ico">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ STATIC_URL }}img/favicon.ico">
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.2/css/bootstrap-dialog.min.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet"
+        href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+  <link rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.2/css/bootstrap-dialog.min.css">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/1.2.0/jquery.serializeJSON.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script
+    src="//cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/1.2.0/jquery.serializeJSON.min.js"></script>
 
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.2/js/bootstrap-dialog.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script
+    src="//cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.2/js/bootstrap-dialog.min.js"></script>
 
-	<script type='text/javascript'>
-        addFormStyles = function() {
-            $('select,input[type="text"],input[type="datetime"],input[type="date"],input[type="time"],input[type="number"]').addClass('form-control').addClass('my-form-control');
-            $('label').addClass('control-label').addClass('my-control-label');
-        };
+  <script type='text/javascript'>
+    addFormStyles = function() {
+      $('select,input[type="text"],input[type="datetime"],input[type="date"],input[type="time"],input[type="number"]').addClass('form-control').addClass('my-form-control');
+      $('label').addClass('control-label').addClass('my-control-label');
+    };
 
-		$(document).ready(function() {
-            addFormStyles();
-        });
-	</script>
+    $(document).ready(function() {
+      addFormStyles();
+    });
+  </script>
 
-    {% load staticfiles %}
-	<link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" type="text/css" media="screen">
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" type="text/css" media="screen">
 
-	<title>{% block title %}{% endblock %}</title>
+  <title>{% block title %}{% endblock %}</title>
 
-    {% block head %}{% endblock %}
+  {% block head %}{% endblock %}
 </head>
 <body>
 
-    <nav class="navbar navbar-default navbar-fixed-top my-navbar">
-        {% if not user.is_anonymous %}
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'calendar' %}">
-                    <span class="glyphicon-lg glyphicon glyphicon-calendar"></span>
-                </a></li>
-                <li><a href="{% url 'statistics' %}">
-                    <span class="glyphicon-lg glyphicon glyphicon-stats"></span>
-                </a></li>
-                <li><a href="{% url 'user_profile' %}">
-                    <span class="glyphicon-lg glyphicon glyphicon-user"></span>
-                </a></li>
-                <li><a href="{% url 'account_logout' %}">
-                    <span class="glyphicon-lg glyphicon glyphicon-log-out"></span>
-                </a></li>
-            </ul>
-        {% endif %}
+<nav class="navbar navbar-default navbar-fixed-top my-navbar">
+  {% if not user.is_anonymous %}
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="{% url 'calendar' %}">
+        <span class="glyphicon-lg glyphicon glyphicon-calendar"></span>
+      </a></li>
+      <li><a href="{% url 'statistics' %}">
+        <span class="glyphicon-lg glyphicon glyphicon-stats"></span>
+      </a></li>
+      <li><a href="{% url 'user_profile' %}">
+        <span class="glyphicon-lg glyphicon glyphicon-user"></span>
+      </a></li>
+      <li><a href="{% url 'account_logout' %}">
+        <span class="glyphicon-lg glyphicon glyphicon-log-out"></span>
+      </a></li>
+    </ul>
+  {% endif %}
 
-        <div class="navbar-header">
-            <a class="brand" href="{% url 'calendar' %}">
-                <img src="{{ STATIC_URL }}img/logo.png" alt="egg timer logo">
-                <span>egg timer</span><br>
-                <span class="small">know your cycles</span>
-            </a>
-        </div>
-    </nav>
+  <div class="navbar-header">
+    <a class="brand" href="{% url 'calendar' %}">
+      <img src="{{ STATIC_URL }}img/logo.png" alt="egg timer logo">
+      <span>egg timer</span><br>
+      <span class="small">know your cycles</span>
+    </a>
+  </div>
+</nav>
 
-    <div class="spacing_top">
-    {% block content %}{% endblock %}
-    </div>
+<div class="spacing_top">
+  {% block content %}{% endblock %}
+</div>
 
 {% block footer %}
   <div class="footer">
     <p class="small center">Issues? Please
-      <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">let us know</a>.</p>
+      <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">let us
+        know</a>.</p>
+
     <p class="small center grey">Version {{ VERSION }}, Deployed {{ DEPLOY_DATE }}</p>
   </div>
 {% endblock %}
