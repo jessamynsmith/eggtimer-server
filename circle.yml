@@ -5,6 +5,7 @@ machine:
     environment:
         DATABASE_URL: "postgres://ubuntu:@localhost/circle_test"
         DJANGO_SETTINGS_MODULE: "eggtimer.settings"
+        SSLIFY_DISABLE: True
 
 dependencies:
     override:
