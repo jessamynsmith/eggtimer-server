@@ -1,9 +1,3 @@
-var rendered = {
-    'cycle_length_frequency': false,
-    'cycle_length_history': false,
-    'qigong_cycles': false
-};
-
 convertDataToDate = function(data) {
     for (var i=0; i<data.length; i++) {
         data[i][0] = Date.parse(data[i][0]);
@@ -42,7 +36,6 @@ cycle_length_frequency = function(data) {
         }
         ]
     });
-    rendered.cycle_length_frequency = true;
 };
 
 cycle_length_history = function(data) {

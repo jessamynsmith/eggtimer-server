@@ -27,10 +27,6 @@ p.error_message {
     color: red;
 }
 
-.right {
-    float: right;
-}
-
 .spacing_top {
     margin-top: 10px;
 }
