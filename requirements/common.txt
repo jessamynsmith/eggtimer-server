@@ -10,7 +10,6 @@ django-custom-user==0.5
 django-filter==0.11.0
 django-floppyforms==1.5.2
 django-settings-context-processor==0.2
-django-sslify==0.2.7
 django-timezone-field==1.2
 djangorestframework==3.2.4
 gunicorn==19.3.0

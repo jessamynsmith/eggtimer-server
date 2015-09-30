@@ -23,7 +23,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = True
-SSLIFY_DISABLE = os.environ.get('SSLIFY_DISABLE', False)
+SECURE_SSL_REDIRECT = os.environ.get('DJANGO_ENABLE_SSL', True)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
@@ -52,7 +52,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = (
-    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
