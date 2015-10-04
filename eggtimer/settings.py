@@ -6,6 +6,7 @@ import dj_database_url
 from email.utils import formataddr
 
 
+HOME_DIR = os.path.expanduser("~")
 BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 
 
@@ -91,13 +92,13 @@ WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
 # Parse database configuration from $DATABASE_URL
 DATABASES = {
-    'default': dj_database_url.config()
+    'default': dj_database_url.config(default="sqlite:///%s/eggtimer.sqlite" % HOME_DIR)
 }
 
 
 SITE_ID = 1
 
-# https://docs.djangoproject.com/en/1.7/topics/i18n/
+# https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 TIME_ZONE = 'UTC'
 
@@ -169,7 +170,6 @@ EMAIL_USE_TLS = True
 
 if not EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    HOME_DIR = os.path.expanduser("~")
     EMAIL_FILE_PATH = '%s/Development/django_emails/eggtimer/emails' % HOME_DIR
 
 
