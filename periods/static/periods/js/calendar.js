@@ -51,7 +51,6 @@ addDayCounts = function(periodStartDates, firstDate, firstDay) {
         console.log("No days to add");
         return;
     }
-    console.log("Adding day counts");
     var currentDay = firstDay;
     var nextPeriodStart = periodStartDates.shift();
     $('.fc-day-number').each(function() {
@@ -224,6 +223,10 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, time
             editEvent('Add', timezone, periodsUrl, periodFormUrl, null, dayMoment);
         },
         eventClick: function(event, jsEvent, view) {
+            if (!event.itemId) {
+                // This can happen if the user clicks on a projected event
+                return;
+            }
             editEvent('Update', timezone, periodsUrl, periodFormUrl, event.itemId, null);
         }
     });
