@@ -17,13 +17,13 @@ ADMINS = (
 
 # Export a unique value in production; for local development, the default value is good enough
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
-                            'psu&amp;&amp;83=i(4wgd@9*go=nps9=1rw#9b_w6psy4mp6yoxqv1i5g')
+                            'psu&83=i(4wgd@9*go=nps9=1rw#9b_w6psy4mp6yoxqv1i5g')
 
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', False)))
 
 ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = True
-SECURE_SSL_REDIRECT = os.environ.get('DJANGO_ENABLE_SSL', True)
+SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', True)))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
