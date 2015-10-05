@@ -19,8 +19,7 @@ ADMINS = (
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
                             'psu&amp;&amp;83=i(4wgd@9*go=nps9=1rw#9b_w6psy4mp6yoxqv1i5g')
 
-DEBUG = os.environ.get('DJANGO_DEBUG', False)
-TEMPLATE_DEBUG = DEBUG
+DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', False)))
 
 ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = True
@@ -66,25 +65,29 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'eggtimer.urls'
 
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    BASE_DIR + '/eggtimer/templates/',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.request",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    "settings_context_processor.context_processors.settings",
-)
-
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            BASE_DIR + '/eggtimer/templates/',
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                "django.contrib.auth.context_processors.auth",
+                "django.core.context_processors.debug",
+                "django.core.context_processors.i18n",
+                "django.core.context_processors.media",
+                "django.core.context_processors.request",
+                "django.core.context_processors.static",
+                "django.core.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
+                "settings_context_processor.context_processors.settings",
+            ],
+            'debug': DEBUG,
+        },
+    },
+]
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'eggtimer.wsgi.application'
