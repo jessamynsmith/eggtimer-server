@@ -15,7 +15,7 @@ ADMINS = (
 )
 
 
-# Export a unique value in production; for local development, the default value is good enough
+# Export a secret value in production; for local development, the default is good enough
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
                             'psu&83=i(4wgd@9*go=nps9=1rw#9b_w6psy4mp6yoxqv1i5g')
 
@@ -60,6 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 )
 
 ROOT_URLCONF = 'eggtimer.urls'
@@ -151,7 +152,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_LOGOUT_ON_GET=True
+ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
