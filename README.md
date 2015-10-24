@@ -78,6 +78,7 @@ Make a new Heroku app, and add the following addons:
 	  New Relic APM
 	  Papertrail
 	  Heroku Scheduler
+	  Dead Man's Snitch
 
 Enable the project on coveralls.io, and copy the repo token
 
