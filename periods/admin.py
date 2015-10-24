@@ -31,6 +31,7 @@ class UserAdmin(EmailUserAdmin):
                                        'groups', 'user_permissions')}),
     )
     search_fields = ['email', 'first_name', 'last_name']
+    readonly_fields = ['cycle_count']
 
 
 admin.site.register(models.FlowEvent, FlowAdmin)
