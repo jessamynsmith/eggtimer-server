@@ -35,10 +35,8 @@ class User(AbstractEmailUser):
     def cycle_count(self):
         return self.first_days().count()
 
-    def get_previous_period(self, previous_to=None):
-        previous_periods = self.first_days()
-        if previous_to:
-            previous_periods = previous_periods.filter(timestamp__lte=previous_to)
+    def get_previous_period(self, previous_to):
+        previous_periods = self.first_days().filter(timestamp__lte=previous_to)
         previous_periods = previous_periods.order_by('-timestamp')
         if previous_periods.exists():
             return previous_periods[0]
@@ -229,7 +227,8 @@ class Statistics(models.Model):
     @property
     def predicted_events(self):
         events = []
-        previous_period = self.user.get_previous_period()
+        today_date = today()
+        previous_period = self.user.get_previous_period(previous_to=today_date)
         if previous_period:
             for i in range(1, 4):
                 ovulation_date = (previous_period.timestamp + datetime.timedelta(

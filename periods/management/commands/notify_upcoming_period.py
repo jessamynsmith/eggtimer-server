@@ -19,6 +19,8 @@ class Command(BaseCommand):
         for user in users:
             today = period_models.today()
             upcoming_events = user.statistics.predicted_events
+            if not upcoming_events:
+                continue
             # The upcoming events are in date order, ovulation/period/ovulation/...
             expected_date = upcoming_events[1]['timestamp']
             expected_in = (expected_date - today.date()).days

@@ -48,6 +48,15 @@ class TestCommand(TestCase):
 
     @patch('periods.email_sender.send')
     @patch('periods.models.today')
+    def test_notify_upcoming_period_all_events_in_future(self, mock_today, mock_send):
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 1, 15))
+
+        self.command.handle()
+
+        self.assertFalse(mock_send.called)
+
+    @patch('periods.email_sender.send')
+    @patch('periods.models.today')
     def test_notify_upcoming_period_ovulation(self, mock_today, mock_send):
         mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 3, 14))
 
