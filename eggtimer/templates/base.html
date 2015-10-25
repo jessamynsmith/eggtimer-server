@@ -76,12 +76,17 @@
 
 {% block footer %}
   <div class="footer">
-    <p class="small center">Found a bug? Have a feature request? Please
-      <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">
-        let us know</a>.
-    </p>
+    <div class="center">
+      <div>Found a bug? Have a feature request? Please
+        <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">
+          let us know</a>. You can also check out the
+        <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server">source code</a> yourself!
+      </div>
 
-    <p class="small center grey">Version {{ VERSION }}, Deployed {{ DEPLOY_DATE|date:"M d, Y, H:i:s e" }}</p>
+      <div class="grey">Version {{ VERSION }}, Deployed
+        {{ DEPLOY_DATE|date:"M d, Y, H:i:s e" }}
+      </div>
+    </div>
   </div>
 {% endblock %}
 
