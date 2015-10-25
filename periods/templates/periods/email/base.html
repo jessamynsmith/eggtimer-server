@@ -1,0 +1,54 @@
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">
+
+  <div style="padding: 11px; padding-bottom: 14px; color: #ffffff; background-color:#700a0a;">
+    <img style="display: block; float:left; margin-top: 5px; margin-right: 10px;"
+         src="{{ full_domain }}/static/img/logo.png" alt="logo">
+        <span style="display: inline-block;">
+        <span style="font-size: 22px;">egg timer</span><br>
+        <span style="font-size: 12px; margin-left: 1px;">know your cycles</span>
+        </span>
+  </div>
+
+  <br>
+
+  <p>
+    Hello {{ full_name }},
+    <br><br>
+    {% block content %}{% endblock %}
+    <br><br>
+    Cheers!
+    <br>
+    {{ admin_name }}
+  </p>
+  <br>
+
+  <hr>
+
+  <div style="width: 100%; padding: 8px; text-align: center;">
+
+  <span
+    style="width: auto; display: inline-block; padding: 6px 12px; background-color: #700a0a; border-radius: 3px; cursor: pointer;">
+    <a style="text-decoration: none; color: #ffffff;" target="_blank"
+       href="{{ full_domain }}{% url 'calendar' %}">
+      Check your calendar
+    </a>
+  </span>
+
+    <p margin="8px">
+      Found a bug? Have a feature request?
+      <br>
+      Please
+      <a href="https://github.com/jessamynsmith/eggtimer-server/issues" target="_blank">
+        let us know</a>.
+    </p>
+
+  <span
+    style="width: auto; display: inline-block; padding: 6px 12px; background-color: #c0c0c0; border-radius: 3px; cursor: pointer;">
+    <a style="text-decoration: none; color: #000000;" target="_blank"
+       href="{{ full_domain }}{% url 'user_profile' %}">Disable email
+      notifications</a>
+  </span>
+
+  </div>
+
+</div>

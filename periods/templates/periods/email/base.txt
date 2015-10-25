@@ -2,3 +2,7 @@ Hello {{ full_name }},
 {% block content %}{% endblock %}
 Cheers!
 {{ admin_name }}
+
+Check your calendar: {{full_domain}}{% url 'calendar' %}
+Found a bug? Have a feature request? Please let us know: https://github.com/jessamynsmith/eggtimer-server/issues
+Disable email notifications: {{full_domain}}{% url 'user_profile' %}

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="{{ STATIC_URL }}img/favicon.ico">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}">
 
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.min.css">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
@@ -34,8 +35,7 @@
     });
   </script>
 
-  {% load staticfiles %}
-  <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css" media="screen">
 
   <title>{% block title %}{% endblock %}</title>
 
@@ -63,7 +63,7 @@
 
   <div class="navbar-header">
     <a class="brand" href="{% url 'calendar' %}">
-      <img src="{{ STATIC_URL }}img/logo.png" alt="egg timer logo">
+      <img src="{% static 'img/logo.png' %}" alt="egg timer logo">
       <span>egg timer</span><br>
       <span class="small">know your cycles</span>
     </a>
@@ -76,9 +76,10 @@
 
 {% block footer %}
   <div class="footer">
-    <p class="small center">Issues? Please
-      <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">let us
-        know</a>.</p>
+    <p class="small center">Found a bug? Have a feature request? Please
+      <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">
+        let us know</a>.
+    </p>
 
     <p class="small center grey">Version {{ VERSION }}, Deployed {{ DEPLOY_DATE }}</p>
   </div>

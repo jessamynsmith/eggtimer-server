@@ -1,9 +1,11 @@
+import datetime
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 from django.template import Context
 
-from periods import models as period_models, email_sender
+from periods import models as period_models, email_sender, helpers
 
 
 class Command(BaseCommand):
@@ -23,6 +25,7 @@ class Command(BaseCommand):
                 continue
             # The upcoming events are in date order, ovulation/period/ovulation/...
             expected_date = upcoming_events[1]['timestamp']
+            calendar_start_date = expected_date - datetime.timedelta(days=7)
             expected_in = (expected_date - today.date()).days
             expected_abs = abs(expected_in)
             if expected_abs == 1:
@@ -36,7 +39,9 @@ class Command(BaseCommand):
                 'expected_in': expected_abs,
                 'day': day,
                 'expected_date': self._format_date(expected_date),
-                'site_name': settings.ADMINS[0][0]
+                'calendar_start_date': self._format_date(calendar_start_date),
+                'admin_name': settings.ADMINS[0][0],
+                'full_domain': helpers.get_full_domain(),
             })
 
             subject = ''
@@ -47,11 +52,12 @@ class Command(BaseCommand):
                 subject = "Period today!"
                 template_name = 'expected_now'
             elif expected_in < 4:
-                subject = "Period expected in %s %s" % (expected_in, day)
+                subject = "Period starting"
                 template_name = 'expected_in'
             elif expected_in == user.luteal_phase_length:
                 subject = "Ovulation today!"
                 template_name = 'ovulating'
             if subject:
                 plaintext = get_template('periods/email/%s.txt' % template_name)
-                email_sender.send(user, subject, plaintext.render(context), None)
+                html = get_template('periods/email/%s.html' % template_name)
+                email_sender.send(user, subject, plaintext.render(context), html.render(context))

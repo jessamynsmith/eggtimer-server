@@ -1,0 +1,9 @@
+{% extends "periods/email/base.html" %}
+
+{% block content %}
+You should have gotten your period {{ expected_in }} {{ day }} ago, on {{ expected_date}}.
+  <br>
+Did you forget to
+  <a target="_blank" href="{{full_domain}}{% url 'calendar' %}?start_date={{ calendar_start_date }}">
+add your last period</a>?
+{% endblock %}

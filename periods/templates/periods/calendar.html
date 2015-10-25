@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Periods for {{ user.get_full_name }}{% endblock %}
 
@@ -9,11 +10,11 @@
             src="//cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.4.0/moment-timezone-with-data-2010-2020.min.js"></script>
     <script type='text/javascript'
             src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.6/fullcalendar.min.js'></script>
-    <script type='text/javascript' src='{{ STATIC_URL }}periods/js/calendar.js'></script>
+    <script type='text/javascript' src="{% static 'periods/js/calendar.js' %}"></script>
 
     <link rel='stylesheet' type='text/css'
           href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.6/fullcalendar.min.css' >
-    <link rel="stylesheet" href="{{ STATIC_URL }}periods/css/calendar.css" type="text/css" media="screen" >
+    <link rel="stylesheet" href="{% static 'periods/css/calendar.css' %}" type="text/css" media="screen" >
 
 	<script type='text/javascript'>
 		$(document).ready(function() {
