@@ -189,7 +189,7 @@ REST_FRAMEWORK = {
 
 # TODO maybe this could be a django plugin?
 DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
-VERSION = '0.5'
+VERSION = '0.6'
 TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION']
 
 
