@@ -93,6 +93,8 @@ a new build.
 Once your app is deployed successfully, you can add the Scheduler task on Heroku:
 
     python manage.py notify_upcoming_period --settings=eggtimer.settings
+    
+You can also set up Dead Man's Snitch so you will know if the scheduled task fails.
 
 
 Thank you to:
