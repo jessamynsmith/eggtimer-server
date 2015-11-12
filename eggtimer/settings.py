@@ -174,7 +174,7 @@ EMAIL_USE_TLS = True
 
 if not EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    EMAIL_FILE_PATH = '%s/Development/django_emails/eggtimer/emails' % HOME_DIR
+    EMAIL_FILE_PATH = '%s/Development/django_files/eggtimer/emails' % HOME_DIR
 
 
 # TODO Once Ionic app is done, perhaps remove session authentication?
