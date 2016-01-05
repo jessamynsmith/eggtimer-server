@@ -166,6 +166,9 @@ ACCOUNT_ACTIVATION_DAYS = 14
 
 # If Heroku addons start using EMAIL_URL, switch to dj-email-url
 DEFAULT_FROM_EMAIL = formataddr(ADMINS[0])
+REPLY_TO = (
+    os.environ.get('REPLY_TO_EMAIL', 'example@example.com'),
+)
 EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
 EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
 EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')

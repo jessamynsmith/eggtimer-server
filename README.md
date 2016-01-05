@@ -64,6 +64,12 @@ Run JavaScript tests:
 
     mocha -R html-cov */tests/static/*/js/* > ~/eggtimer_javascript_coverage.html
     
+Retrieve data from the API with curl. <AUTH_TOKEN> can be found in your account info.
+
+curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/statistics/" | python -m json.tool
+
+curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/periods/" | python -m json.tool
+    
     
 Continuous Integration and Deployment
 -------------------------------------

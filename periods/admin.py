@@ -1,5 +1,6 @@
 from custom_user.admin import EmailUserAdmin
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 from periods import models
@@ -36,4 +37,4 @@ class UserAdmin(EmailUserAdmin):
 
 admin.site.register(models.FlowEvent, FlowAdmin)
 admin.site.register(models.Statistics, StatisticsAdmin)
-admin.site.register(models.User, UserAdmin)
+admin.site.register(get_user_model(), UserAdmin)
