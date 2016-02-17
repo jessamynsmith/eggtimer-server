@@ -69,6 +69,10 @@ Retrieve data from the API with curl. <AUTH_TOKEN> can be found in your account 
 curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/statistics/" | python -m json.tool
 
 curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/periods/" | python -m json.tool
+
+You can filter based on minimum and maximum timestamp of the events:
+
+curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/periods/?min_timestamp=2016-01-19&max_timestamp=2016-01-20" | python -m json.tool
     
     
 Continuous Integration and Deployment
