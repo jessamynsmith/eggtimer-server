@@ -5,15 +5,12 @@ import os
 import dj_database_url
 from email.utils import formataddr
 
-
 HOME_DIR = os.path.expanduser("~")
 BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-
 
 ADMINS = (
     (os.environ.get('ADMIN_NAME', 'admin'), os.environ.get('ADMIN_EMAIL', 'example@example.com')),
 )
-
 
 # Export a secret value in production; for local development, the default is good enough
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
@@ -25,7 +22,6 @@ ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = True
 SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', True)))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -65,7 +61,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'eggtimer.urls'
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -93,12 +88,10 @@ TEMPLATES = [
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
-
 # Parse database configuration from $DATABASE_URL
 DATABASES = {
     'default': dj_database_url.config(default="sqlite:///%s/eggtimer.sqlite" % HOME_DIR)
 }
-
 
 SITE_ID = 1
 
@@ -114,13 +107,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-
 
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
@@ -133,10 +124,8 @@ STATICFILES_DIRS = (
     BASE_DIR + '/eggtimer/static/',
 )
 
-
 MEDIA_ROOT = 'media'
 MEDIA_URL = '/media/'
-
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -163,7 +152,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 ACCOUNT_ACTIVATION_DAYS = 14
 
-
 # If Heroku addons start using EMAIL_URL, switch to dj-email-url
 DEFAULT_FROM_EMAIL = formataddr(ADMINS[0])
 REPLY_TO = (
@@ -179,9 +167,11 @@ if not EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = '%s/Development/django_files/eggtimer/emails' % HOME_DIR
 
-
 # TODO Once Ionic app is done, perhaps remove session authentication?
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -194,7 +184,6 @@ REST_FRAMEWORK = {
 DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
 VERSION = '0.6'
 TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION']
-
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 

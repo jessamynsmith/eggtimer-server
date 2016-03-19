@@ -13,10 +13,10 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 from periods import forms as period_forms, models as period_models, serializers
 
@@ -58,6 +58,7 @@ class StatisticsViewSet(viewsets.ModelViewSet):
 
 @csrf_exempt
 @api_view(['POST'])
+@permission_classes([permissions.AllowAny])
 def api_authenticate(request):
     user = None
     data = None
