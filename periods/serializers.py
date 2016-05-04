@@ -4,24 +4,28 @@ from rest_framework import serializers
 from periods import models as period_models
 
 
+class NullableEnumField(serializers.ChoiceField):
+    """
+    Field that handles empty entries for EnumFields
+    """
+
+    def __init__(self, enum, **kwargs):
+        super(NullableEnumField, self).__init__(enum.choices(), allow_blank=True, required=False)
+
+    def to_internal_value(self, data):
+        if data == '' and self.allow_blank:
+            return None
+
+        return super(NullableEnumField, self).to_internal_value(data)
+
+
 class FlowEventSerializer(serializers.ModelSerializer):
+    clots = NullableEnumField(period_models.ClotSize)
+    cramps = NullableEnumField(period_models.CrampLevel)
 
     class Meta:
         model = period_models.FlowEvent
         exclude = ('user',)
-
-    def _validate_nullable_choice_field(self, value, choices):
-        # TODO submit patch to drf to handle nullable fields and coerce like Django does?
-        # Coerce empty values to None
-        if not value and value not in choices:
-            value = None
-        return value
-
-    def validate_clots(self, value):
-        return self._validate_nullable_choice_field(value, self.fields['clots'].choices)
-
-    def validate_cramps(self, value):
-        return self._validate_nullable_choice_field(value, self.fields['cramps'].choices)
 
 
 class FlowEventFilter(django_filters.FilterSet):
