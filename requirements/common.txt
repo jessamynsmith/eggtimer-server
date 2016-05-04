@@ -10,7 +10,7 @@ django-filter==0.11.0
 django-floppyforms==1.5.2
 django-settings-context-processor==0.2
 django-timezone-field==1.2
--e git://github.com/jessamynsmith/django-enumfield.git@9048ede96ab9af597da6dd70ee9c36f757b99bb4#egg=django_enumfield-origin_allow_blank_choice
+django-enumfield==1.2.1
 djangorestframework==3.1.1
 gunicorn==19.3.0
 mimeparse==0.1.3
