@@ -64,6 +64,19 @@ Run JavaScript tests:
 
     mocha -R html-cov */tests/static/*/js/* > ~/eggtimer_javascript_coverage.html
     
+To run Selenium tests, you must have chromedriver installed:
+ 
+     brew install chromedriver
+     
+Next you need to create a Django admin user and then export the email and password for that user as environment variables:
+
+    export SELENIUM_ADMIN_EMAIL='<EMAIL_VALUE>'
+    export SELENIUM_ADMIN_PASSWORD='<PASSWORD_VALUE>'
+    
+Finally, ensure the server is running, and run the selenium tests:
+
+    nosetests selenium/
+    
 Retrieve data from the API with curl. <AUTH_TOKEN> can be found in your account info.
 
 curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/statistics/" | python -m json.tool
@@ -84,11 +97,11 @@ and Heroku.
 Make a new Heroku app, and add the following addons:
 
     Heroku Postgres
-	  Mailgun
-	  New Relic APM
-	  Papertrail
-	  Heroku Scheduler
-	  Dead Man's Snitch
+	Mailgun
+	New Relic APM
+	Papertrail
+	Heroku Scheduler
+	Dead Man's Snitch
 
 Enable the project on coveralls.io, and copy the repo token
 
