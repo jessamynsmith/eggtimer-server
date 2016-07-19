@@ -24,10 +24,16 @@ class User(AbstractEmailUser):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
 
     # TODO enter birth_date in user-specified timezone
-    timezone = TimeZoneField(default='America/New_York')
+    # Ugly workaround to prevent Django allauth from trying and failing to serialize timezone
+    _timezone = TimeZoneField(default='America/New_York')
     send_emails = models.BooleanField(_('send emails'), default=True)
     birth_date = models.DateTimeField(_('birth date'), null=True, blank=True)
     luteal_phase_length = models.IntegerField(_('luteal phase length'), default=14)
+
+    # Convenience method so we can use timezone rather than _timezone in most code
+    @property
+    def timezone(self):
+        return self._timezone
 
     def first_days(self):
         return self.flow_events.filter(first_day=True).order_by('timestamp')

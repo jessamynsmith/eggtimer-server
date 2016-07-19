@@ -9,7 +9,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ['first_name', 'last_name', 'send_emails', 'timezone', 'birth_date',
+        fields = ['first_name', 'last_name', 'send_emails', '_timezone', 'birth_date',
                   'luteal_phase_length']
 
 

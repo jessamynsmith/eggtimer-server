@@ -6,11 +6,13 @@ from django.db import migrations
 
 
 def update_averages(apps, schema_editor):
-    User = auth.get_user_model()
-    for user in User.objects.all():
-        period = user.get_previous_period()
-        if period:
-            period.save()
+    pass
+    # This code has been run and served its purpose, and does not work with the new user model
+    # User = auth.get_user_model()
+    # for user in User.objects.all():
+    #     period = user.get_previous_period()
+    #     if period:
+    #         period.save()
 
 
 def reverse_update_averages(apps, schema_editor):

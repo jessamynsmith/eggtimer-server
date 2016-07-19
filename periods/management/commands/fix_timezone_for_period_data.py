@@ -30,7 +30,7 @@ Are you sure you want to do this?
             confirm = 'yes'
 
         for user in users:
-            user_timezone = pytz.timezone(user.timezone.zone)
+            user_timezone = pytz.timezone(user._timezone.zone)
             print("User: %s (%s)" % (user.email, user_timezone))
             for flow_event in user.flow_events.all().order_by('timestamp'):
                 timestamp = flow_event.timestamp

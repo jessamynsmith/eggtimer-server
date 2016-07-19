@@ -26,7 +26,8 @@ class UserAdmin(EmailUserAdmin):
                     'send_emails']
     fieldsets = (
         (None, {'fields': ('first_name', 'last_name', 'email', 'password')}),
-        (_('Settings'), {'fields': ('send_emails', 'luteal_phase_length', 'birth_date')}),
+        (_('Settings'), {'fields': ('_timezone', 'send_emails', 'luteal_phase_length',
+                                    'birth_date')}),
         (_('General Information'), {'fields': ('last_login', 'date_joined', 'cycle_count')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
