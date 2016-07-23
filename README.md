@@ -22,7 +22,22 @@ to be the actual path to python3 on your system.
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
-Set environment variables as needed (check settings.py for values).
+Set environment variables as desired. Recommended dev settings:
+
+    DJANGO_DEBUG=1
+    DJANGO_ENABLE_SSL=0
+
+Optional environment variables, generally only required in production:
+
+    ADMIN_NAME
+    ADMIN_EMAIL
+    DJANGO_SECRET_KEY
+    REPLY_TO_EMAIL
+    MAILGUN_SMTP_SERVER
+    MAILGUN_SMTP_PORT
+    MAILGUN_SMTP_LOGIN
+    MAILGUN_SMTP_PASSWORD
+    DEPLOY_DATE
 
 Set up db:
 
