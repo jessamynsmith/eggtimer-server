@@ -45,8 +45,12 @@ Generate graph of data models, e.g.:
 
 Run server:
 
-    python manage.py runserver
-    
+    DEBUG=1 DJANGO_ENABLE_SSL=0 python manage.py runserver
+
+Serve static files:
+
+    python manage.py collectstatic
+
 The javascript linter and tests require you to install node, then:
 
     npm install -g jshint mocha blanket moment moment-timezone
