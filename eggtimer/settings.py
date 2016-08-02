@@ -90,7 +90,9 @@ WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
 # Parse database configuration from $DATABASE_URL
 DATABASES = {
-    'default': dj_database_url.config(default="sqlite:///%s/eggtimer.sqlite" % HOME_DIR)
+    'default': dj_database_url.config(
+        default="sqlite:///%s" % os.path.join(HOME_DIR, 'eggtimer', 'eggtimer.sqlite')
+    )
 }
 
 SITE_ID = 1
@@ -165,7 +167,7 @@ EMAIL_USE_TLS = True
 
 if not EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    EMAIL_FILE_PATH = '%s/Development/django_files/eggtimer/emails' % HOME_DIR
+    EMAIL_FILE_PATH = os.path.join(HOME_DIR, 'eggtimer', 'emails')
 
 # TODO Once Ionic app is done, perhaps remove session authentication?
 REST_FRAMEWORK = {
