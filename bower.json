@@ -1,0 +1,30 @@
+{
+  "name": "eggtimer",
+  "authors": [
+    "Jessamyn Smith <jessamyn.smith@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "homepage": "eggtimer.herokuapp.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.3.5",
+    "jquery": "~2.1.4",
+    "jquery-ui": "~1.11.4",
+    "jquery.serializeJSON": "^2.7.2",
+    "js-cookie": "~2.0.4",
+    "moment": "~2.10.6",
+    "moment-timezone": "~0.4.1",
+    "bootstrap3-dialog": "bootstrap-dialog#^1.35.2",
+    "fullcalendar": "^2.9.1",
+    "highstock": "^3.0.1"
+  }
+}

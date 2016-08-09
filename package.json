@@ -1,0 +1,24 @@
+{
+  "name": "eggtimer",
+  "version": "0.0.1",
+  "description": "eggtimer",
+  "main": "",
+  "scripts": {
+    "postinstall": "bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/jessamynsmith/eggtimer-server.git"
+  },
+  "author": "Jessamyn Smith",
+  "homepage": "http://eggtimer.herokuapp.com/",
+  "dependencies": {
+    "bower": "^1.6.5"
+  },
+  "devDependencies": {
+    "blanket": "^1.2.3",
+    "jshint": "^2.8.0",
+    "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0"
+  }
+}

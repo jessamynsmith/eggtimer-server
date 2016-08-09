@@ -12,7 +12,7 @@ dependencies:
     override:
         - pip install -r requirements/development.txt
         - gem install coveralls-lcov
-        - npm install jshint mocha blanket mocha-lcov-reporter moment moment-timezone
+        - npm install
 
 test:
     override:

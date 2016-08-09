@@ -99,7 +99,7 @@ doAjax = function(url, method, itemId, data) {
         type: method,
         data: JSON.stringify(data),
         beforeSend: function(jqXHR, settings) {
-            jqXHR.setRequestHeader("X-CSRFToken", $.cookie('csrftoken'));
+            jqXHR.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
         },
         success: function(data, textStatus, jqXHR) {
             console.log(method + " on " + itemId + " succeeded");

@@ -4,17 +4,14 @@
 {% block title %}Periods for {{ user.get_full_name }}{% endblock %}
 
 {% block head %}
-	<script type="text/javascript"
-            src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-	<script type="text/javascript"
-            src="//cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.4.0/moment-timezone-with-data-2010-2020.min.js"></script>
-    <script type='text/javascript'
-            src='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.6/fullcalendar.min.js'></script>
-    <script type='text/javascript' src="{% static 'periods/js/calendar.js' %}"></script>
-
     <link rel='stylesheet' type='text/css'
-          href='//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.6/fullcalendar.min.css' >
+          href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}" >
     <link rel="stylesheet" href="{% static 'periods/css/calendar.css' %}" type="text/css" media="screen" >
+
+    <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'moment-timezone/builds/moment-timezone-with-data-2010-2020.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js' %}"></script>
+    <script type='text/javascript' src="{% static 'periods/js/calendar.js' %}"></script>
 
 	<script type='text/javascript'>
 		$(document).ready(function() {

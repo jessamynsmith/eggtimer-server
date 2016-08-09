@@ -22,6 +22,10 @@ to be the actual path to python3 on your system.
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
+Ensure you have node installed, then use npm to install JavaScript dependencies:
+
+    npm install
+
 Set environment variables as desired. Recommended dev settings:
 
     DJANGO_DEBUG=1
@@ -61,23 +65,14 @@ Generate graph of data models, e.g.:
 Run server:
 
     python manage.py runserver
-    
-The javascript linter and tests require you to install node, then:
-
-    npm install -g jshint mocha blanket moment moment-timezone
-
-Set up your environment to know about node. NOTE! You must change 'path/to/node_modules' to be
-the actual path to node modules on your system.
-
-    export NODE_PATH=/path/to/node_modules/
 
 Lint JavaScript:
 
-    jshint */static/*/js
+    ./node_modules/jshint/bin/jshint */static/*/js
     
 Run JavaScript tests:
 
-    mocha -R html-cov */tests/static/*/js/* > ~/eggtimer_javascript_coverage.html
+    mocha --require-blanket -R html-cov */tests/static/*/js/* > ~/eggtimer_javascript_coverage.html
     
 To run Selenium tests, you must have chromedriver installed:
  
