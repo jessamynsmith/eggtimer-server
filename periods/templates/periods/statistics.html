@@ -3,11 +3,6 @@
 
 {% block title %}Statistics for {{ user.get_full_name }}{% endblock %}
 
-{% block head %}
-  <script type='text/javascript' src="{% static 'highstock/js/highstock.src.js' %}"></script>
-  <script type='text/javascript' src="{% static 'periods/js/statistics.js' %}"></script>
-{% endblock %}
-
 {% block content %}
   <div>
     <select id="id_select_statistics">
@@ -91,4 +86,9 @@
     Would you like to <a href="{% url 'user_profile' %}">add a birth date</a> to your profile?
   </div>
 
+{% endblock %}
+
+{% block extra_js %}
+  <script type='text/javascript' src="{% static 'highstock/js/highstock.src.js' %}"></script>
+  <script type='text/javascript' src="{% static 'periods/js/statistics.js' %}"></script>
 {% endblock %}

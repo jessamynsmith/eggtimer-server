@@ -1,14 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}API Info for {{ user.get_full_name }}{% endblock %}
-
-{% block head %}
-	<script type='text/javascript'>
-		$(document).ready(function() {
-            $('#id_birth_date').attr('placeholder', 'YYYY-MM-DD');
-        });
-	</script>
-{% endblock %}
 
 {% block content %}
 	<h4>API Info for {{ user.get_full_name }}</h4>
@@ -34,4 +27,8 @@
     curl -v -k -X GET -H "Content-Type: application/json" -H 'Authorization: Token {{ user.auth_token.key }}' "{{ periods_url }}" | python -m json.tool
     </div>
 
+{% endblock %}
+
+{% block extra_js %}
+	<script type='text/javascript' src="{% static 'periods/js/api_info.js' %}"></script>
 {% endblock %}

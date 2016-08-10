@@ -3,11 +3,17 @@
 
 {% block title %}Periods for {{ user.get_full_name }}{% endblock %}
 
-{% block head %}
+{% block extra_head %}
     <link rel='stylesheet' type='text/css'
           href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}" >
     <link rel="stylesheet" href="{% static 'periods/css/calendar.css' %}" type="text/css" media="screen" >
+{% endblock %}
 
+{% block content %}
+    <div id='id_calendar'></div>
+{% endblock %}
+
+{% block extra_js %}
     <script type="text/javascript" src="{% static 'moment/min/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'moment-timezone/builds/moment-timezone-with-data-2010-2020.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'fullcalendar/dist/fullcalendar.min.js' %}"></script>
@@ -19,8 +25,4 @@
                 '{{ request.user.timezone.zone }}');
         });
 	</script>
-{% endblock %}
-
-{% block content %}
-    <div id='id_calendar'></div>
 {% endblock %}

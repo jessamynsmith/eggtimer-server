@@ -1,14 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Account Info for {{ user.get_full_name }}{% endblock %}
-
-{% block head %}
-	<script type='text/javascript'>
-		$(document).ready(function() {
-            $('#id_birth_date').attr('placeholder', 'YYYY-MM-DD');
-        });
-	</script>
-{% endblock %}
 
 {% block content %}
 	<h4>Account Info for {{ user.get_full_name }}</h4>
@@ -33,4 +26,8 @@
     <a href="{% url 'api_info' %}">API Info</a>
     </div>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script type='text/javascript' src="{% static 'periods/js/profile.js' %}"></script>
 {% endblock %}
