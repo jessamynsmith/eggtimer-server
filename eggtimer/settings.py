@@ -183,6 +183,12 @@ REST_FRAMEWORK = {
 }
 
 
+# Aeris API is used for moon phases
+AERIS_URL = 'https://api.aerisapi.com'
+AERIS_CLIENT_ID = os.environ.get('AERIS_CLIENT_ID')
+AERIS_CLIENT_SECRET = os.environ.get('AERIS_CLIENT_SECRET')
+
+
 # TODO maybe this could be a django plugin?
 DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
 VERSION = '0.6'

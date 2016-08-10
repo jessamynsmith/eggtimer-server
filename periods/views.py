@@ -5,7 +5,9 @@ import itertools
 import json
 import math
 import pytz
+import requests
 
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
@@ -85,6 +87,18 @@ def api_authenticate(request):
         return JsonResponse({'token': user.auth_token.key})
 
     return JsonResponse({'error': error}, status=status_code)
+
+
+@api_view(['GET'])
+def aeris(request):
+    moon_phase_url = '%s/sunmoon/moonphases' % settings.AERIS_URL
+    params = {
+        'client_id': settings.AERIS_CLIENT_ID,
+        'client_secret': settings.AERIS_CLIENT_SECRET,
+        'limit': 8
+    }
+    result = requests.get(moon_phase_url, params)
+    return JsonResponse(result.json())
 
 
 @login_required
