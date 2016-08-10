@@ -112,6 +112,11 @@ Make a new Heroku app, and add the following addons:
 	Papertrail
 	Heroku Scheduler
 	Dead Man's Snitch
+	
+Add Heroku buildpacks:
+
+    heroku buildpacks:set heroku/nodejs -i 1
+    heroku buildpacks:set heroku/python -i 2
 
 Enable the project on coveralls.io, and copy the repo token
 
