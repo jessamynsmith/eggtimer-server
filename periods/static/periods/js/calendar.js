@@ -203,7 +203,6 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aeri
         timezone: timezone,
         defaultDate: getDefaultDate(moment, window.location.search),
         height: function() {
-            console.log($('.footer').outerHeight());
             return window.innerHeight - $('.my-navbar').outerHeight() -
                 parseInt($('.content').css('marginTop')) -
                 $('.footer').outerHeight() -
