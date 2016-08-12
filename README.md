@@ -16,15 +16,13 @@ Fork the project on github and git clone your fork, e.g.:
 
     git clone https://github.com/<username>/eggtimer-server.git
 
-Ensure Graphviz is installed. I recommend getting it via [homebrew](http://brew.sh/), along with `pkg-config`: `brew install graphviz pkg-config`
-
 Create a virtualenv using Python 3 and install dependencies. I recommend getting python3 via homebrew as well, then installing [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation) to that python. NOTE! You must change 'path/to/python3'
 to be the actual path to python3 on your system.
 
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
-Ensure you have node installed, then use npm to install JavaScript dependencies:
+Ensure you have node installed (I recommend using homebrew), then use npm to install JavaScript dependencies:
 
     npm install
 
@@ -59,7 +57,12 @@ Check code style:
 
     flake8
 
-Generate graph of data models, e.g.:
+(Optional) Generate graph of data models. In order to do this, you will need to install some extra requirements:
+
+    brew install graphviz pkg-config
+    pip install -r requirements/extensions.txt
+    
+You can then generate graphs, e.g.:
 
     python manage.py graph_models --pygraphviz -a -g -o all_models.png  # all models
     python manage.py graph_models periods --pygraphviz -g -o period_models.png  # period models
