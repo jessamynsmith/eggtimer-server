@@ -185,7 +185,6 @@ editEvent = function(action, timezone, periodsUrl, periodFormUrl, itemId, itemDa
 
 var makeMoonPhaseEvents = function(responseData, moment, timezone) {
     var events = [];
-    console.log(responseData);
     for (var i = 0; i < responseData.length; i++) {
         var event = {
             title: responseData[i].name,
@@ -203,6 +202,13 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aeri
     $('#id_calendar').fullCalendar({
         timezone: timezone,
         defaultDate: getDefaultDate(moment, window.location.search),
+        height: function() {
+            console.log($('.footer').outerHeight());
+            return window.innerHeight - $('.my-navbar').outerHeight() -
+                parseInt($('.content').css('marginTop')) -
+                $('.footer').outerHeight() -
+                12; // Don't know where these extra pixels come from
+        },
         events: function(start, end, timezone, callback) {
             var startDate = formatMomentDate(start);
             var endDate = formatMomentDate(end);

@@ -9,6 +9,7 @@ body {
     margin-left: 5px;
     margin-bottom: 5px;
 }
+
 .my-control-label {
     display: inline;
 }
@@ -27,13 +28,13 @@ p.error_message {
     color: red;
 }
 
-.spacing_top {
+.content {
     margin-top: 10px;
 }
 
 .glyphicon-lg {
-  font-size: 18px;
-  line-height: 1.33;
+    font-size: 18px;
+    line-height: 1.33;
 }
 
 .statistics {
@@ -81,4 +82,10 @@ p.error_message {
 
 .grey {
     color: grey;
+}
+
+@media (max-width: 639px) {
+    .mobile_hidden {
+        display: none;
+    }
 }

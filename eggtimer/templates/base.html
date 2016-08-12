@@ -47,17 +47,18 @@
   </div>
 </nav>
 
-<div class="spacing_top">
+<div class="content">
   {% block content %}{% endblock %}
 </div>
 
 {% block footer %}
   <div class="footer">
     <div class="center">
-      <div>Found a bug? Have a feature request? Please
-        <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">
-          let us know</a>. You can also check out the
-        <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server">source code</a> yourself!
+      <div>Bugs? Feature requests? Please
+        <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server/issues">contact us</a>!
+        <span class="mobile_hidden">
+          <a target="_blank" href="https://github.com/jessamynsmith/eggtimer-server">Source code</a> here.
+        </span>
       </div>
 
       <div class="grey">Version {{ VERSION }}, Deployed
