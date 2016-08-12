@@ -44,18 +44,14 @@ class User(AbstractEmailUser):
     def get_previous_period(self, previous_to):
         previous_periods = self.first_days().filter(timestamp__lte=previous_to)
         previous_periods = previous_periods.order_by('-timestamp')
-        if previous_periods.exists():
-            return previous_periods[0]
-        return None
+        return previous_periods.first()
 
     def get_next_period(self, after=None):
         next_periods = self.first_days()
         if after:
             next_periods = next_periods.filter(timestamp__gte=after)
         next_periods = next_periods.order_by('timestamp')
-        if next_periods.exists():
-            return next_periods[0]
-        return None
+        return next_periods.first()
 
     def get_cache_key(self, data_type):
         return 'user-%s-%s' % (self.pk, data_type)

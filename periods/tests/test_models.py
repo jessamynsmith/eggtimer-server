@@ -71,7 +71,7 @@ class TestStatistics(TestCase):
         self.period = FlowEventFactory()
 
     def test_str(self):
-        stats = period_models.Statistics.objects.filter(user=self.user)[0]
+        stats = period_models.Statistics.objects.filter(user=self.user).first()
 
         self.assertEqual(u'Jessamyn (', ('%s' % stats)[:10])
 
@@ -83,7 +83,7 @@ class TestStatistics(TestCase):
         FlowEventFactory(user=self.period.user,
                          timestamp=TIMEZONE.localize(datetime.datetime(2014, 4, 10)))
 
-        stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
+        stats = period_models.Statistics.objects.filter(user=self.period.user).first()
 
         self.assertEqual(u'Jessamyn (', ('%s' % stats)[:10])
         self.assertEqual(23, stats.average_cycle_length)
@@ -102,7 +102,7 @@ class TestStatistics(TestCase):
         self.assertEqual(expected_events, stats.predicted_events)
 
     def test_current_cycle_length_no_periods(self):
-        stats = period_models.Statistics.objects.filter(user=self.user)[0]
+        stats = period_models.Statistics.objects.filter(user=self.user).first()
 
         self.assertEqual(-1, stats.current_cycle_length)
         self.assertEqual(28, stats.average_cycle_length)
@@ -115,7 +115,7 @@ class TestStatistics(TestCase):
         self.assertEqual([], stats.predicted_events)
 
     def test_set_start_date_and_day_no_periods(self):
-        stats = period_models.Statistics.objects.filter(user=self.user)[0]
+        stats = period_models.Statistics.objects.filter(user=self.user).first()
         min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 2, 12))
 
         stats.set_start_date_and_day(min_timestamp)
@@ -124,7 +124,7 @@ class TestStatistics(TestCase):
         self.assertEqual('', stats.first_day)
 
     def test_set_start_date_and_day_previous_exists(self):
-        stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
+        stats = period_models.Statistics.objects.filter(user=self.period.user).first()
         min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 2, 12))
 
         stats.set_start_date_and_day(min_timestamp)
@@ -133,7 +133,7 @@ class TestStatistics(TestCase):
         self.assertEqual(13, stats.first_day)
 
     def test_set_start_date_and_day_next_exists(self):
-        stats = period_models.Statistics.objects.filter(user=self.period.user)[0]
+        stats = period_models.Statistics.objects.filter(user=self.period.user).first()
         min_timestamp = TIMEZONE.localize(datetime.datetime(2014, 1, 12))
 
         stats.set_start_date_and_day(min_timestamp)
@@ -156,8 +156,8 @@ class TestSignals(TestCase):
 
         groups = self.user.groups.all()
         self.assertEqual(1, groups.count())
-        self.assertEqual(3, groups[0].permissions.count())
-        for permission in groups[0].permissions.all():
+        self.assertEqual(3, groups.first().permissions.count())
+        for permission in groups.first().permissions.all():
             self.assertEqual('_flowevent', permission.codename[-10:])
 
     def test_add_to_permissions_group_group_exists(self):
@@ -171,7 +171,7 @@ class TestSignals(TestCase):
 
         groups = user.groups.all()
         self.assertEqual(1, groups.count())
-        self.assertEqual(0, groups[0].permissions.count())
+        self.assertEqual(0, groups.first().permissions.count())
 
     @patch('periods.models.Statistics.save')
     def test_update_statistics_deleted_user(self, mock_save):

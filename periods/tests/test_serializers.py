@@ -10,7 +10,7 @@ class TestFlowEventViewSet(TestCase):
 
     def setUp(self):
         FlowEventFactory()
-        self.serializer = FlowEventSerializer(instance=period_models.FlowEvent.objects.all()[0])
+        self.serializer = FlowEventSerializer(instance=period_models.FlowEvent.objects.first())
 
     def test_serialization(self):
         result = JSONRenderer().render(self.serializer.data)
