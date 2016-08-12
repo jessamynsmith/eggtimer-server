@@ -210,36 +210,24 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aeri
                 min_timestamp: startDate,
                 max_timestamp: endDate
             };
-            $.ajax({
-                url: periodsUrl,
-                dataType: 'json',
-                data: data,
-                success: function(periodData) {
-                    var newUrl = window.location.protocol + "//" + window.location.host +
-                        window.location.pathname + "?start=" + startDate + "&end=" + endDate;
-                    window.history.pushState({path: newUrl}, '', newUrl);
-                    $.ajax({
-                        url: statisticsUrl,
-                        dataType: 'json',
-                        data: {
-                            min_timestamp: startDate
-                        },
-                        success: function(statisticsData) {
-                            var events = makeEvents(moment, timezone, periodData.concat(statisticsData.predicted_events));
-                            addDayCounts(events.periodStartDates, moment(statisticsData.first_date),
-                                statisticsData.first_day);
-                            // TODO Fetch and add these events later, after calendar has rendered
-                            $.getJSON(aerisUrl, data, function(aerisData) {
-                                if (aerisData.error) {
-                                    console.log(JSON.stringify(aerisData.error));
-                                } else {
-                                    events.events = events.events.concat(makeMoonPhaseEvents(aerisData.response, moment, timezone));
-                                }
-                                callback(events.events);
-                            });
+            $.getJSON(periodsUrl, data, function(periodData) {
+                var newUrl = window.location.protocol + "//" + window.location.host +
+                    window.location.pathname + "?start=" + startDate + "&end=" + endDate;
+                window.history.pushState({path: newUrl}, '', newUrl);
+                $.getJSON(statisticsUrl, {min_timestamp: startDate}, function(statisticsData) {
+                    var events = makeEvents(moment, timezone, periodData.concat(statisticsData.predicted_events));
+                    addDayCounts(events.periodStartDates, moment(statisticsData.first_date),
+                        statisticsData.first_day);
+                    // TODO Fetch and add these events later, after calendar has rendered
+                    $.getJSON(aerisUrl, data, function(aerisData) {
+                        if (aerisData.error) {
+                            console.log(JSON.stringify(aerisData.error));
+                        } else {
+                            events.events = events.events.concat(makeMoonPhaseEvents(aerisData.response, moment, timezone));
                         }
+                        callback(events.events);
                     });
-                }
+                });
             });
         },
         dayClick: function(date, jsEvent, view) {
