@@ -22,7 +22,7 @@
 	<script type='text/javascript'>
 		$(document).ready(function() {
             initializeCalendar('{{ periods_url }}', '{{ statistics_url }}', '{{ period_form_url }}',
-                '{{ request.user.timezone.zone }}');
+                '{{ aeris_url }}', '{{ request.user.timezone.zone }}');
         });
 	</script>
 {% endblock %}

@@ -92,10 +92,14 @@ def api_authenticate(request):
 @api_view(['GET'])
 def aeris(request):
     moon_phase_url = '%s/sunmoon/moonphases' % settings.AERIS_URL
+    from_date = request.GET.get('min_timestamp')
+    to_date = request.GET.get('max_timestamp')
     params = {
         'client_id': settings.AERIS_CLIENT_ID,
         'client_secret': settings.AERIS_CLIENT_SECRET,
-        'limit': 8
+        'limit': 8,
+        'from': from_date,
+        'to': to_date,
     }
     result = requests.get(moon_phase_url, params)
     return JsonResponse(result.json())
@@ -137,6 +141,7 @@ def calendar(request):
         'periods_url': reverse('periods-list'),
         'statistics_url': reverse('statistics-list'),
         'period_form_url': reverse('period_form'),
+        'aeris_url': reverse('aeris'),
     }
 
     return render_to_response('periods/calendar.html', data,

@@ -5,3 +5,26 @@
     padding: 2px;
     color: grey;
 }
+
+.moon {
+    background-color: white;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.new_moon {
+    background-image: url('/static/periods/img/new_moon.png');
+}
+
+.last_quarter {
+    background-image: url('/static/periods/img/last_quarter.png');
+}
+
+.full_moon {
+    background-image: url('/static/periods/img/full_moon.png');
+}
+
+.first_quarter {
+    background-image: url('/static/periods/img/first_quarter.png');
+}

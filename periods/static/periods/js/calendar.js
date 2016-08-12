@@ -9,9 +9,13 @@ formatMomentDate = function(instance) {
     return formatMoment(instance, 'YYYY-MM-DD');
 };
 
+var timezoneDate = function(moment, timezone, dateString) {
+    return moment.tz(dateString, timezone);
+};
+
 makeEvents = function(moment, timezone, data) {
-    events = Array();
-    periodStartDates = Array();
+    var events = [];
+    var periodStartDates = [];
 
     data.forEach(function(item) {
         // TODO say "spotting" for spotting events
@@ -19,7 +23,7 @@ makeEvents = function(moment, timezone, data) {
             title: 'period',
             itemId: item.id,
             itemType: item.type,
-            start: moment.tz(item.timestamp, timezone),
+            start: timezoneDate(moment, timezone, item.timestamp),
             color: '#0f76ed',
             // Maybe someday allow dragging of period events
             editable: false
@@ -72,7 +76,7 @@ getDefaultDate = function(moment, queryString) {
     var defaultDate = null;
     if (queryString && queryString.length) {
         var queries = queryString.substring(1).split("&");
-        for (var i=0; i< queries.length; i++) {
+        for (var i = 0; i < queries.length; i++) {
             var parts = queries[i].split('=');
             if (parts[0] === "start") {
                 startDate = moment(parts[1]);
@@ -135,7 +139,7 @@ editEvent = function(action, timezone, periodsUrl, periodFormUrl, itemId, itemDa
         action: function(dialogRef) {
             dialogRef.close();
         }
-    },{
+    }, {
         id: 'btn-ok',
         label: action,
         cssClass: 'btn-primary',
@@ -179,24 +183,41 @@ editEvent = function(action, timezone, periodsUrl, periodFormUrl, itemId, itemDa
     });
 };
 
-var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, timezone) {
+var makeMoonPhaseEvents = function(responseData, moment, timezone) {
+    var events = [];
+    console.log(responseData);
+    for (var i = 0; i < responseData.length; i++) {
+        var event = {
+            title: responseData[i].name,
+            start: timezoneDate(moment, timezone, responseData[i].dateTimeISO),
+            allDay: true,
+            className: 'moon ' + responseData[i].name.replace(' ', '_'),
+            rendering: 'background'
+        };
+        events.push(event);
+    }
+    return events;
+};
+
+var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aerisUrl, timezone) {
     $('#id_calendar').fullCalendar({
         timezone: timezone,
         defaultDate: getDefaultDate(moment, window.location.search),
         events: function(start, end, timezone, callback) {
             var startDate = formatMomentDate(start);
             var endDate = formatMomentDate(end);
+            var data = {
+                min_timestamp: startDate,
+                max_timestamp: endDate
+            };
             $.ajax({
                 url: periodsUrl,
                 dataType: 'json',
-                data: {
-                    min_timestamp: startDate,
-                    max_timestamp: endDate
-                },
+                data: data,
                 success: function(periodData) {
                     var newUrl = window.location.protocol + "//" + window.location.host +
                         window.location.pathname + "?start=" + startDate + "&end=" + endDate;
-                    window.history.pushState({path:newUrl}, '', newUrl);
+                    window.history.pushState({path: newUrl}, '', newUrl);
                     $.ajax({
                         url: statisticsUrl,
                         dataType: 'json',
@@ -207,7 +228,15 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, time
                             var events = makeEvents(moment, timezone, periodData.concat(statisticsData.predicted_events));
                             addDayCounts(events.periodStartDates, moment(statisticsData.first_date),
                                 statisticsData.first_day);
-                            callback(events.events);
+                            // TODO Fetch and add these events later, after calendar has rendered
+                            $.getJSON(aerisUrl, data, function(aerisData) {
+                                if (aerisData.error) {
+                                    console.log(JSON.stringify(aerisData.error));
+                                } else {
+                                    events.events = events.events.concat(makeMoonPhaseEvents(aerisData.response, moment, timezone));
+                                }
+                                callback(events.events);
+                            });
                         }
                     });
                 }
