@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^api/v2/aeris/', period_views.aeris, name='aeris'),
     url(r'^period_form/$', period_views.period_form, name='period_form'),
     url(r'^period_form/(?P<period_id>[0-9]+)/$', period_views.period_form, name='period_form'),
+    url(r'^periods/$', period_views.FlowEventFormSetView.as_view(), name='periods'),
     url(r'^calendar/$', period_views.calendar, name='calendar'),
     url(r'^statistics/$', period_views.statistics, name='statistics'),
     url(r'^statistics/cycle_length_frequency$', period_views.cycle_length_frequency),

@@ -15,6 +15,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+
+from braces.views import LoginRequiredMixin
+from extra_views import ModelFormSetView
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -133,6 +136,15 @@ def period_form(request, period_id=None):
     }
     return render_to_response('periods/period_form.html', data,
                               context_instance=RequestContext(request))
+
+
+class FlowEventFormSetView(LoginRequiredMixin, ModelFormSetView):
+    model = period_models.FlowEvent
+    exclude = ['user']
+
+    def get_queryset(self):
+        queryset = self.model.objects.filter(user=self.request.user).order_by('-timestamp')
+        return queryset
 
 
 @login_required
