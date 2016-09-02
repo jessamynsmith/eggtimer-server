@@ -141,9 +141,10 @@ def period_form(request, period_id=None):
 class FlowEventFormSetView(LoginRequiredMixin, ModelFormSetView):
     model = period_models.FlowEvent
     exclude = ['user']
+    extra = 10
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(user=self.request.user).order_by('-timestamp')
+        queryset = self.model.objects.filter(user=self.request.user).order_by('timestamp')
         return queryset
 
 
