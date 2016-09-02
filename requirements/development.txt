@@ -1,5 +1,4 @@
 -r common.txt
-PyYAML==3.11
 coverage==4.0
 coveralls==1.0
 django-coverage-plugin==1.0
@@ -13,4 +12,5 @@ paragres==0.6
 pbr==1.8.0
 pep8==1.6.2
 pyflakes==1.0.0
+PyYAML==3.11
 selenium==2.53.6
