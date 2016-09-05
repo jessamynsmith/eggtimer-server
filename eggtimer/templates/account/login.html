@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load account socialaccount bootstrap static %}
+
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-10">
+            <h2>{% trans "Sign In" %}</h2>
+        </div>
+    </div>
+
+    {% get_providers as socialaccount_providers %}
+
+    {% if socialaccount_providers %}
+
+        {% include "socialaccount/snippets/login_extra.html" %}
+
+        <div class="socialaccount_ballot">
+
+            <div class="row">
+                <div class="col-sm-2 col-lg-2"></div>
+                <div class="col-sm-10 col-lg-10">
+                    {% blocktrans with site.name as site_name %}Please sign in with one
+                        of your existing third party accounts.{% endblocktrans %}
+                    <div class="vertical-space"></div>
+                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                </div>
+            </div>
+
+            <div class="text-center login-or"><h3><b>- {% trans 'Or' %} -</b></h3></div>
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-sm-2 col-lg-2"></div>
+        <div class="col-sm-10 col-lg-10">
+            {% blocktrans %}<a href="{{ signup_url }}"><b>Sign up</b></a>
+                for a {{ site_name }} account and sign in below:{% endblocktrans %}
+            <div class="vertical-space"></div>
+        </div>
+    </div>
+
+    <form class="login form-horizontal" method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        {{ form|bootstrap_horizontal }}
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}"
+                   value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <div class="form-group">
+            <div class="col-sm-2 col-lg-2"></div>
+            <div class="col-sm-10 col-lg-10">
+                <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                <span class="horizontal-space"></span>
+                <a class="button secondaryAction" href="{% url 'account_reset_password' %}">
+                    {% trans "Forgot Password?" %}
+                </a>
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript"
+            src="{% static 'js/all_fields_required.js' %}"></script>
+{% endblock %}

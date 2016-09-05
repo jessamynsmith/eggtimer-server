@@ -1,0 +1,14 @@
+{% load account %}{% user_display user as user_display %}{% load i18n %}{% autoescape off %}{% blocktrans %}
+Hello {{ user_display }},{% endblocktrans %}
+
+{% blocktrans with site_name=current_site.name %}Welcome to {{ site_name }}, an open-source menstrual tracking app!
+
+Please confirm your email address at: {{ activate_url }}
+
+If you have any questions please reply to this email.
+
+Cheers!
+{{ site_name }}
+{% endblocktrans %}{% endautoescape %}
+
+Found a bug? Have a feature request? Please let us know: https://github.com/jessamynsmith/eggtimer-server/issues

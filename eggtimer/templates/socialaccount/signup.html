@@ -1,0 +1,40 @@
+{% extends "socialaccount/base.html" %}
+
+{% load i18n static bootstrap %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+    <h2>{% trans "Sign Up" %}</h2>
+
+    <div class="row">
+        <div class="col-sm-2 col-lg-2"></div>
+        <div class="col-sm-10 col-lg-10">
+            {% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are
+        about to use your {{ provider_name }} account to login to
+        {{ site_name }}. As a final step, please complete the following form:{% endblocktrans %}
+            <div class="vertical-space"></div>
+        </div>
+    </div>
+
+    <form class="signup form-horizontal" id="signup_form" method="POST"
+          action="{% url 'socialaccount_signup' %}" data-notify-type="user_signup">
+        {% csrf_token %}
+        {{ form|bootstrap_horizontal }}
+        {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}"
+                   value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <div class="form-group">
+            <div class="col-sm-2 col-lg-2"></div>
+            <div class="col-sm-10 col-lg-10">
+                <button class="btn btn-primary" type="submit">{% trans "Sign Up" %}</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'users/js/signup.js' %}"></script>
+{% endblock %}

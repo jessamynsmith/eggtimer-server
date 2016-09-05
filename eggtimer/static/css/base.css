@@ -24,6 +24,15 @@ body {
     text-align: center;
 }
 
+label:after {
+  color: transparent;
+  content: " *";
+}
+
+label.required:after {
+  color: #d9534f;
+}
+
 p.error_message {
     color: red;
 }
@@ -78,6 +87,11 @@ p.error_message {
 
 .footer {
     padding-top: 12px;
+}
+
+.vertical-space {
+  display: block;
+  height: 12px;
 }
 
 .grey {

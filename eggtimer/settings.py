@@ -192,7 +192,7 @@ AERIS_CLIENT_SECRET = os.environ.get('AERIS_CLIENT_SECRET')
 # TODO maybe this could be a django plugin?
 DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
 VERSION = '0.6'
-TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION']
+TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION', 'ADMINS']
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
