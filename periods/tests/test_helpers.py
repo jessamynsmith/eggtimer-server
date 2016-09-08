@@ -3,7 +3,7 @@ from django.test import TestCase
 from periods import helpers
 
 
-class TestEmailSender(TestCase):
+class TestGetFullDomain(TestCase):
 
     def test_http(self):
         result = helpers.get_full_domain()
