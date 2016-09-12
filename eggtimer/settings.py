@@ -19,7 +19,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', False)))
 
 ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'eggtimer.herokuapp.com'
+)
 SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', True)))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -182,12 +184,10 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
 
-
 # Aeris API is used for moon phases
 AERIS_URL = 'https://api.aerisapi.com'
 AERIS_CLIENT_ID = os.environ.get('AERIS_CLIENT_ID')
 AERIS_CLIENT_SECRET = os.environ.get('AERIS_CLIENT_SECRET')
-
 
 # TODO maybe this could be a django plugin?
 DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
