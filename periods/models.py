@@ -174,7 +174,7 @@ class Statistics(models.Model):
     def cycle_length_mean(self):
         mean = self._get_statistics_value(statistics.mean)
         if mean:
-            mean = round(mean, 1)
+            mean = round(float(mean), 1)
         return mean
 
     @property
