@@ -140,7 +140,7 @@ updateView = function() {
     var viewFunction = window[viewType];
     if (typeof viewFunction === "function") {
         $.ajax({
-            url: viewType,
+            url: viewType + '/',
             contentType: 'application/json',
             success: function (data, textStatus, jqXHR) {
                 if ($.isEmptyObject(data)) {
