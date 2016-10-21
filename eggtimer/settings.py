@@ -117,7 +117,7 @@ CACHES = {
     }
 }
 
-STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # Additional locations of static files
@@ -129,7 +129,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'eggtimer', 'static'),
 )
 
-MEDIA_ROOT = 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 AUTHENTICATION_BACKENDS = (
