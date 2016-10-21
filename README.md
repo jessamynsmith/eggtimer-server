@@ -4,10 +4,9 @@ eggtimer-server
 [![Build Status](https://circleci.com/gh/jessamynsmith/eggtimer-server.svg?style=shield)](https://circleci.com/gh/jessamynsmith/eggtimer-server)
 [![Coverage Status](https://coveralls.io/repos/jessamynsmith/eggtimer-server/badge.svg?branch=master)](https://coveralls.io/r/jessamynsmith/eggtimer-server?branch=master)
 
-Open-source tracker for menstrual periods. Check out the live app:
+The egg timer is an open-source tracker for menstrual periods. It provides a calendar, email notifications, statistical analysis, and an API allowing you to download all your data. Check out the live app:
 https://eggtimer.herokuapp.com/
 
-Note: the front end for this app is being ported to Ionic (see https://github.com/jessamynsmith/eggtimer-ui)
 
 Development
 -----------
