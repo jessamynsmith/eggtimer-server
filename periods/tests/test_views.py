@@ -2,6 +2,7 @@ import datetime
 import json
 import pytz
 
+from django.core.urlresolvers import reverse
 from django.http import HttpRequest, QueryDict, Http404
 from django.test import Client, TestCase
 from mock import patch
@@ -10,7 +11,7 @@ from rest_framework.authtoken.models import Token
 
 from periods import models as period_models, views
 from periods.serializers import FlowEventSerializer
-from periods.tests.factories import FlowEventFactory, UserFactory
+from periods.tests.factories import FlowEventFactory, UserFactory, PASSWORD
 
 
 class TestFlowEventViewSet(TestCase):
@@ -280,33 +281,6 @@ class TestViews(TestCase):
         self.assertContains(response, '<td>Mean:</td>\n        <td>28.0</td>')
         self.assertContains(response, '<td>Mode:</td>\n        <td>28</td>')
 
-    def test_profile_post_invalid_data(self):
-        self.request.method = 'POST'
-        self.request.POST = QueryDict(u'birth_date=blah')
-
-        response = views.profile(self.request)
-
-        user = period_models.User.objects.get(pk=self.request.user.pk)
-        self.assertEqual(pytz.utc.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
-        self.assertContains(response, '<h4>Account Info for %s</h4>' % self.request.user.email)
-
-    def test_profile_post_valid_data(self):
-        self.request.method = 'POST'
-        self.request.POST = QueryDict(u'first_name=Jess&luteal_phase_length=12&'
-                                      u'_timezone=America/New_York')
-
-        response = views.profile(self.request)
-
-        user = period_models.User.objects.get(pk=self.request.user.pk)
-        self.assertEqual(u'Jess', user.first_name)
-        self.assertEqual(12, user.luteal_phase_length)
-        self.assertContains(response, '<h4>Account Info for Jess</h4>')
-
-    def test_profile_get(self):
-        response = views.profile(self.request)
-
-        self.assertContains(response, '<h4>Account Info for Jessamyn</h4>')
-
     def test_api_info(self):
         response = views.api_info(self.request)
 
@@ -328,3 +302,46 @@ class TestViews(TestCase):
 
         self.assertContains(response, '', status_code=302)
         self.assertEquals(api_key, self.request.user.auth_token.key)
+
+
+class TestProfileUpdateView(TestCase):
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.client = Client()
+        self.client.login(email=self.user.email, password=PASSWORD)
+        self.url_path = reverse('user_profile')
+
+    def test_profile_post_invalid_data(self):
+        data = {
+            "birth_date": "blah",
+        }
+
+        response = self.client.post(self.url_path, data=data)
+
+        self.assertEqual(200, response.status_code)
+        user = period_models.User.objects.get(pk=self.user.pk)
+        self.assertEqual(pytz.utc.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
+        self.assertContains(response, '<h4>Account Info for %s</h4>' % user.email)
+
+    def test_profile_post_valid_data(self):
+        data = {
+            "first_name": "Jess",
+            "luteal_phase_length": "12",
+            "_timezone": "America/New_York",
+        }
+
+        response = self.client.post(self.url_path, data=data, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual([('/accounts/profile/', 302)], response.redirect_chain)
+        user = period_models.User.objects.get(pk=self.user.pk)
+        self.assertEqual(u'Jess', user.first_name)
+        self.assertEqual(12, user.luteal_phase_length)
+        self.assertContains(response, '<h4>Account Info for Jess</h4>')
+
+    def test_profile_get(self):
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, '<h4>Account Info for Jessamyn</h4>')

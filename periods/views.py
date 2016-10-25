@@ -10,13 +10,14 @@ import requests
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.edit import UpdateView
 
-from braces.views import LoginRequiredMixin
 from extra_views import ModelFormSetView
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
@@ -24,7 +25,6 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 
 from periods import forms as period_forms, models as period_models, serializers
-
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -244,24 +244,17 @@ def statistics(request):
                               context_instance=RequestContext(request))
 
 
-@login_required
-def profile(request):
-    # TODO give user option to delete account
-    # TODO allow user to change email address?
-    if request.method == 'POST':
-        form = period_forms.UserForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-    else:
-        form = period_forms.UserForm(instance=request.user)
+# TODO give user option to delete account
+# TODO allow user to change email address?
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    fields = ['first_name', 'last_name', 'send_emails', '_timezone', 'birth_date',
+              'luteal_phase_length']
 
-    data = {
-        'form': form,
-        'periods_url': request.build_absolute_uri(reverse('periods-list'))
-    }
+    def get_object(self, *args, **kwargs):
+        return self.request.user
 
-    return render_to_response('periods/profile.html', data,
-                              context_instance=RequestContext(request))
+    def get_success_url(self):
+        return reverse('user_profile')
 
 
 @login_required

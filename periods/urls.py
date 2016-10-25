@@ -13,7 +13,7 @@ router.register(r'statistics', period_views.StatisticsViewSet, base_name='statis
 urlpatterns = [
     url(r'^$', RedirectView.as_view(url='calendar/', permanent=False)),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^accounts/profile/$', period_views.profile, name='user_profile'),
+    url(r'^accounts/profile/$', period_views.ProfileUpdateView.as_view(), name='user_profile'),
     url(r'^accounts/profile/api_info/$', period_views.api_info, name='api_info'),
     url(r'^accounts/profile/regenerate_key/$', period_views.regenerate_key, name='regenerate_key'),
 
