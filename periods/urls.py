@@ -20,13 +20,13 @@ urlpatterns = [
 
     url(r'^api/v2/', include(router.urls)),
     url(r'^api/v2/authenticate/$', period_views.api_authenticate, name='authenticate'),
-    url(r'^api/v2/aeris/$', period_views.aeris, name='aeris'),
+    url(r'^api/v2/aeris/$', period_views.AerisView.as_view(), name='aeris'),
     url(r'^period_form/$', period_views.period_form, name='period_form'),
     url(r'^period_form/(?P<period_id>[0-9]+)/$', period_views.period_form, name='period_form'),
     url(r'^periods/$', period_views.FlowEventFormSetView.as_view(), name='periods'),
     url(r'^calendar/$', period_views.CalendarView.as_view(), name='calendar'),
-    url(r'^statistics/$', period_views.statistics, name='statistics'),
+    url(r'^statistics/$', period_views.StatisticsView.as_view(), name='statistics'),
     url(r'^statistics/cycle_length_frequency/$', period_views.CycleLengthFrequencyView.as_view()),
     url(r'^statistics/cycle_length_history/$', period_views.CycleLengthHistoryView.as_view()),
-    url(r'^statistics/qigong_cycles/$', period_views.qigong_cycles),
+    url(r'^statistics/qigong_cycles/$', period_views.QigongCycleView.as_view()),
 ]

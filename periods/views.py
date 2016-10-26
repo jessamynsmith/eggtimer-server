@@ -5,9 +5,7 @@ import itertools
 import json
 import math
 import pytz
-import requests
 
-from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -93,20 +91,16 @@ def api_authenticate(request):
     return JsonResponse({'error': error}, status=status_code)
 
 
-@api_view(['GET'])
-def aeris(request):
-    moon_phase_url = '%s/sunmoon/moonphases' % settings.AERIS_URL
-    from_date = request.GET.get('min_timestamp')
-    to_date = request.GET.get('max_timestamp')
-    params = {
-        'client_id': settings.AERIS_CLIENT_ID,
-        'client_secret': settings.AERIS_CLIENT_SECRET,
-        'limit': 8,
-        'from': from_date,
-        'to': to_date,
-    }
-    result = requests.get(moon_phase_url, params)
-    return JsonResponse(result.json())
+class AerisView(LoginRequiredMixin, JsonView):
+
+    def get_context_data(self, **kwargs):
+        context = super(AerisView, self).get_context_data(**kwargs)
+        from_date = self.request.GET.get('min_timestamp')
+        to_date = self.request.GET.get('max_timestamp')
+        data = period_models.AerisData.get_for_date(from_date, to_date)
+        if data:
+            context.update(data)
+        return context
 
 
 @login_required
@@ -214,36 +208,35 @@ def _generate_cycles(start_date, today, end_date, cycle_length):
     return cycles
 
 
-@login_required
-def qigong_cycles(request):
-    today = period_models.today()
-    end_date = period_models.today() + datetime.timedelta(days=14)
-    data = {}
-    if request.user.birth_date:
-        data = {
-            'physical': _generate_cycles(request.user.birth_date, today, end_date, 23),
-            'emotional': _generate_cycles(request.user.birth_date, today, end_date, 28),
-            'intellectual': _generate_cycles(request.user.birth_date, today, end_date, 33)
-        }
-    return JsonResponse(data)
+class QigongCycleView(LoginRequiredMixin, JsonView):
+
+    def get_context_data(self, **kwargs):
+        context = super(QigongCycleView, self).get_context_data(**kwargs)
+        today = period_models.today()
+        end_date = period_models.today() + datetime.timedelta(days=14)
+        user = self.request.user
+        if user.birth_date:
+            context['physical'] = _generate_cycles(user.birth_date, today, end_date, 23)
+            context['emotional'] = _generate_cycles(user.birth_date, today, end_date, 28)
+            context['intellectual'] = _generate_cycles(user.birth_date, today, end_date, 33)
+        return context
 
 
-@login_required
-def statistics(request):
-    first_days = list(request.user.first_days().values_list('timestamp', flat=True))
-    graph_types = [
-        ['cycle_length_frequency', 'Cycle Length Frequency'],
-        ['cycle_length_history', 'Cycle Length History'],
-        ['qigong_cycles', 'Qigong Cycles']
-    ]
-    data = {
-        'user': request.user,
-        'first_days': first_days,
+class StatisticsView(TemplateView):
+    template_name = 'periods/statistics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(StatisticsView, self).get_context_data(**kwargs)
+        first_days = list(self.request.user.first_days().values_list('timestamp', flat=True))
+        graph_types = [
+            ['cycle_length_frequency', 'Cycle Length Frequency'],
+            ['cycle_length_history', 'Cycle Length History'],
+            ['qigong_cycles', 'Qigong Cycles']
+        ]
         # TODO days of bleeding, what else?
-        'graph_types': graph_types
-    }
-    return render_to_response('periods/statistics.html', data,
-                              context_instance=RequestContext(request))
+        context['first_days'] = first_days
+        context['graph_types'] = graph_types
+        return context
 
 
 # TODO give user option to delete account

@@ -198,59 +198,6 @@ class TestViews(TestCase):
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_qigong_cycles_no_birth_date(self):
-        self.request.user.birth_date = None
-        self.request.user.save()
-
-        response = views.qigong_cycles(self.request)
-
-        result = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({}, result)
-
-    @patch('periods.models.today')
-    def test_qigong_cycles(self, mock_today):
-        mock_today.return_value = pytz.utc.localize(datetime.datetime(1995, 3, 20))
-
-        response = views.qigong_cycles(self.request)
-
-        result = json.loads(response.content.decode('utf-8'))
-
-        expected = {
-            'physical': [['1995-03-01T00:00:00Z', 0],
-                         ['1995-03-12T12:00:00Z', 100],
-                         ['1995-03-20T00:00:00Z', 27],
-                         ['1995-03-24T00:00:00Z', 0],
-                         ['1995-04-03T00:00:00Z', 96]],
-            'emotional': [['1995-03-01T00:00:00Z', 0],
-                          ['1995-03-15T00:00:00Z', 100],
-                          ['1995-03-20T00:00:00Z', 72],
-                          ['1995-03-29T00:00:00Z', 0],
-                          ['1995-04-03T00:00:00Z', 28]],
-            'intellectual': [['1995-03-01T00:00:00Z', 0],
-                             ['1995-03-17T12:00:00Z', 100],
-                             ['1995-03-20T00:00:00Z', 94],
-                             ['1995-04-03T00:00:00Z', 0]],
-        }
-        self.assertEqual(expected, result)
-
-    def test_statistics_no_data(self):
-        period_models.FlowEvent.objects.all().delete()
-
-        response = views.statistics(self.request)
-
-        self.assertContains(response, '<td>Average (Last 6 Months):</td>\n        <td>28</td>')
-        self.assertContains(response, '<td>Average (All Time):</td>\n        <td>28</td>')
-        self.assertContains(response, '<td>Mean:</td>\n        <td></td>')
-
-    def test_statistics(self):
-        response = views.statistics(self.request)
-
-        self.assertContains(response, '<td>Average (Last 6 Months):</td>\n        <td>28</td>')
-        self.assertContains(response, '<td>Average (All Time):</td>\n        <td>28</td>')
-        self.assertContains(response, '<td>Mean:</td>\n        <td>28.0</td>')
-        self.assertContains(response, '<td>Mode:</td>\n        <td>28</td>')
-
 
 class TestCalendarView(LoggedInUserTestCase):
     def setUp(self):
@@ -282,6 +229,22 @@ class TestStatisticsViewsNoData(LoggedInUserTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual({'cycles': []}, response.json())
 
+    def test_qigong_cycles(self):
+        self.user.birth_date = None
+        self.user.save()
+
+        response = self.client.get('%sqigong_cycles/' % self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({}, response.json())
+
+    def test_statistics(self):
+        response = self.client.get(self.url_path)
+
+        self.assertContains(response, '<td>Average (Last 6 Months):</td>\n        <td>28</td>')
+        self.assertContains(response, '<td>Average (All Time):</td>\n        <td>28</td>')
+        self.assertContains(response, '<td>Mean:</td>\n        <td></td>')
+
 
 class TestStatisticsViewsWithData(LoggedInUserTestCase):
     def setUp(self):
@@ -304,6 +267,40 @@ class TestStatisticsViewsWithData(LoggedInUserTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual({'cycles': [['2014-01-31', 28], ['2014-02-28', 26]]}, response.json())
+
+    @patch('periods.models.today')
+    def test_qigong_cycles(self, mock_today):
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(1995, 3, 20))
+
+        response = self.client.get('%sqigong_cycles/' % self.url_path)
+
+        self.assertEqual(200, response.status_code)
+
+        expected = {
+            'physical': [['1995-03-01T00:00:00Z', 0],
+                         ['1995-03-12T12:00:00Z', 100],
+                         ['1995-03-20T00:00:00Z', 27],
+                         ['1995-03-24T00:00:00Z', 0],
+                         ['1995-04-03T00:00:00Z', 96]],
+            'emotional': [['1995-03-01T00:00:00Z', 0],
+                          ['1995-03-15T00:00:00Z', 100],
+                          ['1995-03-20T00:00:00Z', 72],
+                          ['1995-03-29T00:00:00Z', 0],
+                          ['1995-04-03T00:00:00Z', 28]],
+            'intellectual': [['1995-03-01T00:00:00Z', 0],
+                             ['1995-03-17T12:00:00Z', 100],
+                             ['1995-03-20T00:00:00Z', 94],
+                             ['1995-04-03T00:00:00Z', 0]],
+        }
+        self.assertEqual(expected, response.json())
+
+    def test_statistics(self):
+        response = self.client.get(self.url_path)
+
+        self.assertContains(response, '<td>Average (Last 6 Months):</td>\n        <td>27</td>')
+        self.assertContains(response, '<td>Average (All Time):</td>\n        <td>27</td>')
+        self.assertContains(response, '<td>Mean:</td>\n        <td>27.0</td>')
+        self.assertContains(response, '<td>Standard Deviation:</td>\n        <td>1.414')
 
 
 class TestProfileUpdateView(LoggedInUserTestCase):

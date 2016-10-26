@@ -5,13 +5,16 @@ import statistics
 from custom_user.models import AbstractEmailUser
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
+from django.contrib.postgres.fields import JSONField
 from django.core.cache import cache
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
 from django_enumfield import enum
+
 from rest_framework.authtoken.models import Token
 from timezone_field import TimeZoneField
+import requests
 
 
 def today():
@@ -19,6 +22,7 @@ def today():
     return datetime.datetime.now(pytz.utc)
 
 
+# TODO break user out into user app
 class User(AbstractEmailUser):
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
@@ -243,6 +247,35 @@ class Statistics(models.Model):
 
     def __str__(self):
         return "%s (%s)" % (self.user.get_full_name(), self.user.email)
+
+
+class AerisData(models.Model):
+    to_date = models.DateField(unique=True)
+    data = JSONField()
+
+    @staticmethod
+    def get_from_server(from_date, to_date):
+        moon_phase_url = '%s/sunmoon/moonphases' % settings.AERIS_URL
+        params = {
+            'client_id': settings.AERIS_CLIENT_ID,
+            'client_secret': settings.AERIS_CLIENT_SECRET,
+            'limit': 8,
+            'from': from_date,
+            'to': to_date,
+        }
+        result = requests.get(moon_phase_url, params)
+        return result.json()
+
+    @classmethod
+    def get_for_date(cls, from_date, to_date):
+        existing = cls.objects.filter(to_date=to_date)
+        if existing.count() > 0:
+            data = existing[0].data
+        else:
+            data = cls.get_from_server(from_date, to_date)
+            if data:
+                cls.objects.create(to_date=to_date, data=data)
+        return data
 
 
 def create_auth_token(sender, instance=None, created=False, **kwargs):

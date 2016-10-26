@@ -7,7 +7,7 @@ django-cors-headers==1.1.0
 django-custom-user==0.5
 django-enumfield==1.3b2
 django-extra-views==0.8.0
-django-filter==0.11.0
+django-filter==0.15.3
 django-floppyforms==1.7.0
 -e git://github.com/jessamynsmith/django-jsonview.git@f38714649eee45b7f8fc398e687b5d2bbf35cef6#egg=django_jsonview
 django-settings-context-processor==0.2
