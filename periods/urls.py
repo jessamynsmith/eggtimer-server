@@ -15,7 +15,8 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     url(r'^accounts/profile/$', period_views.ProfileUpdateView.as_view(), name='user_profile'),
     url(r'^accounts/profile/api_info/$', period_views.ApiInfoView.as_view(), name='api_info'),
-    url(r'^accounts/profile/regenerate_key/$', period_views.regenerate_key, name='regenerate_key'),
+    url(r'^accounts/profile/regenerate_key/$', period_views.RegenerateKeyView.as_view(),
+        name='regenerate_key'),
 
     url(r'^api/v2/', include(router.urls)),
     url(r'^api/v2/authenticate/$', period_views.api_authenticate, name='authenticate'),

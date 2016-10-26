@@ -266,10 +266,13 @@ class ApiInfoView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@login_required
-def regenerate_key(request):
-    if request.method == 'POST':
+class RegenerateKeyView(LoginRequiredMixin, UpdateView):
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse({'message': 'Post to this endpoint to update your API key'})
+
+    def post(self, request, *args, **kwargs):
         Token.objects.filter(user=request.user).delete()
         Token.objects.create(user=request.user)
 
-    return HttpResponseRedirect(reverse('api_info'))
+        return HttpResponseRedirect(reverse('api_info'))

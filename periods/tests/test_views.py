@@ -289,30 +289,19 @@ class TestViews(TestCase):
         self.assertContains(response, '<td>Mean:</td>\n        <td>28.0</td>')
         self.assertContains(response, '<td>Mode:</td>\n        <td>28</td>')
 
-    def test_regenerate_key_post(self):
-        self.request.method = 'POST'
-        api_key = Token.objects.get(user=self.request.user).key
-
-        response = views.regenerate_key(self.request)
-
-        self.assertContains(response, '', status_code=302)
-        self.assertNotEquals(api_key, self.request.user.auth_token.key)
-
-    def test_regenerate_key_get(self):
-        api_key = Token.objects.get(user=self.request.user).key
-
-        response = views.regenerate_key(self.request)
-
-        self.assertContains(response, '', status_code=302)
-        self.assertEquals(api_key, self.request.user.auth_token.key)
-
 
 class TestProfileUpdateView(LoggedInUserTestCase):
     def setUp(self):
         super(TestProfileUpdateView, self).setUp()
         self.url_path = reverse('user_profile')
 
-    def test_profile_post_invalid_data(self):
+    def test_get(self):
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, '<h4>Account Info for Jessamyn</h4>')
+
+    def test_post_invalid_data(self):
         data = {
             "birth_date": "blah",
         }
@@ -324,7 +313,7 @@ class TestProfileUpdateView(LoggedInUserTestCase):
         self.assertEqual(pytz.utc.localize(datetime.datetime(1995, 3, 1)), user.birth_date)
         self.assertContains(response, '<h4>Account Info for %s</h4>' % user.email)
 
-    def test_profile_post_valid_data(self):
+    def test_post_valid_data(self):
         data = {
             "first_name": "Jess",
             "luteal_phase_length": "12",
@@ -340,12 +329,6 @@ class TestProfileUpdateView(LoggedInUserTestCase):
         self.assertEqual(12, user.luteal_phase_length)
         self.assertContains(response, '<h4>Account Info for Jess</h4>')
 
-    def test_profile_get(self):
-        response = self.client.get(self.url_path)
-
-        self.assertEqual(200, response.status_code)
-        self.assertContains(response, '<h4>Account Info for Jessamyn</h4>')
-
 
 class TestApiInfoView(LoggedInUserTestCase):
 
@@ -353,8 +336,32 @@ class TestApiInfoView(LoggedInUserTestCase):
         super(TestApiInfoView, self).setUp()
         self.url_path = reverse('api_info')
 
-    def test_api_info(self):
+    def test_get(self):
         response = self.client.get(self.url_path)
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<h4>API Info for Jessamyn</h4>')
+
+
+class RegenerateKeyView(LoggedInUserTestCase):
+
+    def setUp(self):
+        super(RegenerateKeyView, self).setUp()
+        self.url_path = reverse('regenerate_key')
+
+    def test_get(self):
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        expected = {'message': 'Post to this endpoint to update your API key'}
+        self.assertEqual(expected, response.json())
+
+    def test_post(self):
+        api_key = Token.objects.get(user=self.user).key
+
+        response = self.client.post(self.url_path, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual([('/accounts/profile/api_info/', 302)], response.redirect_chain)
+        user = period_models.User.objects.get(pk=self.user.pk)
+        self.assertNotEquals(api_key, user.auth_token.key)
