@@ -174,33 +174,32 @@ class TestAerisData(TestCase):
         num_current = period_models.AerisData.objects.count()
         self.assertEqual(num_previous, num_current)
 
-    # These tests fail due to invalid data type :(
-    # @patch('requests.get')
-    # def test_get_for_date_not_cached_request_success(self, mock_get):
-    #     mock_get.return_value = MagicMock(json=lambda: self.AERIS_DATA)
-    #     from_date = datetime.datetime(2016, 9, 25)
-    #     to_date = datetime.datetime(2016, 11, 6)
-    #     num_previous = period_models.AerisData.objects.count()
-    #
-    #     result = period_models.AerisData.get_for_date(from_date, to_date)
-    #
-    #     self.assertEqual(self.AERIS_DATA, result)
-    #     num_current = period_models.AerisData.objects.count()
-    #     self.assertEqual(num_previous + 1, num_current)
+    @patch('requests.get')
+    def test_get_for_date_not_cached_request_success(self, mock_get):
+        mock_get.return_value = MagicMock(json=lambda: self.AERIS_DATA)
+        from_date = datetime.datetime(2016, 9, 25)
+        to_date = datetime.datetime(2016, 11, 6)
+        num_previous = period_models.AerisData.objects.count()
 
-    # @patch('requests.get')
-    # def test_get_for_date_cached(self, mock_get):
-    #     from_date = datetime.datetime(2016, 9, 25)
-    #     to_date = datetime.datetime(2016, 11, 6)
-    #     period_models.AerisData.objects.create(to_date=to_date, data=self.AERIS_DATA)
-    #     num_previous = period_models.AerisData.objects.count()
-    #
-    #     result = period_models.AerisData.get_for_date(from_date, to_date)
-    #
-    #     self.assertEqual(self.AERIS_DATA, result)
-    #     num_current = period_models.AerisData.objects.count()
-    #     self.assertEqual(num_previous + 1, num_current)
-    #     self.assertEqual(0, mock_get.call_count)
+        result = period_models.AerisData.get_for_date(from_date, to_date)
+
+        self.assertEqual(self.AERIS_DATA, result)
+        num_current = period_models.AerisData.objects.count()
+        self.assertEqual(num_previous + 1, num_current)
+
+    @patch('requests.get')
+    def test_get_for_date_cached(self, mock_get):
+        from_date = datetime.datetime(2016, 9, 25)
+        to_date = datetime.datetime(2016, 11, 6)
+        period_models.AerisData.objects.create(to_date=to_date, data=self.AERIS_DATA)
+        num_previous = period_models.AerisData.objects.count()
+
+        result = period_models.AerisData.get_for_date(from_date, to_date)
+
+        self.assertEqual(self.AERIS_DATA, result)
+        num_current = period_models.AerisData.objects.count()
+        self.assertEqual(num_previous, num_current)
+        self.assertEqual(0, mock_get.call_count)
 
 
 class TestSignals(TestCase):
