@@ -16,7 +16,7 @@ framework.
 import os
 
 from django.core.wsgi import get_wsgi_application
-from dj_static import Cling, MediaCling
+from whitenoise import WhiteNoise
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eggtimer.settings")
 
@@ -24,4 +24,4 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eggtimer.settings")
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 
-application = Cling(MediaCling(get_wsgi_application()))
+application = WhiteNoise(get_wsgi_application())
