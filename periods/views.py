@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.edit import UpdateView
+from django.views.generic import TemplateView, UpdateView
 
 from extra_views import ModelFormSetView
 from rest_framework import permissions, viewsets
@@ -257,13 +257,13 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('user_profile')
 
 
-@login_required
-def api_info(request):
-    data = {
-        'periods_url': request.build_absolute_uri(reverse('periods-list'))
-    }
-    return render_to_response('periods/api_info.html', data,
-                              context_instance=RequestContext(request))
+class ApiInfoView(LoginRequiredMixin, TemplateView):
+    template_name = 'periods/api_info.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ApiInfoView, self).get_context_data(**kwargs)
+        context['periods_url'] = self.request.build_absolute_uri(reverse('periods-list'))
+        return context
 
 
 @login_required

@@ -14,6 +14,14 @@ from periods.serializers import FlowEventSerializer
 from periods.tests.factories import FlowEventFactory, UserFactory, PASSWORD
 
 
+class LoggedInUserTestCase(TestCase):
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.client = Client()
+        self.client.login(email=self.user.email, password=PASSWORD)
+
+
 class TestFlowEventViewSet(TestCase):
 
     def setUp(self):
@@ -281,11 +289,6 @@ class TestViews(TestCase):
         self.assertContains(response, '<td>Mean:</td>\n        <td>28.0</td>')
         self.assertContains(response, '<td>Mode:</td>\n        <td>28</td>')
 
-    def test_api_info(self):
-        response = views.api_info(self.request)
-
-        self.assertContains(response, '<h4>API Info for Jessamyn</h4>')
-
     def test_regenerate_key_post(self):
         self.request.method = 'POST'
         api_key = Token.objects.get(user=self.request.user).key
@@ -304,12 +307,9 @@ class TestViews(TestCase):
         self.assertEquals(api_key, self.request.user.auth_token.key)
 
 
-class TestProfileUpdateView(TestCase):
-
+class TestProfileUpdateView(LoggedInUserTestCase):
     def setUp(self):
-        self.user = UserFactory()
-        self.client = Client()
-        self.client.login(email=self.user.email, password=PASSWORD)
+        super(TestProfileUpdateView, self).setUp()
         self.url_path = reverse('user_profile')
 
     def test_profile_post_invalid_data(self):
@@ -345,3 +345,16 @@ class TestProfileUpdateView(TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<h4>Account Info for Jessamyn</h4>')
+
+
+class TestApiInfoView(LoggedInUserTestCase):
+
+    def setUp(self):
+        super(TestApiInfoView, self).setUp()
+        self.url_path = reverse('api_info')
+
+    def test_api_info(self):
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, '<h4>API Info for Jessamyn</h4>')

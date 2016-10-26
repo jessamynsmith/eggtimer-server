@@ -27,6 +27,9 @@
     curl -v -k -X GET -H "Content-Type: application/json" -H 'Authorization: Token {{ user.auth_token.key }}' "{{ periods_url }}" | python -m json.tool
     </div>
 
+    <br>
+    <a href="{% url 'user_profile' %}" class="btn btn-default">Back to Profile</a>
+
 {% endblock %}
 
 {% block extra_js %}
