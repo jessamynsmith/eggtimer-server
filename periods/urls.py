@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^periods/$', period_views.FlowEventFormSetView.as_view(), name='periods'),
     url(r'^calendar/$', period_views.CalendarView.as_view(), name='calendar'),
     url(r'^statistics/$', period_views.statistics, name='statistics'),
-    url(r'^statistics/cycle_length_frequency/$', period_views.cycle_length_frequency),
-    url(r'^statistics/cycle_length_history$/', period_views.cycle_length_history),
-    url(r'^statistics/qigong_cycles/', period_views.qigong_cycles),
+    url(r'^statistics/cycle_length_frequency/$', period_views.CycleLengthFrequencyView.as_view()),
+    url(r'^statistics/cycle_length_history/$', period_views.CycleLengthHistoryView.as_view()),
+    url(r'^statistics/qigong_cycles/$', period_views.qigong_cycles),
 ]

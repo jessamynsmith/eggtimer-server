@@ -198,38 +198,6 @@ class TestViews(TestCase):
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_cycle_length_frequency_no_data(self):
-        period_models.FlowEvent.objects.all().delete()
-
-        response = views.cycle_length_frequency(self.request)
-
-        result = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({}, result)
-
-    def test_cycle_length_frequency(self):
-        response = views.cycle_length_frequency(self.request)
-
-        result = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({'cycles': [[28, 1]]}, result)
-
-    def test_cycle_length_history_no_data(self):
-        period_models.FlowEvent.objects.all().delete()
-
-        response = views.cycle_length_history(self.request)
-
-        result = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({}, result)
-
-    def test_cycle_length_history(self):
-        response = views.cycle_length_history(self.request)
-
-        result = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({'cycles': [['2014-01-31', 28]]}, result)
-
     def test_qigong_cycles_no_birth_date(self):
         self.request.user.birth_date = None
         self.request.user.save()
@@ -295,6 +263,47 @@ class TestCalendarView(LoggedInUserTestCase):
         self.assertEqual(200, response.status_code)
         self.assertContains(response, 'initializeCalendar(')
         self.assertContains(response, 'div id=\'id_calendar\'></div>')
+
+
+class TestStatisticsViewsNoData(LoggedInUserTestCase):
+    def setUp(self):
+        super(TestStatisticsViewsNoData, self).setUp()
+        self.url_path = reverse('statistics')
+
+    def test_cycle_length_frequency(self):
+        response = self.client.get('%scycle_length_frequency/' % self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'cycles': []}, response.json())
+
+    def test_cycle_length_history(self):
+        response = self.client.get('%scycle_length_history/' % self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'cycles': []}, response.json())
+
+
+class TestStatisticsViewsWithData(LoggedInUserTestCase):
+    def setUp(self):
+        super(TestStatisticsViewsWithData, self).setUp()
+        FlowEventFactory(user=self.user)
+        FlowEventFactory(user=self.user,
+                         timestamp=pytz.utc.localize(datetime.datetime(2014, 2, 28)))
+        FlowEventFactory(user=self.user,
+                         timestamp=pytz.utc.localize(datetime.datetime(2014, 3, 26)))
+        self.url_path = reverse('statistics')
+
+    def test_cycle_length_frequency(self):
+        response = self.client.get('%scycle_length_frequency/' % self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'cycles': [[26, 1], [28, 1]]}, response.json())
+
+    def test_cycle_length_history(self):
+        response = self.client.get('%scycle_length_history/' % self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'cycles': [['2014-01-31', 28], ['2014-02-28', 26]]}, response.json())
 
 
 class TestProfileUpdateView(LoggedInUserTestCase):

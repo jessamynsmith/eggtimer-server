@@ -19,6 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView, UpdateView
 
 from extra_views import ModelFormSetView
+from jsonview.views import JsonView
 from rest_framework import permissions, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -160,28 +161,30 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@login_required
-def cycle_length_frequency(request):
-    cycle_lengths = request.user.get_cycle_lengths()
-    data = {}
-    if cycle_lengths:
-        cycle_counter = Counter(cycle_lengths)
-        data = {
-            'cycles': list(zip(cycle_counter.keys(), cycle_counter.values()))
-        }
-    return JsonResponse(data)
+class CycleLengthFrequencyView(LoginRequiredMixin, JsonView):
+
+    def get_context_data(self, **kwargs):
+        context = super(CycleLengthFrequencyView, self).get_context_data(**kwargs)
+        cycle_lengths = self.request.user.get_cycle_lengths()
+        cycles = []
+        if cycle_lengths:
+            cycle_counter = Counter(cycle_lengths)
+            cycles = list(zip(cycle_counter.keys(), cycle_counter.values()))
+        context['cycles'] = cycles
+        return context
 
 
-@login_required
-def cycle_length_history(request):
-    cycle_lengths = request.user.get_cycle_lengths()
-    data = {}
-    if cycle_lengths:
-        first_days = list(request.user.first_days().values_list('timestamp', flat=True))
-        data = {
-            'cycles': list(zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
-        }
-    return JsonResponse(data)
+class CycleLengthHistoryView(LoginRequiredMixin, JsonView):
+
+    def get_context_data(self, **kwargs):
+        context = super(CycleLengthHistoryView, self).get_context_data(**kwargs)
+        cycle_lengths = self.request.user.get_cycle_lengths()
+        cycles = []
+        if cycle_lengths:
+            first_days = list(self.request.user.first_days().values_list('timestamp', flat=True))
+            cycles = list(zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
+        context['cycles'] = cycles
+        return context
 
 
 def _get_level(start_date, today, cycle_length):
