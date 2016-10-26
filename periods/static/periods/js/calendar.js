@@ -226,7 +226,7 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aeri
                     // TODO Fetch and add these events later, after calendar has rendered
                     $.getJSON(aerisUrl, data, function(aerisData) {
                         if (aerisData.error) {
-                            console.log(JSON.stringify(aerisData.error));
+                            console.log('aeris: ' + JSON.stringify(aerisData.error));
                         } else {
                             events.events = events.events.concat(makeMoonPhaseEvents(aerisData.response, moment, timezone));
                         }
