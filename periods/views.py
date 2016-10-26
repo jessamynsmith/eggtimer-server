@@ -148,17 +148,16 @@ class FlowEventFormSetView(LoginRequiredMixin, ModelFormSetView):
         return queryset
 
 
-@login_required
-def calendar(request):
-    data = {
-        'periods_url': reverse('periods-list'),
-        'statistics_url': reverse('statistics-list'),
-        'period_form_url': reverse('period_form'),
-        'aeris_url': reverse('aeris'),
-    }
+class CalendarView(LoginRequiredMixin, TemplateView):
+    template_name = 'periods/calendar.html'
 
-    return render_to_response('periods/calendar.html', data,
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(CalendarView, self).get_context_data(**kwargs)
+        context['periods_url'] = self.request.build_absolute_uri(reverse('periods-list'))
+        context['statistics_url'] = self.request.build_absolute_uri(reverse('statistics-list'))
+        context['period_form_url'] = self.request.build_absolute_uri(reverse('period_form'))
+        context['aeris_url'] = self.request.build_absolute_uri(reverse('aeris'))
+        return context
 
 
 @login_required

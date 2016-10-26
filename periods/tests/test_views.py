@@ -198,12 +198,6 @@ class TestViews(TestCase):
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_calendar(self):
-        response = views.calendar(self.request)
-
-        self.assertContains(response, 'initializeCalendar(')
-        self.assertContains(response, 'div id=\'id_calendar\'></div>')
-
     def test_cycle_length_frequency_no_data(self):
         period_models.FlowEvent.objects.all().delete()
 
@@ -288,6 +282,19 @@ class TestViews(TestCase):
         self.assertContains(response, '<td>Average (All Time):</td>\n        <td>28</td>')
         self.assertContains(response, '<td>Mean:</td>\n        <td>28.0</td>')
         self.assertContains(response, '<td>Mode:</td>\n        <td>28</td>')
+
+
+class TestCalendarView(LoggedInUserTestCase):
+    def setUp(self):
+        super(TestCalendarView, self).setUp()
+        self.url_path = reverse('calendar')
+
+    def test_get(self):
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, 'initializeCalendar(')
+        self.assertContains(response, 'div id=\'id_calendar\'></div>')
 
 
 class TestProfileUpdateView(LoggedInUserTestCase):
