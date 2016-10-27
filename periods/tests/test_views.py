@@ -142,56 +142,50 @@ class TestApiAuthenticate(TestCase):
         self.assertContains(response, user.auth_token.key)
 
 
-class TestViews(TestCase):
+class TestFlowEventViews(LoggedInUserTestCase):
     maxDiff = None
 
     def setUp(self):
-        self.period = FlowEventFactory()
-        FlowEventFactory(user=self.period.user,
+        super(TestFlowEventViews, self).setUp()
+        self.url_path = reverse('flow_event_create')
+        self.period = FlowEventFactory(user=self.user)
+        FlowEventFactory(user=self.user,
                          timestamp=pytz.utc.localize(datetime.datetime(2014, 2, 28)))
-        self.request = HttpRequest()
-        self.request.user = self.period.user
-        self.request.META['SERVER_NAME'] = 'localhost'
-        self.request.META['SERVER_PORT'] = '8000'
 
     @patch('periods.models.today')
-    def test_period_form_no_parameters(self, mock_today):
+    def test_create_no_parameters(self, mock_today):
         mock_today.return_value = pytz.utc.localize(datetime.datetime(2015, 7, 7))
 
-        response = views.period_form(self.request, mock_today)
+        response = self.client.get(self.url_path)
 
+        self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2015-07-06 20:00:00" required')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_period_form_with_timestamp(self):
-        self.request.GET = QueryDict('timestamp=2015-02-25T00:00:00%2B00:00')
+    def test_create_with_timestamp(self):
+        params = {'timestamp': '2015-02-25T00:00:00+00:00'}
 
-        response = views.period_form(self.request)
+        response = self.client.get(self.url_path, params)
 
+        self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2015-02-25 00:00:00" required')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    @patch('periods.models.today')
-    def test_period_form_invalid_period_id(self, mock_today):
-        mock_today.return_value = pytz.utc.localize(datetime.datetime(2015, 7, 7))
+    def test_update_invalid_period_id(self):
+        response = self.client.get('%s9999/' % self.url_path)
 
-        response = views.period_form(self.request, 9999)
+        self.assertEqual(404, response.status_code)
 
-        self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2015-07-06 20:00:00" required')
-        self.assertContains(response, 'first_day" checked')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+    def test_update(self):
+        response = self.client.get('%s%s/' % (self.url_path, self.period.id))
 
-    def test_period_form_existing_period(self):
-        response = views.period_form(self.request, self.period.id)
-
+        self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2014-01-31 12:00:00" required ')

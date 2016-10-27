@@ -112,7 +112,7 @@ doAjax = function(url, method, itemId, data) {
     });
 };
 
-editEvent = function(action, timezone, periodsUrl, periodFormUrl, itemId, itemDate) {
+editEvent = function(action, timezone, periodsUrl, flowEventUrl, itemId, itemDate) {
     var method = 'POST';
     var buttons = [];
     if (action === 'Update') {
@@ -159,14 +159,14 @@ editEvent = function(action, timezone, periodsUrl, periodFormUrl, itemId, itemDa
         message: function(dialog) {
             var message = '';
             if (itemId) {
-                periodFormUrl += itemId + '/';
+                flowEventUrl += itemId + '/';
             }
             if (itemDate) {
-                periodFormUrl += '?timestamp=' + itemDate.format();
+                flowEventUrl += '?timestamp=' + itemDate.format();
             }
-            console.log("Getting period form from url: " + periodFormUrl);
+            console.log("Getting flow event form from url: " + flowEventUrl);
             $.ajax({
-                url: periodFormUrl,
+                url: flowEventUrl,
                 dataType: 'html',
                 async: false,
                 success: function(doc) {
@@ -198,7 +198,7 @@ var makeMoonPhaseEvents = function(responseData, moment, timezone) {
     return events;
 };
 
-var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aerisUrl, timezone) {
+var initializeCalendar = function(periodsUrl, statisticsUrl, flowEventUrl, aerisUrl, timezone) {
     $('#id_calendar').fullCalendar({
         timezone: timezone,
         defaultDate: getDefaultDate(moment, window.location.search),
@@ -242,14 +242,14 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, periodFormUrl, aeri
                 // If the entry is for the current day, populate time
                 dayMoment = now;
             }
-            editEvent('Add', timezone, periodsUrl, periodFormUrl, null, dayMoment);
+            editEvent('Add', timezone, periodsUrl, flowEventUrl, null, dayMoment);
         },
         eventClick: function(event, jsEvent, view) {
             if (!event.itemId) {
                 // This can happen if the user clicks on a projected event
                 return;
             }
-            editEvent('Update', timezone, periodsUrl, periodFormUrl, event.itemId, null);
+            editEvent('Update', timezone, periodsUrl, flowEventUrl, event.itemId, null);
         }
     });
 };

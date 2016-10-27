@@ -7,14 +7,11 @@ import math
 import pytz
 
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
 from extra_views import ModelFormSetView
 from jsonview.views import JsonView
@@ -92,7 +89,6 @@ def api_authenticate(request):
 
 
 class AerisView(LoginRequiredMixin, JsonView):
-
     def get_context_data(self, **kwargs):
         context = super(AerisView, self).get_context_data(**kwargs)
         from_date = self.request.GET.get('min_timestamp')
@@ -103,34 +99,53 @@ class AerisView(LoginRequiredMixin, JsonView):
         return context
 
 
-@login_required
-def period_form(request, period_id=None):
-    # e.g. /period_form/?timestamp=2015-08-19T08:31:24-07:00
-    user_timezone = pytz.timezone(request.user.timezone.zone)
-    try:
-        flow_event = period_models.FlowEvent.objects.get(pk=int(period_id))
-        flow_event.timestamp = flow_event.timestamp.astimezone(user_timezone)
-    except (TypeError, period_models.FlowEvent.DoesNotExist):
-        timestamp = request.GET.get('timestamp')
+class FlowEventMixin(LoginRequiredMixin):
+    model = period_models.FlowEvent
+    form_class = period_forms.PeriodForm
+
+    def set_to_utc(self, timestamp):
+        user_timezone = pytz.timezone(self.request.user.timezone.zone)
+        localized = timestamp
+        if localized.tzinfo:
+            localized = localized.astimezone(user_timezone)
+        localized_in_utc = localized.replace(tzinfo=pytz.utc)
+        return localized_in_utc
+
+    def get_timestamp(self):
+        # e.g. ?timestamp=2015-08-19T08:31:24-07:00
+        timestamp = self.request.GET.get('timestamp')
         try:
             timestamp = dateutil_parser.parse(timestamp)
         except AttributeError:
-            timestamp = period_models.today().astimezone(user_timezone)
-        flow_event = period_models.FlowEvent(timestamp=timestamp)
-        if timestamp:
-            yesterday = timestamp - datetime.timedelta(days=1)
-            yesterday_start = yesterday.replace(hour=0, minute=0, second=0)
-            yesterday_events = period_models.FlowEvent.objects.filter(
-                timestamp__gte=yesterday_start, timestamp__lte=timestamp)
-            if not yesterday_events.count():
-                flow_event.first_day = True
-    flow_event.timestamp = flow_event.timestamp.replace(tzinfo=pytz.utc)
-    form = period_forms.PeriodForm(instance=flow_event)
-    data = {
-        'form': form,
-    }
-    return render_to_response('periods/period_form.html', data,
-                              context_instance=RequestContext(request))
+            timestamp = period_models.today()
+        return self.set_to_utc(timestamp)
+
+
+class FlowEventCreateView(FlowEventMixin, CreateView):
+
+    def is_first_day(self, timestamp):
+        yesterday = timestamp - datetime.timedelta(days=1)
+        yesterday_start = yesterday.replace(hour=0, minute=0, second=0)
+        yesterday_events = period_models.FlowEvent.objects.filter(
+            timestamp__gte=yesterday_start, timestamp__lte=timestamp)
+        if yesterday_events.count():
+            return False
+        return True
+
+    def get_initial(self):
+        timestamp = self.get_timestamp()
+        initial = {
+            'timestamp': timestamp,
+            'first_day': self.is_first_day(timestamp)
+        }
+        return initial
+
+
+class FlowEventUpdateView(FlowEventMixin, UpdateView):
+    def get_object(self, queryset=None):
+        obj = super(FlowEventUpdateView, self).get_object(queryset)
+        obj.timestamp = self.set_to_utc(obj.timestamp)
+        return obj
 
 
 class FlowEventFormSetView(LoginRequiredMixin, ModelFormSetView):
@@ -150,13 +165,12 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         context = super(CalendarView, self).get_context_data(**kwargs)
         context['periods_url'] = self.request.build_absolute_uri(reverse('periods-list'))
         context['statistics_url'] = self.request.build_absolute_uri(reverse('statistics-list'))
-        context['period_form_url'] = self.request.build_absolute_uri(reverse('period_form'))
+        context['flow_event_url'] = self.request.build_absolute_uri(reverse('flow_event_create'))
         context['aeris_url'] = self.request.build_absolute_uri(reverse('aeris'))
         return context
 
 
 class CycleLengthFrequencyView(LoginRequiredMixin, JsonView):
-
     def get_context_data(self, **kwargs):
         context = super(CycleLengthFrequencyView, self).get_context_data(**kwargs)
         cycle_lengths = self.request.user.get_cycle_lengths()
@@ -169,7 +183,6 @@ class CycleLengthFrequencyView(LoginRequiredMixin, JsonView):
 
 
 class CycleLengthHistoryView(LoginRequiredMixin, JsonView):
-
     def get_context_data(self, **kwargs):
         context = super(CycleLengthHistoryView, self).get_context_data(**kwargs)
         cycle_lengths = self.request.user.get_cycle_lengths()
@@ -209,7 +222,6 @@ def _generate_cycles(start_date, today, end_date, cycle_length):
 
 
 class QigongCycleView(LoginRequiredMixin, JsonView):
-
     def get_context_data(self, **kwargs):
         context = super(QigongCycleView, self).get_context_data(**kwargs)
         today = period_models.today()
@@ -262,7 +274,6 @@ class ApiInfoView(LoginRequiredMixin, TemplateView):
 
 
 class RegenerateKeyView(LoginRequiredMixin, UpdateView):
-
     def get(self, request, *args, **kwargs):
         return JsonResponse({'message': 'Post to this endpoint to update your API key'})
 

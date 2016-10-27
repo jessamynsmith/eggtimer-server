@@ -21,8 +21,9 @@
 
 	<script type='text/javascript'>
 		$(document).ready(function() {
-            initializeCalendar('{{ periods_url }}', '{{ statistics_url }}', '{{ period_form_url }}',
-                '{{ aeris_url }}', '{{ request.user.timezone.zone }}');
+            initializeCalendar('{{ periods_url }}', '{{ statistics_url }}',
+                '{{ flow_event_url }}', '{{ aeris_url }}',
+                '{{ request.user.timezone.zone }}');
         });
 	</script>
 {% endblock %}
