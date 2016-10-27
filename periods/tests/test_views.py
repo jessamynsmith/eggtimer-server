@@ -99,6 +99,35 @@ class TestStatisticsViewSet(TestCase):
         self.assertEqual(1, response.data['first_day'])
 
 
+class TestAerisView(LoggedInUserTestCase):
+    maxDiff = None
+
+    def setUp(self):
+        super(TestAerisView, self).setUp()
+        self.url_path = reverse('aeris')
+
+    @patch('periods.models.AerisData.get_for_date')
+    def test_get_no_data(self, mock_get_for_date):
+        mock_get_for_date.return_value = {}
+
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({}, response.json())
+
+    @patch('periods.models.AerisData.get_for_date')
+    def test_get_with_data(self, mock_get_for_date):
+        data = {'success': 'true'}
+        mock_get_for_date.return_value = data
+        to_date = datetime.date(2014, 2, 28)
+
+        response = self.client.get(self.url_path, {'to_date': to_date})
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(data, response.json())
+        self.assertTrue(mock_get_for_date.called_once_with(None, to_date))
+
+
 class TestApiAuthenticate(TestCase):
 
     def setUp(self):
@@ -149,20 +178,30 @@ class TestFlowEventViews(LoggedInUserTestCase):
         super(TestFlowEventViews, self).setUp()
         self.url_path = reverse('flow_event_create')
         self.period = FlowEventFactory(user=self.user)
-        FlowEventFactory(user=self.user,
-                         timestamp=pytz.utc.localize(datetime.datetime(2014, 2, 28)))
 
     @patch('periods.models.today')
     def test_create_no_parameters(self, mock_today):
-        mock_today.return_value = pytz.utc.localize(datetime.datetime(2015, 7, 7))
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 3))
 
         response = self.client.get(self.url_path)
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2015-07-06 20:00:00" required')
+                                      'value="2014-02-02 19:00:00" required')
         self.assertContains(response, 'first_day" checked')
+        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+
+    def test_create_not_first_day(self):
+        params = {'timestamp': '2014-02-01T00:00:00+00:00'}
+
+        response = self.client.get(self.url_path, params)
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, '<form id="id_period_form">')
+        self.assertContains(response, '<input type="datetime" name="timestamp" '
+                                      'value="2014-02-01 00:00:00" required')
+        self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day">')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_create_with_timestamp(self):
@@ -191,6 +230,19 @@ class TestFlowEventViews(LoggedInUserTestCase):
                                       'value="2014-01-31 12:00:00" required ')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+
+
+class TestFlowEventFormSetView(LoggedInUserTestCase):
+    def setUp(self):
+        super(TestFlowEventFormSetView, self).setUp()
+        self.url_path = reverse('flow_events')
+
+    def test_get(self):
+        response = self.client.get(self.url_path)
+
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, '*Note: all times in UTC')
+        self.assertContains(response, 'name="form-INITIAL_FORMS" type="hidden" value="0"')
 
 
 class TestCalendarView(LoggedInUserTestCase):

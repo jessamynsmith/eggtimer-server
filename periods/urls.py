@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^flow_event/$', period_views.FlowEventCreateView.as_view(), name='flow_event_create'),
     url(r'^flow_event/(?P<pk>[0-9]+)/$', period_views.FlowEventUpdateView.as_view(),
         name='flow_event_update'),
-    url(r'^periods/$', period_views.FlowEventFormSetView.as_view(), name='periods'),
+    url(r'^flow_events/$', period_views.FlowEventFormSetView.as_view(), name='flow_events'),
     url(r'^calendar/$', period_views.CalendarView.as_view(), name='calendar'),
     url(r'^statistics/$', period_views.StatisticsView.as_view(), name='statistics'),
     url(r'^statistics/cycle_length_frequency/$', period_views.CycleLengthFrequencyView.as_view()),
