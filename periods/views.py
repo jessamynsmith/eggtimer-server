@@ -107,6 +107,7 @@ class FlowEventMixin(LoginRequiredMixin):
         user_timezone = pytz.timezone(self.request.user.timezone.zone)
         localized = timestamp
         if localized.tzinfo:
+            print("Has tzinfo")
             localized = localized.astimezone(user_timezone)
         localized_in_utc = localized.replace(tzinfo=pytz.utc)
         return localized_in_utc
@@ -116,7 +117,8 @@ class FlowEventMixin(LoginRequiredMixin):
         timestamp = self.request.GET.get('timestamp')
         try:
             timestamp = dateutil_parser.parse(timestamp)
-        except AttributeError:
+        except AttributeError as e:
+            print("dateutil could not parse date: %s" % e)
             timestamp = period_models.today()
         return self.set_to_utc(timestamp)
 

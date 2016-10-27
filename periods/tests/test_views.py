@@ -192,14 +192,15 @@ class TestFlowEventViews(LoggedInUserTestCase):
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_create_not_first_day(self):
-        params = {'timestamp': '2014-02-01T00:00:00+00:00'}
+    @patch('periods.models.today')
+    def test_create_not_first_day(self, mock_today):
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 1))
 
-        response = self.client.get(self.url_path, params)
+        response = self.client.get(self.url_path)
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, 'value="2014-02-01 00:00:00"')
+        self.assertContains(response, 'value="2014-01-31 19:00:00"')
         self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day">')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
@@ -207,6 +208,7 @@ class TestFlowEventViews(LoggedInUserTestCase):
         params = {'timestamp': '2015-02-25T00:00:00+00:00'}
 
         response = self.client.get(self.url_path, params)
+        print(response.content)
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
