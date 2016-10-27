@@ -199,8 +199,7 @@ class TestFlowEventViews(LoggedInUserTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2014-02-01 00:00:00" required')
+        self.assertContains(response, 'value="2014-02-01 00:00:00"')
         self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day">')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
@@ -211,8 +210,7 @@ class TestFlowEventViews(LoggedInUserTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2015-02-25 00:00:00" required')
+        self.assertContains(response, 'value="2015-02-25 00:00:00"')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
