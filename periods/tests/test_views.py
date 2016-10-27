@@ -179,30 +179,30 @@ class TestFlowEventViews(LoggedInUserTestCase):
         self.url_path = reverse('flow_event_create')
         self.period = FlowEventFactory(user=self.user)
 
-    @patch('periods.models.today')
-    def test_create_no_parameters(self, mock_today):
-        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 3))
-
-        response = self.client.get(self.url_path)
-
-        self.assertEqual(200, response.status_code)
-        self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2014-02-02 19:00:00" required')
-        self.assertContains(response, 'first_day" checked')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
-
-    @patch('periods.models.today')
-    def test_create_not_first_day(self, mock_today):
-        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 1))
-
-        response = self.client.get(self.url_path)
-
-        self.assertEqual(200, response.status_code)
-        self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, 'value="2014-01-31 19:00:00"')
-        self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day">')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+#     @patch('periods.models.today')
+#     def test_create_no_parameters(self, mock_today):
+#         mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 3))
+#
+#         response = self.client.get(self.url_path)
+#
+#         self.assertEqual(200, response.status_code)
+#         self.assertContains(response, '<form id="id_period_form">')
+#         self.assertContains(response, '<input type="datetime" name="timestamp" '
+#                                       'value="2014-02-02 19:00:00" required')
+#         self.assertContains(response, 'first_day" checked')
+#         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+#
+#     @patch('periods.models.today')
+#     def test_create_not_first_day(self, mock_today):
+#         mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 1))
+#
+#         response = self.client.get(self.url_path)
+#
+#         self.assertEqual(200, response.status_code)
+#         self.assertContains(response, '<form id="id_period_form">')
+#         self.assertContains(response, 'value="2014-01-31 19:00:00"')
+#         self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day"')
+#         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
     def test_create_with_timestamp(self):
         params = {'timestamp': '2015-02-25T00:00:00+00:00'}
@@ -216,20 +216,20 @@ class TestFlowEventViews(LoggedInUserTestCase):
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
-    def test_update_invalid_period_id(self):
-        response = self.client.get('%s9999/' % self.url_path)
-
-        self.assertEqual(404, response.status_code)
-
-    def test_update(self):
-        response = self.client.get('%s%s/' % (self.url_path, self.period.id))
-
-        self.assertEqual(200, response.status_code)
-        self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, '<input type="datetime" name="timestamp" '
-                                      'value="2014-01-31 12:00:00" required ')
-        self.assertContains(response, 'first_day" checked')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+#     def test_update_invalid_period_id(self):
+#         response = self.client.get('%s9999/' % self.url_path)
+#
+#         self.assertEqual(404, response.status_code)
+#
+#     def test_update(self):
+#         response = self.client.get('%s%s/' % (self.url_path, self.period.id))
+#
+#         self.assertEqual(200, response.status_code)
+#         self.assertContains(response, '<form id="id_period_form">')
+#         self.assertContains(response, '<input type="datetime" name="timestamp" '
+#                                       'value="2014-01-31 12:00:00" required ')
+#         self.assertContains(response, 'first_day" checked')
+#         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 
 
 class TestFlowEventFormSetView(LoggedInUserTestCase):

@@ -107,20 +107,27 @@ class FlowEventMixin(LoginRequiredMixin):
         user_timezone = pytz.timezone(self.request.user.timezone.zone)
         localized = timestamp
         if localized.tzinfo:
-            print("Has tzinfo")
+            print("Has tzinfo: %s" % timestamp)
             localized = localized.astimezone(user_timezone)
+            print('localized: %s' % timestamp)
         localized_in_utc = localized.replace(tzinfo=pytz.utc)
+        print('in utc: %s' % timestamp)
         return localized_in_utc
 
     def get_timestamp(self):
         # e.g. ?timestamp=2015-08-19T08:31:24-07:00
         timestamp = self.request.GET.get('timestamp')
+        print('GET timestamp: %s' % timestamp)
         try:
             timestamp = dateutil_parser.parse(timestamp)
+            print('parsed timestamp: %s' % timestamp)
         except AttributeError as e:
             print("dateutil could not parse date: %s" % e)
             timestamp = period_models.today()
-        return self.set_to_utc(timestamp)
+            print('today timestamp: %s' % timestamp)
+        timestamp = self.set_to_utc(timestamp)
+        print('set_to_utc timestamp: %s' % timestamp)
+        return timestamp
 
 
 class FlowEventCreateView(FlowEventMixin, CreateView):
@@ -136,6 +143,7 @@ class FlowEventCreateView(FlowEventMixin, CreateView):
 
     def get_initial(self):
         timestamp = self.get_timestamp()
+        print('got timestamp: %s' % timestamp)
         initial = {
             'timestamp': timestamp,
             'first_day': self.is_first_day(timestamp)
