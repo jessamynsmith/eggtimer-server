@@ -2,8 +2,25 @@ from django.test import TestCase
 from rest_framework.renderers import JSONRenderer
 
 from periods import models as period_models
-from periods.serializers import FlowEventSerializer
+from periods.serializers import FlowEventSerializer, NullableEnumField
 from periods.tests.factories import FlowEventFactory
+
+
+class TestNullableEnumField(TestCase):
+
+    def test_to_internal_value_empty(self):
+        field = NullableEnumField(period_models.ClotSize)
+
+        result = field.to_internal_value('')
+
+        self.assertIsNone(result)
+
+    def test_to_internal_value_value(self):
+        field = NullableEnumField(period_models.ClotSize)
+
+        result = field.to_internal_value('1')
+
+        self.assertEqual(1, result)
 
 
 class TestFlowEventViewSet(TestCase):
