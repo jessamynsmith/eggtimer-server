@@ -3,7 +3,6 @@ import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
-from django.template import Context
 
 from periods import models as period_models, email_sender, helpers
 
@@ -33,7 +32,7 @@ class Command(BaseCommand):
             else:
                 day = 'days'
 
-            context = Context({
+            context = {
                 'full_name': user.get_full_name(),
                 'today': self._format_date(today),
                 'expected_in': expected_abs,
@@ -42,7 +41,7 @@ class Command(BaseCommand):
                 'calendar_start_date': self._format_date(calendar_start_date),
                 'admin_name': settings.ADMINS[0][0],
                 'full_domain': helpers.get_full_domain(),
-            })
+            }
 
             subject = ''
             if expected_in < 0:

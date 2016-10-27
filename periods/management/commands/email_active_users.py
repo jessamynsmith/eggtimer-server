@@ -1,16 +1,15 @@
 from optparse import make_option
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from django.template.loader import get_template
-from django.template import Context
 
 from periods import models as period_models, email_sender
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Email all active users'
 
-    option_list = NoArgsCommand.option_list + (
+    option_list = BaseCommand.option_list + (
         make_option('--noinput', action='store_false', dest='interactive', default=True,
                     help='Tells Django to NOT prompt the user for input of any kind.'),
     )
@@ -38,7 +37,7 @@ Are you sure you want to do this?
         if confirm == 'yes':
             subject = 'Important information about the data in your eggtimer account'
             template_name = 'notification'
-            context = Context({})
+            context = {}
             plaintext = get_template('periods/email/%s.txt' % template_name)
             for user in active_users:
                 email_sender.send(user, subject, plaintext.render(context), None)

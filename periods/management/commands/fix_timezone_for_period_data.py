@@ -1,15 +1,15 @@
 from optparse import make_option
 import pytz
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 
 from periods import models as period_models
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Update FlowEvent data to match User timezone'
 
-    option_list = NoArgsCommand.option_list + (
+    option_list = BaseCommand.option_list + (
         make_option('--noinput', action='store_false', dest='interactive', default=True,
                     help='Tells Django to NOT prompt the user for input of any kind.'),
     )
