@@ -1,24 +1,22 @@
 from collections import Counter
 import datetime
 import itertools
-import json
 import math
 import pytz
 
 from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect
 from django.utils.dateparse import parse_datetime
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, TemplateView, UpdateView
 
 from extra_views import ModelFormSetView
 from jsonview.views import JsonView
-from rest_framework import permissions, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 
 from periods import forms as period_forms, models as period_models, serializers
 
@@ -57,35 +55,29 @@ class StatisticsViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
-def api_authenticate(request):
-    user = None
-    data = None
-    status_code = 400
-    error = None
+class ApiAuthenticateView(APIView):
+    http_method_names = ['post']
+    permission_classes = [permissions.AllowAny]
 
-    try:
-        data = json.loads(request.body.decode())
-    except ValueError:
-        error = "Could not parse body as JSON"
+    def post(self, request, *args, **kwargs):
+        user = None
+        error = ''
+        status_code = status.HTTP_400_BAD_REQUEST
 
-    if not error:
         try:
-            email = data['email']
-            password = data['password']
+            email = request.data['email']
+            password = request.data['password']
             user = auth.authenticate(username=email, password=password)
             if not user:
-                status_code = 401
+                status_code = status.HTTP_401_UNAUTHORIZED
                 error = "Invalid credentials"
         except KeyError as e:
             error = "Missing required field '%s'" % e.args[0]
 
-    if user:
-        return JsonResponse({'token': user.auth_token.key})
+        if user:
+            return Response({'token': user.auth_token.key})
 
-    return JsonResponse({'error': error}, status=status_code)
+        return Response({'error': error}, status=status_code)
 
 
 class AerisView(LoginRequiredMixin, JsonView):
@@ -124,7 +116,6 @@ class FlowEventMixin(LoginRequiredMixin):
 
 
 class FlowEventCreateView(FlowEventMixin, CreateView):
-
     def is_first_day(self, timestamp):
         yesterday = timestamp - datetime.timedelta(days=1)
         yesterday_start = yesterday.replace(hour=0, minute=0, second=0)
@@ -276,8 +267,7 @@ class ApiInfoView(LoginRequiredMixin, TemplateView):
 
 
 class RegenerateKeyView(LoginRequiredMixin, UpdateView):
-    def get(self, request, *args, **kwargs):
-        return JsonResponse({'message': 'Post to this endpoint to update your API key'})
+    http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
         Token.objects.filter(user=request.user).delete()

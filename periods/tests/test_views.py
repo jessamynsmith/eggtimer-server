@@ -140,25 +140,19 @@ class TestApiAuthenticate(TestCase):
 
         self.assertEqual(405, response.status_code)
 
-    def test_api_authenticate_not_json(self):
-        response = self.client.post(self.url_path, data='', content_type='application/json')
-
-        self.assertEqual(400, response.status_code)
-        self.assertEqual(b'{"error": "Could not parse body as JSON"}', response.content)
-
     def test_api_authenticate_missing_fields(self):
         response = self.client.post(self.url_path, data=json.dumps({}),
                                     content_type='application/json')
 
         self.assertEqual(400, response.status_code)
-        self.assertEqual(b'{"error": "Missing required field \'email\'"}', response.content)
+        self.assertEqual({"error": "Missing required field \'email\'"}, response.json())
 
     def test_api_authenticate_failure(self):
         response = self.client.post(self.url_path, data=json.dumps(self.data),
                                     content_type='application/json')
 
         self.assertEqual(401, response.status_code)
-        self.assertEqual(b'{"error": "Invalid credentials"}', response.content)
+        self.assertEqual({"error": "Invalid credentials"}, response.json())
 
     @patch('django.contrib.auth.authenticate')
     def test_api_authenticate_success(self, mock_authenticate):
@@ -410,9 +404,7 @@ class RegenerateKeyView(LoggedInUserTestCase):
     def test_get(self):
         response = self.client.get(self.url_path)
 
-        self.assertEqual(200, response.status_code)
-        expected = {'message': 'Post to this endpoint to update your API key'}
-        self.assertEqual(expected, response.json())
+        self.assertEqual(405, response.status_code)
 
     def test_post(self):
         api_key = Token.objects.get(user=self.user).key

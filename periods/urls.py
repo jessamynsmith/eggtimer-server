@@ -19,7 +19,7 @@ urlpatterns = [
         name='regenerate_key'),
 
     url(r'^api/v2/', include(router.urls)),
-    url(r'^api/v2/authenticate/$', period_views.api_authenticate, name='authenticate'),
+    url(r'^api/v2/authenticate/$', period_views.ApiAuthenticateView.as_view(), name='authenticate'),
     url(r'^api/v2/aeris/$', period_views.AerisView.as_view(), name='aeris'),
     url(r'^flow_event/$', period_views.FlowEventCreateView.as_view(), name='flow_event_create'),
     url(r'^flow_event/(?P<pk>[0-9]+)/$', period_views.FlowEventUpdateView.as_view(),
