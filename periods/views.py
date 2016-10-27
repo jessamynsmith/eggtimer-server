@@ -1,6 +1,5 @@
 from collections import Counter
 import datetime
-from dateutil import parser as dateutil_parser
 import itertools
 import json
 import math
@@ -10,6 +9,7 @@ from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, JsonResponse
+from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, TemplateView, UpdateView
 
@@ -107,11 +107,11 @@ class FlowEventMixin(LoginRequiredMixin):
         user_timezone = pytz.timezone(self.request.user.timezone.zone)
         localized = timestamp
         if localized.tzinfo:
-            print("Has tzinfo: %s" % timestamp)
+            print("Has tzinfo: %s" % localized)
             localized = localized.astimezone(user_timezone)
-            print('localized: %s' % timestamp)
+            print('localized: %s' % localized)
         localized_in_utc = localized.replace(tzinfo=pytz.utc)
-        print('in utc: %s' % timestamp)
+        print('in utc: %s' % localized_in_utc)
         return localized_in_utc
 
     def get_timestamp(self):
@@ -119,10 +119,10 @@ class FlowEventMixin(LoginRequiredMixin):
         timestamp = self.request.GET.get('timestamp')
         print('GET timestamp: %s' % timestamp)
         try:
-            timestamp = dateutil_parser.parse(timestamp)
+            timestamp = parse_datetime(timestamp)
             print('parsed timestamp: %s' % timestamp)
         except AttributeError as e:
-            print("dateutil could not parse date: %s" % e)
+            print("Could not parse date: %s" % e)
             timestamp = period_models.today()
             print('today timestamp: %s' % timestamp)
         timestamp = self.set_to_utc(timestamp)

@@ -1,6 +1,7 @@
 # Django settings for eggtimer project.
-import dateutil.parser
 import os
+
+from django.utils.dateparse import parse_datetime
 
 import dj_database_url
 from email.utils import formataddr
@@ -191,7 +192,7 @@ AERIS_CLIENT_ID = os.environ.get('AERIS_CLIENT_ID')
 AERIS_CLIENT_SECRET = os.environ.get('AERIS_CLIENT_SECRET')
 
 # TODO maybe this could be a django plugin?
-DEPLOY_DATE = dateutil.parser.parse(os.environ.get('DEPLOY_DATE', ''))
+DEPLOY_DATE = parse_datetime(os.environ.get('DEPLOY_DATE', ''))
 VERSION = '0.6'
 TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION', 'ADMINS']
 
