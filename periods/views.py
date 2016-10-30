@@ -110,6 +110,7 @@ class FlowEventMixin(LoginRequiredMixin):
             timestamp = parse_datetime(timestamp)
         except TypeError as e:
             print("Could not parse date: %s" % e)
+        if not timestamp:
             timestamp = period_models.today()
         timestamp = self.set_to_utc(timestamp)
         return timestamp

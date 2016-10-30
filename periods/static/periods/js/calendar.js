@@ -158,15 +158,18 @@ editEvent = function(action, timezone, periodsUrl, flowEventUrl, itemId, itemDat
         title: action + ' event',
         message: function(dialog) {
             var message = '';
+            var data = {};
             if (itemId) {
                 flowEventUrl += itemId + '/';
             }
             if (itemDate) {
-                flowEventUrl += '?timestamp=' + itemDate.format();
+                data.timestamp = itemDate.format();
             }
-            console.log("Getting flow event form from url: " + flowEventUrl);
+            console.log("Getting flow event form from url " + flowEventUrl +
+                " with data " + JSON.stringify(data));
             $.ajax({
                 url: flowEventUrl,
+                data: data,
                 dataType: 'html',
                 async: false,
                 success: function(doc) {
