@@ -8,6 +8,9 @@ The egg timer is an open-source tracker for menstrual periods. It provides a cal
 https://eggtimer.herokuapp.com/
 
 
+Like my work? Tip me! https://www.paypal.me/jessamynsmith
+
+
 Development
 -----------
 
