@@ -263,8 +263,12 @@ class AerisData(models.Model):
             'from': from_date,
             'to': to_date,
         }
-        result = requests.get(moon_phase_url, params)
-        return result.json()
+        try:
+            result = requests.get(moon_phase_url, params)
+            result = result.json()
+        except requests.exceptions.ConnectionError:
+            result = {'error': 'Unable to reach Aeris'}
+        return result
 
     @classmethod
     def get_for_date(cls, from_date, to_date):

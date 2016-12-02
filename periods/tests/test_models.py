@@ -1,6 +1,7 @@
 import datetime
 import pytz
 import re
+import requests
 
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
@@ -160,6 +161,16 @@ class TestAerisData(TestCase):
         result = period_models.AerisData.get_from_server(from_date, to_date)
 
         self.assertEqual(self.AERIS_DATA, result)
+
+    @patch('requests.get')
+    def test_get_from_server_error(self, mock_get):
+        mock_get.side_effect = requests.exceptions.ConnectionError()
+        from_date = datetime.datetime(2016, 9, 25)
+        to_date = datetime.datetime(2016, 11, 6)
+
+        result = period_models.AerisData.get_from_server(from_date, to_date)
+
+        self.assertEqual({'error': 'Unable to reach Aeris'}, result)
 
     @patch('requests.get')
     def test_get_for_date_not_cached_request_failure(self, mock_get):
