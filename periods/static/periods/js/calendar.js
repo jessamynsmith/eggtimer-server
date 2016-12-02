@@ -10,13 +10,13 @@ formatMomentDate = function(instance) {
 };
 
 var timezoneDate = function(moment, timezone, dateString) {
-    return moment.tz(dateString, timezone);
+    return moment(dateString).tz(timezone);
 };
 
 makeEvents = function(moment, timezone, data) {
     var events = [];
     var periodStartDates = [];
-
+    
     data.forEach(function(item) {
         // TODO say "spotting" for spotting events
         var event = {
@@ -28,7 +28,7 @@ makeEvents = function(moment, timezone, data) {
             // Maybe someday allow dragging of period events
             editable: false
         };
-
+        
         var eventType = item.type;
         if (eventType == 'projected period') {
             periodStartDates.push(event.start);
@@ -43,7 +43,7 @@ makeEvents = function(moment, timezone, data) {
                 periodStartDates.push(event.start);
             }
         }
-
+        
         events.push(event);
     });
     return {events: events, periodStartDates: periodStartDates};
@@ -148,7 +148,7 @@ editEvent = function(action, timezone, periodsUrl, flowEventUrl, itemId, itemDat
             // drf doesn't recognize 'on'
             data.first_day = data.first_day == 'on';
             // Must convert timestamp to UTC since that is what server is expecting
-            var localTimestamp = moment.tz(data.timestamp, timezone);
+            var localTimestamp = moment(data.timestamp).tz(timezone);
             data.timestamp = localTimestamp.tz('UTC').format();
             doAjax(periodsUrl, method, itemId, data);
             dialogRef.close();
@@ -239,11 +239,15 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, flowEventUrl, aeris
             });
         },
         dayClick: function(date, jsEvent, view) {
-            var dayMoment = moment(date, timezone);
-            var now = moment.tz(moment(), timezone);
+            var dayMoment = date;
+            var now = moment().tz(timezone);
             if (dayMoment.date() == now.date()) {
-                // If the entry is for the current day, populate time
+                // If the entry is for the current day, use current time
                 dayMoment = now;
+            } else {
+                // Convert to user's timezone while preserving exact time
+                dayMoment = dayMoment.tz(timezone);
+                dayMoment = dayMoment.add(-dayMoment.utcOffset(), 'minutes');
             }
             editEvent('Add', timezone, periodsUrl, flowEventUrl, null, dayMoment);
         },

@@ -128,6 +128,31 @@ class TestAerisView(LoggedInUserTestCase):
         self.assertTrue(mock_get_for_date.called_once_with(None, to_date))
 
 
+class TestFlowEventMixin(LoggedInUserTestCase):
+
+    def setUp(self):
+        self.mixin = views.FlowEventMixin()
+
+        self.request = HttpRequest()
+        self.request.user = UserFactory()
+        self.mixin.request = self.request
+
+    @patch('periods.models.today')
+    def test_get_timestamp_error(self, mock_today):
+        mock_today.return_value = pytz.utc.localize(datetime.datetime(2014, 2, 3))
+
+        timestamp = self.mixin.get_timestamp()
+
+        self.assertEqual(datetime.datetime(2014, 2, 2, 19, tzinfo=pytz.UTC), timestamp)
+
+    def test_get_timestamp_success(self):
+        self.request.GET = QueryDict('timestamp=2016-11-30T00:00:00%2B00:00')
+
+        timestamp = self.mixin.get_timestamp()
+
+        self.assertEqual(datetime.datetime(2016, 11, 30, tzinfo=pytz.UTC), timestamp)
+
+
 class TestApiAuthenticate(TestCase):
 
     def setUp(self):
@@ -205,7 +230,7 @@ class TestFlowEventViews(LoggedInUserTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
-        self.assertContains(response, 'value="2015-02-24 19:00:00"')
+        self.assertContains(response, 'value="2015-02-25 00:00:00"')
         self.assertContains(response, 'first_day" checked')
         self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
 

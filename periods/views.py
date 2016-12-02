@@ -95,13 +95,12 @@ class FlowEventMixin(LoginRequiredMixin):
     model = period_models.FlowEvent
     form_class = period_forms.PeriodForm
 
-    def set_to_utc(self, timestamp):
+    def convert_to_user_timezone(self, timestamp):
         user_timezone = pytz.timezone(self.request.user.timezone.zone)
-        localized = timestamp
-        if localized.tzinfo:
-            localized = localized.astimezone(user_timezone)
-        localized_in_utc = localized.replace(tzinfo=pytz.utc)
-        return localized_in_utc
+        return timestamp.astimezone(user_timezone)
+
+    def set_to_utc(self, timestamp):
+        return timestamp.replace(tzinfo=pytz.utc)
 
     def get_timestamp(self):
         # e.g. ?timestamp=2015-08-19T08:31:24-07:00
@@ -111,7 +110,7 @@ class FlowEventMixin(LoginRequiredMixin):
         except TypeError as e:
             print("Could not parse date: %s" % e)
         if not timestamp:
-            timestamp = period_models.today()
+            timestamp = self.convert_to_user_timezone(period_models.today())
         timestamp = self.set_to_utc(timestamp)
         return timestamp
 
@@ -138,7 +137,7 @@ class FlowEventCreateView(FlowEventMixin, CreateView):
 class FlowEventUpdateView(FlowEventMixin, UpdateView):
     def get_object(self, queryset=None):
         obj = super(FlowEventUpdateView, self).get_object(queryset)
-        obj.timestamp = self.set_to_utc(obj.timestamp)
+        obj.timestamp = self.set_to_utc(self.convert_to_user_timezone(obj.timestamp))
         return obj
 
 
