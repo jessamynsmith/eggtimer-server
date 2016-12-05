@@ -164,10 +164,10 @@ DEFAULT_FROM_EMAIL = formataddr(ADMINS[0])
 REPLY_TO = (
     os.environ.get('REPLY_TO_EMAIL', 'example@example.com'),
 )
-EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
-EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
-EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
-EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD')
 EMAIL_USE_TLS = True
 
 if not EMAIL_HOST:

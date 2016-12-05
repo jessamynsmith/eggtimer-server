@@ -39,10 +39,8 @@ Optional environment variables, generally only required in production:
     ADMIN_EMAIL
     DJANGO_SECRET_KEY
     REPLY_TO_EMAIL
-    MAILGUN_SMTP_SERVER
-    MAILGUN_SMTP_PORT
-    MAILGUN_SMTP_LOGIN
-    MAILGUN_SMTP_PASSWORD
+    SENDGRID_PASSWORD
+    SENDGRID_USERNAME
     DEPLOY_DATE
 
 Set up db:
@@ -114,7 +112,7 @@ and Heroku.
 Make a new Heroku app, and add the following addons:
 
     Heroku Postgres
-	Mailgun
+	SendGrid
 	New Relic APM
 	Papertrail
 	Heroku Scheduler
