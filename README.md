@@ -45,7 +45,6 @@ Optional environment variables, generally only required in production:
 
 Set up db:
 
-    python manage.py syncdb
     python manage.py migrate
 
 Run tests and view coverage:
