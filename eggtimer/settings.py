@@ -174,7 +174,6 @@ if not EMAIL_HOST:
     EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
     EMAIL_FILE_PATH = os.path.join(HOME_DIR, 'eggtimer', 'emails')
 
-# TODO Once Ionic app is done, perhaps remove session authentication?
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
