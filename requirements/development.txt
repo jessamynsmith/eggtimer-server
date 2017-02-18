@@ -1,7 +1,7 @@
 -r common.txt
-coverage==4.0
-coveralls==1.0
-django-coverage-plugin==1.0
+coverage==4.3.4
+coveralls==1.1
+django-coverage-plugin==1.4.2
 docopt==0.6.2
 factory-boy==2.5.2
 flake8==2.4.1

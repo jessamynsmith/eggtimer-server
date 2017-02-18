@@ -209,7 +209,8 @@ class TestFlowEventViews(LoggedInUserTestCase):
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2014-02-02 19:00:00" required')
         self.assertContains(response, 'first_day" checked')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+        expected_select = '<select class=" form-control" id="id_level" name="level" required>'
+        self.assertContains(response, expected_select)
 
     @patch('periods.models.today')
     def test_create_not_first_day(self, mock_today):
@@ -221,7 +222,8 @@ class TestFlowEventViews(LoggedInUserTestCase):
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, 'value="2014-01-31 19:00:00"')
         self.assertContains(response, '<input type="checkbox" name="first_day" id="id_first_day"')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+        expected_select = '<select class=" form-control" id="id_level" name="level" required>'
+        self.assertContains(response, expected_select)
 
     def test_create_with_timestamp(self):
         params = {'timestamp': '2015-02-25T00:00:00+00:00'}
@@ -232,7 +234,8 @@ class TestFlowEventViews(LoggedInUserTestCase):
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, 'value="2015-02-25 00:00:00"')
         self.assertContains(response, 'first_day" checked')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+        expected_select = '<select class=" form-control" id="id_level" name="level" required>'
+        self.assertContains(response, expected_select)
 
     def test_update_invalid_period_id(self):
         response = self.client.get('%s9999/' % self.url_path)
@@ -242,12 +245,16 @@ class TestFlowEventViews(LoggedInUserTestCase):
     def test_update(self):
         response = self.client.get('%s%s/' % (self.url_path, self.period.id))
 
+        with open('output.html', 'wb') as output:
+            output.write(response.content)
+
         self.assertEqual(200, response.status_code)
         self.assertContains(response, '<form id="id_period_form">')
         self.assertContains(response, '<input type="datetime" name="timestamp" '
                                       'value="2014-01-31 12:00:00" required ')
         self.assertContains(response, 'first_day" checked')
-        self.assertContains(response, '<select class=" form-control" id="id_level" name="level">')
+        expected_select = '<select class=" form-control" id="id_level" name="level" required>'
+        self.assertContains(response, expected_select)
 
 
 class TestFlowEventFormSetView(LoggedInUserTestCase):

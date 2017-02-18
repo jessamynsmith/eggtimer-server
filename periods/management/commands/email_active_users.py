@@ -1,5 +1,3 @@
-from optparse import make_option
-
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 
@@ -9,10 +7,10 @@ from periods import models as period_models, email_sender
 class Command(BaseCommand):
     help = 'Email all active users'
 
-    option_list = BaseCommand.option_list + (
-        make_option('--noinput', action='store_false', dest='interactive', default=True,
-                    help='Tells Django to NOT prompt the user for input of any kind.'),
-    )
+    def add_arguments(self, parser):
+        parser.add_argument('--noinput', '--no-input',
+                            action='store_false', dest='interactive', default=True,
+                            help='Tells Django to NOT prompt the user for input of any kind.')
 
     def handle(self, *args, **options):
         interactive = options.get('interactive')
