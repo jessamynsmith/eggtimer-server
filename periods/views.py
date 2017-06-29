@@ -227,7 +227,7 @@ class QigongCycleView(LoginRequiredMixin, JsonView):
         return context
 
 
-class StatisticsView(TemplateView):
+class StatisticsView(LoginRequiredMixin, TemplateView):
     template_name = 'periods/statistics.html'
 
     def get_context_data(self, **kwargs):
