@@ -22,5 +22,10 @@
     "mocha-lcov-reporter": "^1.2.0",
     "moment": "^2.14.1",
     "moment-timezone": "^0.5.5"
-  }
+  },
+  "keywords": [
+    "django",
+    "menstrual",
+    "tracker"
+  ]
 }
