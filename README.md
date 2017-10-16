@@ -18,7 +18,7 @@ Fork the project on github and git clone your fork, e.g.:
 
     git clone https://github.com/<username>/eggtimer-server.git
 
-Create a virtualenv using Python 3 and install dependencies. I recommend getting python3 via homebrew as well, then installing [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation) to that python. NOTE! You must change 'path/to/python3'
+Create a virtualenv using Python 3 and install dependencies. I recommend getting python3 using a package manager (homebrew on OSX), then installing [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation) to that python. NOTE! You must change 'path/to/python3'
 to be the actual path to python3 on your system.
 
     mkvirtualenv eggtimer --python=/path/to/python3
@@ -30,8 +30,8 @@ Ensure you have node installed (I recommend using homebrew), then use npm to ins
 
 Set environment variables as desired. Recommended dev settings:
 
-    DJANGO_DEBUG=1
-    DJANGO_ENABLE_SSL=0
+    export DJANGO_DEBUG=1
+    export DJANGO_ENABLE_SSL=0
 
 Optional environment variables, generally only required in production:
 
@@ -42,6 +42,8 @@ Optional environment variables, generally only required in production:
     SENDGRID_PASSWORD
     SENDGRID_USERNAME
     DEPLOY_DATE
+    
+You can add the exporting of environment variables to the virtualenv activate script so they are always available.
 
 Set up db:
 
@@ -69,6 +71,10 @@ You can then generate graphs, e.g.:
 Run server:
 
     python manage.py runserver
+    
+Or run using gunicorn:
+
+    gunicorn eggtimer.wsgi
 
 Lint JavaScript:
 
@@ -101,6 +107,9 @@ You can filter based on minimum and maximum timestamp of the events:
 
 curl -vk -X GET -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' "https://eggtimer.herokuapp.com/api/v2/periods/?min_timestamp=2016-01-19&max_timestamp=2016-01-20" | python -m json.tool
 
+Create a period:
+
+curl -vk -X POST -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' --data '{"timestamp": "<YYYY-MM-DD>T<HH:MM:SS>"}' "https://eggtimer.herokuapp.com/api/v2/periods/" 
 
 Continuous Integration and Deployment
 -------------------------------------

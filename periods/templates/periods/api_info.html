@@ -25,6 +25,11 @@
     <br>
     To list periods:<br>
     curl -v -k -X GET -H "Content-Type: application/json" -H 'Authorization: Token {{ user.auth_token.key }}' "{{ periods_url }}" | python -m json.tool
+
+    <br>
+    <br>
+    To filter periods:<br>
+    curl -v -k -X GET -H "Content-Type: application/json" -H 'Authorization: Token {{ user.auth_token.key }}' "{{ periods_url }}?min_timestamp=2016-01-19&max_timestamp=2016-01-20" | python -m json.tool
     </div>
 
     <br>
