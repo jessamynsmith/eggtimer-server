@@ -24,7 +24,7 @@ ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
 CORS_ORIGIN_WHITELIST = (
     'eggtimer.herokuapp.com'
 )
-SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', True)))
+SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', '1')))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
