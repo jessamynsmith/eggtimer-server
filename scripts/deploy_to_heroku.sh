@@ -24,3 +24,5 @@ then
 else
     git push heroku master
 fi
+
+heroku run python manage.py migrate --noinput --app eggtimer

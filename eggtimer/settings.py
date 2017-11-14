@@ -142,7 +142,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-# auth and allauth set
+# auth and allauth
 AUTH_USER_MODEL = 'periods.User'
 LOGIN_REDIRECT_URL = '/calendar/'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
