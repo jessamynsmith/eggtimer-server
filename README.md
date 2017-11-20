@@ -1,5 +1,4 @@
-eggtimer-server
-===============
+# eggtimer-server
 
 [![Build Status](https://circleci.com/gh/jessamynsmith/eggtimer-server.svg?style=shield)](https://circleci.com/gh/jessamynsmith/eggtimer-server)
 [![Coverage Status](https://coveralls.io/repos/jessamynsmith/eggtimer-server/badge.svg?branch=master)](https://coveralls.io/r/jessamynsmith/eggtimer-server?branch=master)
@@ -11,8 +10,7 @@ https://eggtimer.herokuapp.com/
 Like my work? Tip me! https://www.paypal.me/jessamynsmith
 
 
-Development
------------
+### Development
 
 Fork the project on github and git clone your fork, e.g.:
 
@@ -111,8 +109,7 @@ Create a period:
 
 curl -vk -X POST -H "Content-Type: application/json" -H 'Authorization: Token <AUTH_TOKEN>' --data '{"timestamp": "<YYYY-MM-DD>T<HH:MM:SS>"}' "https://eggtimer.herokuapp.com/api/v2/periods/" 
 
-Continuous Integration and Deployment
--------------------------------------
+### Continuous Integration and Deployment
 
 This project is already set up for continuous integration and deployment using circleci, coveralls,
 and Heroku.
