@@ -22,7 +22,7 @@ to be the actual path to python3 on your system.
     mkvirtualenv eggtimer --python=/path/to/python3
     pip install -r requirements/development.txt
 
-Ensure you have node installed (I recommend using homebrew), then use npm to install JavaScript dependencies:
+Ensure you have node installed (I recommend using homebrew on OSX), then use npm to install Javacript dependencies:
 
     npm install
 
