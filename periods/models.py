@@ -250,24 +250,24 @@ class Statistics(models.Model):
 
 
 class AerisData(models.Model):
+    # Called AerisData for historical reasons; now pulling data from US Navy API
+    # http://aa.usno.navy.mil/data/docs/api.php#phase
     to_date = models.DateField(unique=True)
     data = JSONField()
 
     @staticmethod
-    def get_from_server(from_date, to_date):
-        moon_phase_url = '%s/sunmoon/moonphases' % settings.AERIS_URL
+    def get_from_server(from_date):
+        moon_phase_url = '{}/moon/phase'.format(settings.MOON_PHASE_URL)
+        from_date_us_format = datetime.datetime.strptime(from_date, '%Y-%m-%d').strftime('%-m/%-d/%Y')
         params = {
-            'client_id': settings.AERIS_CLIENT_ID,
-            'client_secret': settings.AERIS_CLIENT_SECRET,
-            'limit': 8,
-            'from': from_date,
-            'to': to_date,
+            'nump': 8,
+            'date': from_date_us_format,
         }
         try:
             result = requests.get(moon_phase_url, params)
             result = result.json()
         except requests.exceptions.ConnectionError:
-            result = {'error': 'Unable to reach Aeris'}
+            result = {'error': 'Unable to reach Moon Phase API'}
         return result
 
     @classmethod
@@ -276,8 +276,8 @@ class AerisData(models.Model):
         if existing.count() > 0:
             data = existing[0].data
         else:
-            data = cls.get_from_server(from_date, to_date)
-            if data:
+            data = cls.get_from_server(from_date)
+            if data and not data['error']:
                 cls.objects.create(to_date=to_date, data=data)
         return data
 

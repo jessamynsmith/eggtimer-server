@@ -190,10 +190,10 @@ var makeMoonPhaseEvents = function(responseData, moment, timezone) {
     var events = [];
     for (var i = 0; i < responseData.length; i++) {
         var event = {
-            title: responseData[i].name,
-            start: timezoneDate(moment, timezone, responseData[i].dateTimeISO),
+            title: responseData[i].phase,
+            start: timezoneDate(moment, timezone, responseData[i].date),
             allDay: true,
-            className: 'moon ' + responseData[i].name.replace(' ', '_'),
+            className: 'moon ' + responseData[i].phase.toLowerCase().replace(' ', '_'),
             rendering: 'background'
         };
         events.push(event);
@@ -231,7 +231,7 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, flowEventUrl, aeris
                         if (aerisData.error) {
                             console.log('aeris: ' + JSON.stringify(aerisData.error));
                         } else {
-                            events.events = events.events.concat(makeMoonPhaseEvents(aerisData.response, moment, timezone));
+                            events.events = events.events.concat(makeMoonPhaseEvents(aerisData.phasedata, moment, timezone));
                         }
                         callback(events.events);
                     });

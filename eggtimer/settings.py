@@ -187,10 +187,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
 
-# Aeris API is used for moon phases
-AERIS_URL = 'https://api.aerisapi.com'
-AERIS_CLIENT_ID = os.environ.get('AERIS_CLIENT_ID')
-AERIS_CLIENT_SECRET = os.environ.get('AERIS_CLIENT_SECRET')
+# US Navy API is used for moon phases
+# http://aa.usno.navy.mil/data/docs/api.php#phase
+MOON_PHASE_URL = 'http://api.usno.navy.mil'
 
 # TODO maybe this could be a django plugin?
 DEPLOY_DATE = parse_datetime(os.environ.get('DEPLOY_DATE', ''))

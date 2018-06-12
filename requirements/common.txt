@@ -9,7 +9,7 @@ django-enumfield==1.3b2
 django-extra-views==0.8.0
 django-filter==0.15.3
 django-floppyforms==1.7.0
--e git://github.com/jessamynsmith/django-jsonview.git@d8b6e5f7edf587b0569d09c086afe0b231b79f3a#egg=django_jsonview
+-e git://github.com/jessamynsmith/django-jsonview.git@52412ded63316f947ba5dd5cd897de6ba8286d88#egg=django_jsonview
 django-settings-context-processor==0.2
 django-timezone-field==2.0
 djangorestframework==3.4.6
