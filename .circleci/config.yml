@@ -3,28 +3,6 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.6.2-stretch-browsers
-        environment:
-          DATABASE_URL: "postgres://ubuntu:@localhost/circle_test"
-          DJANGO_SETTINGS_MODULE: "eggtimer.settings"
-          DJANGO_DEBUG: 0
-          DJANGO_ENABLE_SSL: 0
     steps:
       - checkout
-        - run:
-          - pip install -r requirements/development.txt
-          - gem install coveralls-lcov
-          - npm install
-
-          - flake8
-          - node_modules/.bin/jshint */static/*/js
-          - coverage run manage.py test
-          - node_modules/.bin/mocha */tests/static/*/js/*
-          - node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/*/js/* > coverage.info
-          - coveralls-lcov -v -n coverage.info > coverage.json
-          - PYTHONPATH=. coveralls --merge coverage.json
-
-deployment:
-    production:
-        branch: master
-        commands:
-            - sh scripts/deploy_to_heroku.sh circle
+      - run: pip install -r requirements/development.txt
