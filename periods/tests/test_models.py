@@ -3,6 +3,7 @@ import pytz
 import re
 import requests
 
+from django.conf import settings
 from django.contrib.auth import models as auth_models
 from django.test import TestCase
 from mock import MagicMock, patch
@@ -152,34 +153,32 @@ class TestAerisData(TestCase):
         {'timestamp': 1477849193, 'dateTimeISO': '2016-10-30T17:39:53+00:00', 'code': 0,
          'name': 'new moon'}], 'success': True}
 
+    def setUp(self):
+        self.from_date = datetime.datetime(2016, 9, 25).strftime(settings.API_DATE_FORMAT)
+
     @patch('requests.get')
     def test_get_from_server(self, mock_get):
         mock_get.return_value = MagicMock(json=lambda: self.AERIS_DATA)
-        from_date = datetime.datetime(2016, 9, 25)
-        to_date = datetime.datetime(2016, 11, 6)
 
-        result = period_models.AerisData.get_from_server(from_date, to_date)
+        result = period_models.AerisData.get_from_server(self.from_date)
 
         self.assertEqual(self.AERIS_DATA, result)
 
     @patch('requests.get')
     def test_get_from_server_error(self, mock_get):
         mock_get.side_effect = requests.exceptions.ConnectionError()
-        from_date = datetime.datetime(2016, 9, 25)
-        to_date = datetime.datetime(2016, 11, 6)
 
-        result = period_models.AerisData.get_from_server(from_date, to_date)
+        result = period_models.AerisData.get_from_server(self.from_date)
 
-        self.assertEqual({'error': 'Unable to reach Aeris'}, result)
+        self.assertEqual({'error': 'Unable to reach Moon Phase API'}, result)
 
     @patch('requests.get')
     def test_get_for_date_not_cached_request_failure(self, mock_get):
         mock_get.return_value = MagicMock(json=lambda: {})
-        from_date = datetime.datetime(2016, 9, 25)
         to_date = datetime.datetime(2016, 11, 6)
         num_previous = period_models.AerisData.objects.count()
 
-        result = period_models.AerisData.get_for_date(from_date, to_date)
+        result = period_models.AerisData.get_for_date(self.from_date, to_date)
 
         self.assertEqual({}, result)
         num_current = period_models.AerisData.objects.count()
@@ -188,11 +187,10 @@ class TestAerisData(TestCase):
     @patch('requests.get')
     def test_get_for_date_not_cached_request_success(self, mock_get):
         mock_get.return_value = MagicMock(json=lambda: self.AERIS_DATA)
-        from_date = datetime.datetime(2016, 9, 25)
         to_date = datetime.datetime(2016, 11, 6)
         num_previous = period_models.AerisData.objects.count()
 
-        result = period_models.AerisData.get_for_date(from_date, to_date)
+        result = period_models.AerisData.get_for_date(self.from_date, to_date)
 
         self.assertEqual(self.AERIS_DATA, result)
         num_current = period_models.AerisData.objects.count()

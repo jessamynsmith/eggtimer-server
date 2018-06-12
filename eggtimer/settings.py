@@ -190,6 +190,8 @@ REST_FRAMEWORK = {
 # US Navy API is used for moon phases
 # http://aa.usno.navy.mil/data/docs/api.php#phase
 MOON_PHASE_URL = 'http://api.usno.navy.mil'
+API_DATE_FORMAT = '%Y-%m-%d'
+US_DATE_FORMAT = '%-m/%-d/%Y'
 
 # TODO maybe this could be a django plugin?
 DEPLOY_DATE = parse_datetime(os.environ.get('DEPLOY_DATE', ''))

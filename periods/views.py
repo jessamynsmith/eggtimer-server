@@ -4,6 +4,7 @@ import itertools
 import math
 import pytz
 
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
@@ -19,8 +20,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from periods import forms as period_forms, models as period_models, serializers
-
-DATE_FORMAT = "%Y-%m-%d"
 
 
 class FlowEventViewSet(viewsets.ModelViewSet):
@@ -44,7 +43,7 @@ class StatisticsViewSet(viewsets.ModelViewSet):
         # Only return a single statistics object, for the authenticated user
         min_timestamp = request.query_params.get('min_timestamp')
         try:
-            min_timestamp = datetime.datetime.strptime(min_timestamp, DATE_FORMAT)
+            min_timestamp = datetime.datetime.strptime(min_timestamp, settings.API_DATE_FORMAT)
             min_timestamp = pytz.timezone(request.user.timezone.zone).localize(min_timestamp)
         except TypeError:
             min_timestamp = period_models.today()
@@ -182,7 +181,8 @@ class CycleLengthHistoryView(LoginRequiredMixin, JsonView):
         cycles = []
         if cycle_lengths:
             first_days = list(self.request.user.first_days().values_list('timestamp', flat=True))
-            cycles = list(zip([x.strftime(DATE_FORMAT) for x in first_days], cycle_lengths))
+            cycles = list(zip(
+                [x.strftime(settings.API_DATE_FORMAT) for x in first_days], cycle_lengths))
         context['cycles'] = cycles
         return context
 

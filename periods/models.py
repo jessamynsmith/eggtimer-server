@@ -258,7 +258,8 @@ class AerisData(models.Model):
     @staticmethod
     def get_from_server(from_date):
         moon_phase_url = '{}/moon/phase'.format(settings.MOON_PHASE_URL)
-        from_date_us_format = datetime.datetime.strptime(from_date, '%Y-%m-%d').strftime('%-m/%-d/%Y')
+        from_date_obj = datetime.datetime.strptime(from_date, settings.API_DATE_FORMAT)
+        from_date_us_format = from_date_obj.strftime(settings.US_DATE_FORMAT)
         params = {
             'nump': 8,
             'date': from_date_us_format,
