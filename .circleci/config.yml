@@ -28,7 +28,11 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/development.txt" }}
+          key: deps-py-{{ .Branch }}-{{ checksum "requirements/development.txt" }}
+      - restore_cache:
+          key: deps-npm-{{ .Branch }}-{{ checksum "package.json" }}
+      - restore_cache:
+          key: deps-bower-{{ .Branch }}-{{ checksum "bower.json" }}
       - run:
           # https://discuss.circleci.com/t/circleci-python-docker-images-disallow-pip-install-due-to-directory-ownership/12504
           name: Install Python deps in a venv
@@ -37,12 +41,19 @@ jobs:
             . venv/bin/activate
             pip install -r requirements/development.txt
       - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/development.txt" }}
+          key: deps-py-{{ .Branch }}-{{ checksum "requirements/development.txt" }}
           paths:
             - "venv"
+      - save_cache:
+          key: deps-npm-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - "node_modules"
+      - save_cache:
+          key: deps-bower-{{ .Branch }}-{{ checksum "bower.json" }}
+          paths:
+            - "bower_components"
       - run:
           command: |
-            # TODO cache node/bower dependencies?
             npm install
             . venv/bin/activate
             flake8
