@@ -40,3 +40,13 @@ jobs:
             node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/*/js/* > coverage.info
             node_modules/.bin/lcov-parse coverage.info > coverage.json
             PYTHONPATH=. coveralls --merge coverage.json
+
+  deploy:
+    docker:
+      - image: circleci/python:3.6.5-jessie-node
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            sh scripts/deploy_to_heroku.sh circle
