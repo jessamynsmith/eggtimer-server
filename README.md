@@ -133,6 +133,7 @@ Enable the project on coveralls.io, and copy the repo token
 Enable the project on circleci.io, and under Project Settings -> Environment variables, add:
 
     COVERALLS_REPO_TOKEN <value_copied_from_coveralls>
+    HEROKU_API_KEY <value_copied_from_heroku>
 
 On circleci.io, under Project Settings -> Heroku Deployment, follow the steps to enable
 Heroku builds. At this point, you may need to cancel any currently running builds, then run
