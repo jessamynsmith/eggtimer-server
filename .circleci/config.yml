@@ -60,5 +60,5 @@ jobs:
       - run:
           name: Deploy Master to Heroku
           command: |
-            wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | sh
-            sh scripts/deploy_to_heroku.sh circle
+            wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | bash
+            bash scripts/deploy_to_heroku.sh circle
