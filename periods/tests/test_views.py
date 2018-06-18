@@ -331,7 +331,7 @@ class TestStatisticsViewsWithData(LoggedInUserTestCase):
         response = self.client.get('%scycle_length_frequency/' % self.url_path)
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'cycles': [[26, 1], [28, 1]]}, response.json())
+        self.assertEqual({'cycles': [[28, 1], [26, 1]]}, response.json())
 
     def test_cycle_length_history(self):
         response = self.client.get('%scycle_length_history/' % self.url_path)

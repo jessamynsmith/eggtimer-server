@@ -2,11 +2,11 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.6.2-stretch-browsers
+      - image: circleci/python:3.6.5-jessie-node
         environment:
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
           DJANGO_SETTINGS_MODULE: eggtimer.settings
-          DJANGO_DEBUG: 0
+          DJANGO_DEBUG: 1
           DJANGO_ENABLE_SSL: 0
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
@@ -15,5 +15,28 @@ jobs:
           POSTGRES_PASSWORD: ""
     steps:
       - checkout
-      # https://discuss.circleci.com/t/circleci-python-docker-images-disallow-pip-install-due-to-directory-ownership/12504
-      - run: pip install --user -r requirements/development.txt
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/development.txt" }}
+      - run:
+          # https://discuss.circleci.com/t/circleci-python-docker-images-disallow-pip-install-due-to-directory-ownership/12504
+          name: Install Python deps in a venv
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/development.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/development.txt" }}
+          paths:
+            - "venv"
+      - run:
+          command: |
+            # TODO cache node/bower dependencies?
+            npm install
+            . venv/bin/activate
+            flake8
+            node_modules/.bin/jshint */static/*/js
+            coverage run manage.py test
+            node_modules/.bin/mocha */tests/static/*/js/*
+            node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/*/js/* > coverage.info
+            node_modules/.bin/lcov-parse coverage.info > coverage.json
+            PYTHONPATH=. coveralls --merge coverage.json

@@ -200,7 +200,7 @@ TEMPLATE_VISIBLE_SETTINGS = ['DEPLOY_DATE', 'VERSION', 'ADMINS']
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-if DEBUG:
-    INSTALLED_APPS.extend([
-        'django_extensions',
-    ])
+# if DEBUG:
+#     INSTALLED_APPS.extend([
+#         'django_extensions',
+#     ])
