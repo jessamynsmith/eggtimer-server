@@ -53,6 +53,8 @@ jobs:
             node_modules/.bin/lcov-parse coverage.info > coverage.json
             PYTHONPATH=. coveralls --merge coverage.json
   deploy:
+    docker:
+      - image: circleci/python:3.6.5-jessie-node
     steps:
       - checkout
       - run:
