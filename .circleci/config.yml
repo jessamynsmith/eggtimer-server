@@ -65,11 +65,10 @@ jobs:
             PYTHONPATH=. coveralls --merge coverage.json
   deploy:
     docker:
-      - image: circleci/python:3.6.5-jessie-node
+      - image: buildpack-deps:trusty
     steps:
       - checkout
       - run:
           name: Deploy Master to Heroku
           command: |
-            wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | bash
             bash scripts/deploy_to_heroku.sh circle
