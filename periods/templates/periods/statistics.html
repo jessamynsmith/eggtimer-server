@@ -14,6 +14,8 @@
   </div>
 
   <div id="id_statistics" class="statistics">
+    {% timezone user.timezone %}
+          
     <h4>Statistics for {{ user.get_full_name }}</h4>
 
     <table class="table-condensed">
@@ -26,11 +28,11 @@
       </tr>
       <tr>
         <td>Most Recent:</td>
-        <td>{{ first_days|last|localtime }}</td>
+        <td>{{ first_days|last }}</td>
       </tr>
       <tr>
         <td>First:</td>
-        <td>{{ first_days|first|localtime }}</td>
+        <td>{{ first_days|first }}</td>
       </tr>
     </table>
 
@@ -71,6 +73,8 @@
         <td>{{ user.statistics.cycle_length_standard_deviation|default:"" }}</td>
       </tr>
     </table>
+          
+    {% endtimezone %}
   </div>
 
   {% for graph_type in graph_types %}
