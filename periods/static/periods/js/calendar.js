@@ -231,7 +231,15 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, flowEventUrl, aeris
                         if (aerisData.error) {
                             console.log('aeris: ' + JSON.stringify(aerisData.error));
                         } else {
-                            events.events = events.events.concat(makeMoonPhaseEvents(aerisData.phasedata, moment, timezone));
+                            var aerisPhases = aerisData.phasedata;
+                            if (!aerisPhases && aerisData.response) {
+                                aerisPhases = aerisData.response;
+                            }
+                            if (aerisPhases) {
+                                var moonPhaseEvents = makeMoonPhaseEvents(aerisPhases, moment, timezone);
+                                console.log('moonPhaseEvents', moonPhaseEvents);
+                                events.events = events.events.concat(moonPhaseEvents);
+                            }
                         }
                         callback(events.events);
                     });

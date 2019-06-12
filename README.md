@@ -15,6 +15,11 @@ Like my work? Tip me! https://www.paypal.me/jessamynsmith
 Fork the project on github and git clone your fork, e.g.:
 
     git clone https://github.com/<username>/eggtimer-server.git
+    
+You may need to set environment variables to find openssl on OSX when installing Python packages:
+
+    export LDFLAGS="-L/usr/local/opt/openssl/lib"
+    export CPPFLAGS="-I/usr/local/opt/openssl/include"
 
 Create a virtualenv using Python 3 and install dependencies. I recommend getting python3 using a package manager (homebrew on OSX), then installing [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation) to that python. NOTE! You must change 'path/to/python3'
 to be the actual path to python3 on your system.
