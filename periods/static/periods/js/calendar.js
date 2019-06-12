@@ -231,12 +231,8 @@ var initializeCalendar = function(periodsUrl, statisticsUrl, flowEventUrl, aeris
                         if (aerisData.error) {
                             console.log('aeris: ' + JSON.stringify(aerisData.error));
                         } else {
-                            var aerisPhases = aerisData.phasedata;
-                            if (!aerisPhases && aerisData.response) {
-                                aerisPhases = aerisData.response;
-                            }
-                            if (aerisPhases) {
-                                var moonPhaseEvents = makeMoonPhaseEvents(aerisPhases, moment, timezone);
+                            if (aerisData.phasedata) {
+                                var moonPhaseEvents = makeMoonPhaseEvents(aerisData.phasedata, moment, timezone);
                                 console.log('moonPhaseEvents', moonPhaseEvents);
                                 events.events = events.events.concat(moonPhaseEvents);
                             }

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static tz %}
 
 {% block title %}Statistics for {{ user.get_full_name }}{% endblock %}
 
@@ -26,11 +26,11 @@
       </tr>
       <tr>
         <td>Most Recent:</td>
-        <td>{{ first_days|last }}</td>
+        <td>{{ first_days|last|localtime }}</td>
       </tr>
       <tr>
         <td>First:</td>
-        <td>{{ first_days|first }}</td>
+        <td>{{ first_days|first|localtime }}</td>
       </tr>
     </table>
 
