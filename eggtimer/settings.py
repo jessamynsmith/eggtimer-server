@@ -21,9 +21,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', '0')))
 
 ALLOWED_HOSTS = ['eggtimer.herokuapp.com', 'localhost', '127.0.0.1']
-CORS_ORIGIN_WHITELIST = (
-    'eggtimer.herokuapp.com'
-)
+CORS_ORIGIN_ALLOW_ALL = True
+
 SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', '1')))
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
