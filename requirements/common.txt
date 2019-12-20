@@ -23,7 +23,7 @@ python-mimeparse==0.1.4
 python-openid==2.2.5
 python3-openid==3.0.10
 pytz==2016.10
-requests==2.13.0
+requests==2.20.0
 requests-oauthlib==0.6.2
 six==1.10.0
 whitenoise==3.2.2
