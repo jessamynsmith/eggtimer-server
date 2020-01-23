@@ -98,15 +98,35 @@ class User(AbstractEmailUser):
         return "%s (%s)" % (self.get_full_name(), self.email)
 
 
-class FlowLevel(enum.Enum):
+class LabelChoicesEnum(enum.Enum):
+    @classmethod
+    def choices(cls, blank=False):
+        choices = super(LabelChoicesEnum, cls).choices(blank=blank)
+
+        # Update choices to contain Enum labels rather than constant names
+        for i in range(len(choices)):
+            choices[i] = (choices[i][0], choices[i][1].label)
+
+        return choices
+
+
+class FlowLevel(LabelChoicesEnum):
     SPOTTING = 0
     LIGHT = 1
     MEDIUM = 2
     HEAVY = 3
     VERY_HEAVY = 4
 
+    __labels__ = {
+        SPOTTING: _("Spotting"),
+        LIGHT: _("Light"),
+        MEDIUM: _("Medium"),
+        HEAVY: _("Heavy"),
+        VERY_HEAVY: _("Very Heavy"),
+    }
 
-class FlowColor(enum.Enum):
+
+class FlowColor(LabelChoicesEnum):
     PINK = 0
     LIGHT_RED = 1
     RED = 2
@@ -114,17 +134,38 @@ class FlowColor(enum.Enum):
     BROWN = 4
     BLACK = 5
 
+    __labels__ = {
+        PINK: _("Pink"),
+        LIGHT_RED: _("Light Red"),
+        RED: _("Red"),
+        DARK_RED: _("Dark Red"),
+        BROWN: _("Brown"),
+        BLACK: _("Black"),
+    }
 
-class ClotSize(enum.Enum):
+
+class ClotSize(LabelChoicesEnum):
     SMALL = 0
     MEDIUM = 1
     LARGE = 2
 
+    __labels__ = {
+        SMALL: _("Small"),
+        MEDIUM: _("Medium"),
+        LARGE: _("Large"),
+    }
 
-class CrampLevel(enum.Enum):
+
+class CrampLevel(LabelChoicesEnum):
     SLIGHT = 0
     MODERATE = 1
     SEVERE = 2
+
+    __labels__ = {
+        SLIGHT: _("Slight"),
+        MODERATE: _("Moderate"),
+        SEVERE: _("Severe"),
+    }
 
 
 class FlowEvent(models.Model):

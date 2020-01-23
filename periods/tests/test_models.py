@@ -60,7 +60,7 @@ class TestFlowEvent(TestCase):
         self.period = FlowEventFactory()
 
     def test_str(self):
-        self.assertEqual('Jessamyn MEDIUM (2014-01-31 17:00:00+00:00)', '%s' % self.period)
+        self.assertEqual('Jessamyn Medium (2014-01-31 17:00:00+00:00)', '%s' % self.period)
 
 
 class TestStatistics(TestCase):
