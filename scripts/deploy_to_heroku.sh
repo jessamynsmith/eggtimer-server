@@ -19,8 +19,9 @@ DEPLOY_DATE="$DEPLOY_DATE" \
 
 if [ $CIRCLE ]
 then
-    echo "These steps are handled by circle heroku orb"
+    echo "Push is handled by circle heroku orb"
 else
     git push heroku master
-    heroku run python manage.py migrate --noinput --app eggtimer
 fi
+
+heroku run python manage.py migrate --noinput --app eggtimer
