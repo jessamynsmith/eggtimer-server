@@ -1,16 +1,14 @@
+orbs:
+  heroku: circleci/heroku@1.2.5
+version: 2.1
 workflows:
   version: 2
   build-deploy:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
-
-version: 2
+      - heroku/deploy-via-git:
+          post-steps:
+            - run: heroku run python manage.py migrate
 jobs:
   build:
     docker:
@@ -63,13 +61,3 @@ jobs:
             node_modules/.bin/mocha --reporter mocha-lcov-reporter */tests/static/*/js/* > coverage.info
             node_modules/.bin/lcov-parse coverage.info > coverage.json
             PYTHONPATH=. coveralls --merge coverage.json
-  deploy:
-    docker:
-      - image: buildpack-deps:trusty
-    steps:
-      - checkout
-      - run:
-          name: Deploy Master to Heroku
-          command: |
-            wget -qO- https://cli-assets.heroku.com/install-ubuntu.sh | bash
-            bash scripts/deploy_to_heroku.sh circle
