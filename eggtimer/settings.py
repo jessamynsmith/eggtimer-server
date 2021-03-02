@@ -94,7 +94,7 @@ TEMPLATES = [
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'eggtimer.wsgi.application'
 
-# Parse database configuration from $DATABASE_URL
+# Parse database configuration from DATABASE_URL environment variable
 DATABASES = {
     'default': dj_database_url.config(
         default="sqlite:///%s" % os.path.join(HOME_DIR, 'eggtimer', 'eggtimer.sqlite')
@@ -168,8 +168,8 @@ REPLY_TO = (
 )
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.environ.get('SENDGRID_USERNAME')
-EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD')
+EMAIL_HOST_USER = "apikey"
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_API_KEY')
 EMAIL_USE_TLS = True
 
 if not EMAIL_HOST_PASSWORD:
