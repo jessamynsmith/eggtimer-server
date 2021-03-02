@@ -7,14 +7,13 @@ workflows:
     jobs:
       - build
       - heroku/deploy-via-git:
-          pre-steps:
-            - run:
-                command: |
-                  deploy_date=`date "+%FT%T%z"`
-                  heroku config:set --app=$HEROKU_APP_NAME DEPLOY_DATE="$deploy_date"
-                name: Set deploy date
           post-steps:
-            - run: heroku run python manage.py migrate --app $HEROKU_APP_NAME
+            - run:
+              command: |
+                heroku run python manage.py migrate --app $HEROKU_APP_NAME
+                deploy_date=`date "+%FT%T%z"`
+                heroku config:set --app=$HEROKU_APP_NAME DEPLOY_DATE="$deploy_date"
+              name: Set deploy date
           requires:
             - build
           filters:
