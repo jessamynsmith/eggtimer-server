@@ -19,9 +19,8 @@ DEPLOY_DATE="$DEPLOY_DATE" \
 
 if [ $CIRCLE ]
 then
-    git push https://heroku:$HEROKU_API_KEY@git.heroku.com/eggtimer.git master
+    echo "These steps are handled by circle heroku orb"
 else
     git push heroku master
+    heroku run python manage.py migrate --noinput --app eggtimer
 fi
-
-heroku run python manage.py migrate --noinput --app eggtimer

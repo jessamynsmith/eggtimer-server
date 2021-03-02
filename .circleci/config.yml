@@ -8,10 +8,7 @@ workflows:
       - build
       - heroku/deploy-via-git:
           pre-steps:
-            - run:
-              command: |
-                DEPLOY_DATE=`date "+%FT%T%z"`
-                heroku config:set --app=$HEROKU_APP_NAME DEPLOY_DATE="$DEPLOY_DATE"
+            - run: bash scripts/deploy_to_heroku.sh circle
           post-steps:
             - run: heroku run python manage.py migrate --app $HEROKU_APP_NAME
           requires:
