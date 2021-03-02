@@ -9,6 +9,11 @@ workflows:
       - heroku/deploy-via-git:
           post-steps:
             - run: heroku run python manage.py migrate
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
 jobs:
   build:
     docker:
