@@ -32,3 +32,5 @@ nosetests.xml
 .idea/*
 
 venv/*
+
+.env

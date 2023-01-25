@@ -1,10 +1,14 @@
 # Django settings for eggtimer project.
 import os
 
+from dotenv import load_dotenv
+
 from django.utils.dateparse import parse_datetime
 
 import dj_database_url
 from email.utils import formataddr
+
+load_dotenv()
 
 HOME_DIR = os.path.expanduser("~")
 BASE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), os.path.pardir))

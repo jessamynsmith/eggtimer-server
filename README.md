@@ -38,13 +38,13 @@ Set environment variables as desired. Recommended dev settings:
 
 Optional environment variables, generally only required in production:
 
+    DATABASE_URL
     ADMIN_NAME
     ADMIN_EMAIL
     DJANGO_SECRET_KEY
     REPLY_TO_EMAIL
-    SENDGRID_PASSWORD
-    SENDGRID_USERNAME
-    DEPLOY_DATE
+    SENDGRID_API_KEY
+    DEPLOY_DATE 
     
 You can add the exporting of environment variables to the virtualenv activate script so they are always available.
 
