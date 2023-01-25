@@ -14,7 +14,7 @@ django-settings-context-processor==0.2
 django-timezone-field==2.0
 djangorestframework==3.4.6
 funcsigs==1.0.2
-gevent=22.10.2
+gevent==22.10.2
 greenlet==2.0.1
 gunicorn==20.1.0
 mimeparse==0.1.3
