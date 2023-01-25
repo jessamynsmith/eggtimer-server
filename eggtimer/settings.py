@@ -45,8 +45,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.github',
+    # TODO re-enable social accounts once ssl is set up
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.github',
     'rest_framework',
     'rest_framework.authtoken',
     'floppyforms',
