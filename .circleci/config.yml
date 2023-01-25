@@ -6,14 +6,6 @@ workflows:
   build-deploy:
     jobs:
       - build
-      - heroku/deploy-via-git:
-          post-steps:
-            - run: bash scripts/deploy_to_heroku.sh circle
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
 jobs:
   build:
     docker:
