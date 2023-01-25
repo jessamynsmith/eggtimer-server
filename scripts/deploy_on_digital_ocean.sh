@@ -25,7 +25,7 @@ else
 fi
 
 . venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements/production.txt
 npm install
 heroku run python manage.py collectstatic --noinput
 heroku run python manage.py migrate --noinput --app eggtimer

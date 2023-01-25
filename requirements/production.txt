@@ -1,0 +1,8 @@
+-r common.txt
+gevent==22.10.2
+greenlet==2.0.1
+gunicorn==20.1.0
+newrelic==2.54.0.41
+whitenoise==3.2.2
+zope.event==4.6
+zope.interface==5.5.2
