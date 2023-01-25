@@ -31,6 +31,8 @@ nosetests.xml
 .idea
 .idea/*
 
-venv/*
+venv*/*
 
 .env
+
+.python-version
