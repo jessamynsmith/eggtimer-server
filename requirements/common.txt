@@ -18,7 +18,7 @@ gunicorn==19.3.0
 mimeparse==0.1.3
 newrelic==2.54.0.41
 oauthlib==1.1.2
-psycopg2-binary==>=2.8,<2.9
+psycopg2-binary>=2.8,<2.9
 python-dotenv
 python-mimeparse==0.1.4
 python-openid==2.2.5
