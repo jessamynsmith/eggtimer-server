@@ -36,3 +36,6 @@ venv*/*
 .env
 
 .python-version
+
+node_modules/*
+bower_components/*
