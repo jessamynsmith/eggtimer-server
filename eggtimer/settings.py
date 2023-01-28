@@ -25,6 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
 DEBUG = bool(int(os.environ.get('DJANGO_DEBUG', '0')))
 
 ALLOWED_HOSTS = [
+    'jessamynsmith.ca',
     'eggtimer.jessamynsmith.ca',
     'eggtimer.herokuapp.com',
     '165.227.42.38',
