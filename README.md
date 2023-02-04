@@ -149,9 +149,10 @@ Once your app is deployed successfully, you can add the Scheduler task on Heroku
 
 You can also set up Dead Man's Snitch so you will know if the scheduled task fails.
 
-### Digital Ocean Deployment
+### Ubuntu Deployment
 
-Ssh into digital ocean droplet.
+Ssh into Ubuntu server.
+
 Get source code:
 
     git clone git@github.com:jessamynsmith/eggtimer-server.git eggtimer
