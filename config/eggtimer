@@ -45,3 +45,16 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
 }
+
+server {
+    if ($host = eggtimer.jessamynsmith.ca) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name eggtimer.jessamynsmith.ca;
+    return 404; # managed by Certbot
+
+
+}
