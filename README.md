@@ -151,6 +151,11 @@ You can also set up Dead Man's Snitch so you will know if the scheduled task fai
 
 ### Digital Ocean Deployment
 
+Ssh into digital ocean droplet.
+Get source code:
+
+    git clone git@github.com:jessamynsmith/eggtimer-server.git eggtimer
+
 Copy gunicorn service file into system folder:
 
     sudo cp config/eggtimer.service /etc/systemd/system/eggtimer.service
@@ -163,9 +168,13 @@ Restart eggtimer service:
 
     sudo systemctl restart eggtimer
 
-View logs:
+View gunicorn logs:
 
     sudo journalctl -u eggtimer.service --no-pager -f
+
+View Django logs:
+
+    tail -f /home/django/log/error_eggtimer.log 
 
 Copy nginx config into nginx directory and create symlink:
 

@@ -17,15 +17,15 @@ server {
     keepalive_timeout 5;
 
     location /media  {
-        alias /home/django/eggtimer-server/mediafiles;
+        alias /home/django/eggtimer/mediafiles;
     }
 
     location /favicon.ico {
-        alias /home/django/eggtimer-server/staticfiles/img/favicon.ico;
+        alias /home/django/eggtimer/staticfiles/img/favicon.ico;
     }
 
     location /static {
-        alias /home/django/eggtimer-server/staticfiles;
+        alias /home/django/eggtimer/staticfiles;
     }
 
     location / {

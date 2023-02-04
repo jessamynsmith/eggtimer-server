@@ -6,11 +6,11 @@ Before=nginx.service
 After=network.target
 
 [Service]
-WorkingDirectory=/home/django/eggtimer-server
-ExecStart=/home/django/eggtimer-server/venv3.7/bin/gunicorn --access-logfile - \
+WorkingDirectory=/home/django/eggtimer
+ExecStart=/home/django/eggtimer/venv3.7/bin/gunicorn --access-logfile - \
 --capture-output --enable-stdio-inheritance \
 --error-logfile /home/django/log/error_eggtimer.log --name=eggtimer_server \
---pythonpath=/home/django/eggtimer-server --bind unix:/home/django/eggtimer.socket \
+--pythonpath=/home/django/eggtimer --bind unix:/home/django/eggtimer.socket \
 --config /etc/gunicorn.d/gunicorn.py eggtimer.wsgi:application
 Restart=always
 SyslogIdentifier=eggtimer
