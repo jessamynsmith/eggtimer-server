@@ -21,10 +21,9 @@ You may need to set environment variables to find openssl on OSX when installing
     export LDFLAGS="-L/usr/local/opt/openssl/lib"
     export CPPFLAGS="-I/usr/local/opt/openssl/include"
 
-Create a virtualenv using Python 3 and install dependencies. I recommend getting python3 using a package manager (homebrew on OSX), then installing [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation) to that python. NOTE! You must change 'path/to/python3'
-to be the actual path to python3 on your system.
+Create a virtualenv using Python 3 and install dependencies.
 
-    mkvirtualenv eggtimer --python=/path/to/python3
+    python3 -m venv venv
     pip install -r requirements/development.txt
 
 Ensure you have node installed (I recommend using homebrew on OSX), then use npm to install Javacript dependencies:
@@ -149,6 +148,24 @@ Once your app is deployed successfully, you can add the Scheduler task on Heroku
     python manage.py notify_upcoming_period --settings=eggtimer.settings
 
 You can also set up Dead Man's Snitch so you will know if the scheduled task fails.
+
+### Digital Ocean Deployment
+
+Gunicorn service file
+
+    sudo vi /etc/systemd/system/eggtimer.service
+
+After service config change:
+
+    sudo systemctl daemon-reload
+
+Restart eggtimer service:
+
+    sudo systemctl restart eggtimer
+
+View logs:
+
+    sudo journalctl -u eggtimer.service --no-pager -f
 
 
 Thank you to:
