@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1'
 ]
+CSRF_TRUSTED_ORIGINS = ['https://eggtimer.jessamynsmith.ca']
 CORS_ORIGIN_ALLOW_ALL = True
 
 SECURE_SSL_REDIRECT = bool(int(os.environ.get('DJANGO_ENABLE_SSL', '1')))
