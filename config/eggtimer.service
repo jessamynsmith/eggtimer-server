@@ -1,0 +1,22 @@
+# /etc/systemd/system/eggtimer.service
+
+[Unit]
+Description=Gunicorn daemon for eggtimer
+Before=nginx.service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/django/eggtimer-server
+ExecStart=/home/django/eggtimer-server/venv3.7/bin/gunicorn --access-logfile - \
+--capture-output --enable-stdio-inheritance \
+--error-logfile /home/django/log/error_eggtimer.log --name=eggtimer_server \
+--pythonpath=/home/django/eggtimer-server --bind unix:/home/django/eggtimer.socket \
+--config /etc/gunicorn.d/gunicorn.py eggtimer.wsgi:application
+Restart=always
+SyslogIdentifier=eggtimer
+User=django
+Group=django
+
+
+[Install]
+WantedBy=multi-user.target

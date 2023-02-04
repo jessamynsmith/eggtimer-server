@@ -151,9 +151,9 @@ You can also set up Dead Man's Snitch so you will know if the scheduled task fai
 
 ### Digital Ocean Deployment
 
-Gunicorn service file
+Copy gunicorn service file into system folder:
 
-    sudo vi /etc/systemd/system/eggtimer.service
+    sudo cp config/eggtimer.service /etc/systemd/system/eggtimer.service
 
 After service config change:
 
@@ -166,6 +166,19 @@ Restart eggtimer service:
 View logs:
 
     sudo journalctl -u eggtimer.service --no-pager -f
+
+Copy nginx config into nginx directory and create symlink:
+
+    sudo cp config/eggtimer /etc/nginx/sites-available/eggtimer
+    sudo ln -s /etc/nginx/sites-available/eggtimer /etc/nginx/sites-enabled/eggtimer
+
+Set up SSL:
+
+    sudo certbot --nginx -d eggtimer.jessamynsmith.ca
+
+Restart nginx:
+
+    sudo systemctl restart nginx
 
 
 Thank you to:
