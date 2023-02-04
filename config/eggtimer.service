@@ -7,9 +7,9 @@ After=network.target
 
 [Service]
 WorkingDirectory=/home/django/eggtimer
-ExecStart=/home/django/eggtimer/venv3.7/bin/gunicorn --access-logfile - \
+ExecStart=/home/django/eggtimer/venv/bin/gunicorn --access-logfile - \
 --capture-output --enable-stdio-inheritance \
---error-logfile /home/django/log/error_eggtimer.log --name=eggtimer_server \
+--error-logfile /home/django/log/error_eggtimer.log --name=eggtimer \
 --pythonpath=/home/django/eggtimer --bind unix:/home/django/eggtimer.socket \
 --config /etc/gunicorn.d/gunicorn.py eggtimer.wsgi:application
 Restart=always

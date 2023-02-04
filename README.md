@@ -21,7 +21,7 @@ You may need to set environment variables to find openssl on OSX when installing
     export LDFLAGS="-L/usr/local/opt/openssl/lib"
     export CPPFLAGS="-I/usr/local/opt/openssl/include"
 
-Create a virtualenv using Python 3 and install dependencies.
+Create a virtualenv using Python 3.7 and install dependencies.
 
     python3 -m venv venv
     pip install -r requirements/development.txt
